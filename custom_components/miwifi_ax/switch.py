@@ -29,15 +29,15 @@ def _visitante(on: bool, d: dict) -> dict:
 
 
 CHAVES: tuple[Desc, ...] = (
-    Desc(key="led", icon="mdi:led-on", ep="misystem/led", params=lambda on, d: {"on": int(on)}, so_principal=False),
-    Desc(key="qos", icon="mdi:speedometer", ep="misystem/qos_switch", params=lambda on, d: {"on": int(on)}),
-    Desc(key="visitante", icon="mdi:account-group", ep="xqnetwork/set_wifi", params=_visitante, post=True),
-    Desc(key="mu_mimo", icon="mdi:access-point-network", ep="xqnetwork/set_wifi_txbf", params=lambda on, d: {"txbf": int(on)}, post=True, entity_category=CFG),
-    Desc(key="modo_wifi5", icon="mdi:wifi-strength-2", ep="xqnetwork/set_wifi_ax", params=lambda on, d: {"ax": 0 if on else 1}, post=True, entity_category=CFG),
-    Desc(key="conexao_rapida", icon="mdi:flash", ep="xqnetwork/miotrelay_switch", params=lambda on, d: {"on": int(on)}, post=True, entity_category=CFG),
-    Desc(key="varredura_aiot", icon="mdi:radar", ep="xqnetwork/miscan_switch", params=lambda on, d: {"on": int(on)}, post=True, entity_category=CFG),
-    Desc(key="prioridade_muitos_aparelhos", icon="mdi:devices", ep="xqnetwork/set_son_backhaul_mode", params=lambda on, d: {"mode": int(on)}, post=True, entity_category=CFG),
-    Desc(key="filtro_mac", icon="mdi:filter", ep="xqnetwork/set_wifi_macfilter", params=lambda on, d: {"model": d.get("_filtro_mac_modo", 0), "enable": int(on)}, entity_category=CFG),
+    Desc(key="led", ep="misystem/led", params=lambda on, d: {"on": int(on)}, so_principal=False),
+    Desc(key="qos", ep="misystem/qos_switch", params=lambda on, d: {"on": int(on)}),
+    Desc(key="visitante", ep="xqnetwork/set_wifi", params=_visitante, post=True),
+    Desc(key="mu_mimo", ep="xqnetwork/set_wifi_txbf", params=lambda on, d: {"txbf": int(on)}, post=True, entity_category=CFG),
+    Desc(key="modo_wifi5", ep="xqnetwork/set_wifi_ax", params=lambda on, d: {"ax": 0 if on else 1}, post=True, entity_category=CFG),
+    Desc(key="conexao_rapida", ep="xqnetwork/miotrelay_switch", params=lambda on, d: {"on": int(on)}, post=True, entity_category=CFG),
+    Desc(key="varredura_aiot", ep="xqnetwork/miscan_switch", params=lambda on, d: {"on": int(on)}, post=True, entity_category=CFG),
+    Desc(key="prioridade_muitos_aparelhos", ep="xqnetwork/set_son_backhaul_mode", params=lambda on, d: {"mode": int(on)}, post=True, entity_category=CFG),
+    Desc(key="filtro_mac", ep="xqnetwork/set_wifi_macfilter", params=lambda on, d: {"model": d.get("_filtro_mac_modo", 0), "enable": int(on)}, entity_category=CFG),
 )
 
 

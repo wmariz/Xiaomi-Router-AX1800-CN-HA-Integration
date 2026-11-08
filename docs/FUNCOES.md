@@ -92,6 +92,7 @@ Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou u
 | `xqnetwork/check_wan_type` | ✓ Detecta o tipo de conexão de internet recomendado. |
 | `xqnetwork/disable_ap` | ✓ Sai do modo repetidor sem fio (volta a roteador). |
 | `xqnetwork/disable_lan_ap` | ✓ Sai do modo ponto de acesso (volta a roteador). |
+| `xqnetwork/dmz` | **⚠ INFERÊNCIA** — DMZ: estado e IP de destino. Significado do status (1 = ligada, 2 = desligada) deduzido — confirmado só o 2 com a DMZ desligada. |
 | `xqnetwork/edit_device` | ✓ Adiciona (option=0) ou remove (option=1) um MAC da lista do filtro. |
 | `xqnetwork/get_addnode_status` | ✓ Andamento da inclusão de um nó Mesh. |
 | `xqnetwork/get_miotrelay_switch` | ✓ Estado da conexão rápida (畅快连) para aparelhos Mi Home. |
@@ -108,6 +109,7 @@ Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou u
 | `xqnetwork/miotrelay_switch` | ✓ Liga/desliga a conexão rápida (on). |
 | `xqnetwork/miscan_switch` | ✓ Liga/desliga a varredura AIoT (on). |
 | `xqnetwork/mode` | ✓ Modo de operação da rede. |
+| `xqnetwork/portforward` | ✓ Redirecionamentos de porta: nome, protocolo (1 TCP, 2 UDP, 3 ambos), porta externa e destino IP:porta. |
 | `xqnetwork/pppoe_catch` | **⚠ INFERÊNCIA** — Captura usuário/senha PPPoE de um roteador antigo ligado na WAN. |
 | `xqnetwork/pppoe_start` | ✓ Reconecta o PPPoE. |
 | `xqnetwork/pppoe_status` | ✓ Estado da discagem PPPoE (discando, conectado, erro). |
@@ -168,6 +170,7 @@ Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou u
 | `xqsystem/upload_log` | ✓ Envia os registros do sistema para a Xiaomi. |
 | `xqsystem/upload_plug` | ✓ Instala um plug-in (exige assinatura da Xiaomi). |
 | `xqsystem/upload_rom` | ✓ Envia um arquivo de firmware para atualização manual. |
+| `xqsystem/upnp` | ✓ UPnP: ligado (status 1) e lista de mapeamentos de porta criados automaticamente pelos aparelhos. |
 | `xqsystem/usbmode` | ✓ Prepara o USB para atualização (sem efeito no AX1800). |
 | `xqsystem/usbservice` | ✓ Liga/desliga serviços USB durante a atualização. |
 | `xqsystem/vpn` | ✓ Configuração do cliente VPN (PPTP/L2TP): servidor, usuário, protocolo. |

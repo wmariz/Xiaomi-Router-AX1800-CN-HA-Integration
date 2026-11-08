@@ -29,7 +29,6 @@ class Reiniciar(MiWiFiEntity, ButtonEntity):
 
 class Atualizar(MiWiFiEntity, ButtonEntity):
     _attr_entity_category = EntityCategory.DIAGNOSTIC
-    _attr_icon = "mdi:refresh"
 
     def __init__(self, coord) -> None:
         super().__init__(coord, "atualizar_dados")

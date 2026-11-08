@@ -1,0 +1,295 @@
+{
+  "entity": {
+    "sensor": {
+      "ligado_ha": {
+        "default": "mdi:timer-outline"
+      },
+      "cpu": {
+        "default": "mdi:cpu-64-bit"
+      },
+      "memoria": {
+        "default": "mdi:memory"
+      },
+      "clientes_24": {
+        "default": "mdi:wifi"
+      },
+      "clientes_5": {
+        "default": "mdi:wifi"
+      },
+      "canal_24": {
+        "default": "mdi:wifi-cog"
+      },
+      "canal_5": {
+        "default": "mdi:wifi-cog"
+      },
+      "largura_24": {
+        "default": "mdi:arrow-expand-horizontal"
+      },
+      "largura_5": {
+        "default": "mdi:arrow-expand-horizontal"
+      },
+      "potencia_24": {
+        "default": "mdi:signal"
+      },
+      "potencia_5": {
+        "default": "mdi:signal"
+      },
+      "avisos": {
+        "default": "mdi:bell-outline"
+      },
+      "firmware": {
+        "default": "mdi:package-variant"
+      },
+      "hora_roteador": {
+        "default": "mdi:clock-outline"
+      },
+      "relogio_diferenca": {
+        "default": "mdi:clock-alert-outline"
+      },
+      "sinal_ate_principal": {
+        "default": "mdi:access-point-network"
+      },
+      "aparelhos_online": {
+        "default": "mdi:devices"
+      },
+      "aparelhos_conhecidos": {
+        "default": "mdi:devices"
+      },
+      "qtd_cabo": {
+        "default": "mdi:ethernet"
+      },
+      "qtd_24": {
+        "default": "mdi:wifi"
+      },
+      "qtd_5": {
+        "default": "mdi:wifi"
+      },
+      "qtd_visitante": {
+        "default": "mdi:account-group"
+      },
+      "qtd_reservas": {
+        "default": "mdi:ip-network"
+      },
+      "upnp_mapeamentos": {
+        "default": "mdi:lan-connect"
+      },
+      "redirecionamentos": {
+        "default": "mdi:router-network"
+      },
+      "filtro_mac_qtd": {
+        "default": "mdi:filter"
+      },
+      "visitante_ssid": {
+        "default": "mdi:account-group"
+      },
+      "intrusoes_bloqueadas": {
+        "default": "mdi:shield-alert"
+      },
+      "anti_intrusos_nivel": {
+        "default": "mdi:shield-account"
+      },
+      "vpn_status": {
+        "default": "mdi:vpn"
+      },
+      "ip_publico": {
+        "default": "mdi:ip-network"
+      },
+      "ipv6": {
+        "default": "mdi:ip-network-outline"
+      },
+      "gateway_wan": {
+        "default": "mdi:router-network"
+      },
+      "dns": {
+        "default": "mdi:dns"
+      },
+      "internet_conectada_ha": {
+        "default": "mdi:web-clock"
+      },
+      "download": {
+        "default": "mdi:download"
+      },
+      "upload": {
+        "default": "mdi:upload"
+      },
+      "pico_download": {
+        "default": "mdi:download-circle"
+      },
+      "pico_upload": {
+        "default": "mdi:upload-circle"
+      },
+      "total_baixado": {
+        "default": "mdi:download-network"
+      },
+      "total_enviado": {
+        "default": "mdi:upload-network"
+      }
+    },
+    "binary_sensor": {
+      "wifi_24": {
+        "default": "mdi:wifi",
+        "state": {
+          "on": "mdi:wifi",
+          "off": "mdi:wifi-off"
+        }
+      },
+      "wifi_5": {
+        "default": "mdi:wifi",
+        "state": {
+          "on": "mdi:wifi",
+          "off": "mdi:wifi-off"
+        }
+      },
+      "wifi_unificado": {
+        "default": "mdi:wifi-sync",
+        "state": {
+          "on": "mdi:wifi-sync",
+          "off": "mdi:wifi-cog"
+        }
+      },
+      "anti_intrusos": {
+        "default": "mdi:shield-check",
+        "state": {
+          "on": "mdi:shield-check",
+          "off": "mdi:shield-off-outline"
+        }
+      },
+      "firewall_sites": {
+        "default": "mdi:web-check",
+        "state": {
+          "on": "mdi:web-check",
+          "off": "mdi:web-cancel"
+        }
+      },
+      "firewall_virus": {
+        "default": "mdi:shield-bug",
+        "state": {
+          "on": "mdi:shield-bug",
+          "off": "mdi:shield-bug-outline"
+        }
+      },
+      "wps": {
+        "default": "mdi:wifi-lock-open",
+        "state": {
+          "on": "mdi:wifi-lock-open",
+          "off": "mdi:wifi-lock"
+        }
+      },
+      "upnp": {
+        "default": "mdi:lan-connect",
+        "state": {
+          "on": "mdi:lan-connect",
+          "off": "mdi:lan-disconnect"
+        }
+      },
+      "dmz": {
+        "default": "mdi:shield-alert",
+        "state": {
+          "on": "mdi:shield-alert",
+          "off": "mdi:shield-outline"
+        }
+      },
+      "internet": {
+        "default": "mdi:web",
+        "state": {
+          "on": "mdi:web",
+          "off": "mdi:web-off"
+        }
+      },
+      "wan_cabo": {
+        "default": "mdi:ethernet-cable",
+        "state": {
+          "on": "mdi:ethernet-cable",
+          "off": "mdi:ethernet-cable-off"
+        }
+      },
+      "repetidor_na_mesh": {
+        "default": "mdi:access-point-network",
+        "state": {
+          "on": "mdi:access-point-network",
+          "off": "mdi:access-point-network-off"
+        }
+      },
+      "firmware_atualizacao": {
+        "default": "mdi:package-up",
+        "state": {
+          "on": "mdi:package-up",
+          "off": "mdi:package-variant-closed-check"
+        }
+      }
+    },
+    "switch": {
+      "led": {
+        "default": "mdi:led-on",
+        "state": {
+          "on": "mdi:led-on",
+          "off": "mdi:led-off"
+        }
+      },
+      "qos": {
+        "default": "mdi:speedometer",
+        "state": {
+          "on": "mdi:speedometer",
+          "off": "mdi:speedometer-slow"
+        }
+      },
+      "visitante": {
+        "default": "mdi:account-group",
+        "state": {
+          "on": "mdi:account-group",
+          "off": "mdi:account-group-outline"
+        }
+      },
+      "mu_mimo": {
+        "default": "mdi:access-point-network",
+        "state": {
+          "on": "mdi:access-point-network",
+          "off": "mdi:access-point-network-off"
+        }
+      },
+      "modo_wifi5": {
+        "default": "mdi:wifi-strength-2-alert",
+        "state": {
+          "on": "mdi:wifi-strength-2-alert",
+          "off": "mdi:wifi-strength-4"
+        }
+      },
+      "conexao_rapida": {
+        "default": "mdi:flash",
+        "state": {
+          "on": "mdi:flash",
+          "off": "mdi:flash-off"
+        }
+      },
+      "varredura_aiot": {
+        "default": "mdi:radar",
+        "state": {
+          "on": "mdi:radar",
+          "off": "mdi:radar"
+        }
+      },
+      "prioridade_muitos_aparelhos": {
+        "default": "mdi:devices",
+        "state": {
+          "on": "mdi:devices",
+          "off": "mdi:cellphone-link-off"
+        }
+      },
+      "filtro_mac": {
+        "default": "mdi:filter",
+        "state": {
+          "on": "mdi:filter",
+          "off": "mdi:filter-off"
+        }
+      }
+    },
+    "button": {
+      "reiniciar": {
+        "default": "mdi:restart"
+      },
+      "atualizar_dados": {
+        "default": "mdi:refresh"
+      }
+    }
+  }
+}

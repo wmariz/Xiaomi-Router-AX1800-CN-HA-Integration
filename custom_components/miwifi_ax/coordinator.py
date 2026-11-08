@@ -35,6 +35,7 @@ GRUPO = {
     "internet": "wan", "wan_cabo": "wan", "ip_publico": "wan", "ipv6": "wan", "internet_conectada_ha": "wan",
     "gateway_wan": "wan", "dns": "wan",
     "firmware_atualizacao": "upd", "qtd_reservas": "macbind",
+    "upnp": "upnp", "upnp_mapeamentos": "upnp", "redirecionamentos": "portfwd", "dmz": "dmz",
     "qtd_cabo": "devices", "qtd_24": "devices", "qtd_5": "devices", "qtd_visitante": "devices",
 }
 
@@ -209,6 +210,22 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "gateway_wan": w.get("gateWay"),
                 "dns": ", ".join((w.get("details") or {}).get("dns") or []),
             })
+        if quer("upnp"):
+            up = await a.safe("xqsystem/upnp")
+            d["upnp"] = up.get("status") == 1
+            d["upnp_lista"] = up.get("list") or []
+            d["upnp_mapeamentos"] = len(d["upnp_lista"])
+        if quer("portfwd"):
+            pf = (await a.safe("xqnetwork/portforward")).get("list") or []
+            d["redirecionamentos_lista"] = [
+                {"nome": r.get("name"), "protocolo": {1: "TCP", 2: "UDP", 3: "TCP+UDP"}.get(r.get("proto"), r.get("proto")),
+                 "porta_externa": r.get("srcport"), "destino": f"{r.get('destip')}:{r.get('destport')}"} for r in pf
+            ]
+            d["redirecionamentos"] = len(pf)
+        if quer("dmz"):
+            dz = await a.safe("xqnetwork/dmz")
+            d["dmz"] = dz.get("status") == 1  # inferência: 1 = ligada, 2 = desligada
+            d["dmz_destino"] = dz.get("lanip")
         if quer("upd"):
             if time.time() - self._upd_t > FIRMWARE_INTERVALO_S:
                 self._upd = await a.safe("xqsystem/check_rom_update")

@@ -23,13 +23,15 @@ BINARIOS: tuple[Desc, ...] = (
     Desc(key="wan_cabo", device_class=BinarySensorDeviceClass.PLUG, so_principal=True),
     Desc(key="repetidor_na_mesh", device_class=BinarySensorDeviceClass.CONNECTIVITY, so_principal=True),
     Desc(key="firmware_atualizacao", device_class=BinarySensorDeviceClass.UPDATE, so_principal=True),
-    Desc(key="wifi_24", icon="mdi:wifi", entity_category=DIAG, so_principal=True),
-    Desc(key="wifi_5", icon="mdi:wifi", entity_category=DIAG, so_principal=True),
-    Desc(key="wifi_unificado", icon="mdi:wifi-sync", so_principal=True, entity_category=DIAG),
-    Desc(key="anti_intrusos", icon="mdi:shield-check", so_principal=True),
-    Desc(key="firewall_sites", icon="mdi:web-cancel", so_principal=True, entity_category=DIAG),
-    Desc(key="firewall_virus", icon="mdi:virus-off", so_principal=True, entity_category=DIAG),
-    Desc(key="wps", icon="mdi:wifi-lock-open", so_principal=True, entity_category=DIAG),
+    Desc(key="wifi_24", entity_category=DIAG, so_principal=True),
+    Desc(key="wifi_5", entity_category=DIAG, so_principal=True),
+    Desc(key="wifi_unificado", so_principal=True, entity_category=DIAG),
+    Desc(key="anti_intrusos", so_principal=True),
+    Desc(key="firewall_sites", so_principal=True, entity_category=DIAG),
+    Desc(key="firewall_virus", so_principal=True, entity_category=DIAG),
+    Desc(key="wps", so_principal=True, entity_category=DIAG),
+    Desc(key="upnp", so_principal=True, entity_category=DIAG),
+    Desc(key="dmz", so_principal=True, entity_category=DIAG),
 )
 
 
@@ -51,6 +53,8 @@ class Bin(MiWiFiEntity, BinarySensorEntity):
 
     @property
     def extra_state_attributes(self):
+        if self.entity_description.key == "dmz" and self.coordinator.data.get("dmz_destino"):
+            return {"destino": self.coordinator.data["dmz_destino"]}
         if self.entity_description.key == "firmware_atualizacao" and self.coordinator.data.get("firmware_nova"):
             return {"versao_nova": self.coordinator.data["firmware_nova"]}
         return None

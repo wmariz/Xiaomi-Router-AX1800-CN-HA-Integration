@@ -167,6 +167,12 @@
       },
       "total_enviado": {
         "name": "Total enviado"
+      },
+      "upnp_mapeamentos": {
+        "name": "Mapeamentos UPnP"
+      },
+      "redirecionamentos": {
+        "name": "Redirecionamentos de porta"
       }
     },
     "binary_sensor": {
@@ -202,6 +208,12 @@
       },
       "wps": {
         "name": "WPS ativo"
+      },
+      "upnp": {
+        "name": "UPnP"
+      },
+      "dmz": {
+        "name": "DMZ"
       }
     },
     "switch": {
