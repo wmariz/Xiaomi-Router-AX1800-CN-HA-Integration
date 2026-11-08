@@ -10,8 +10,10 @@
       },
       "reauth_confirm": {
         "data": {
-          "password": "Senha de administrador"
-        }
+          "password": "Senha de administrador",
+          "usar_senha_principal": "Usar a senha do router principal (a Mesh copia para os nós)"
+        },
+        "description": "O router recusou a palavra-passe guardada. Se alterou a palavra-passe de administração no principal, a Mesh copia a nova para o repetidor também."
       },
       "reconfigure": {
         "data": {

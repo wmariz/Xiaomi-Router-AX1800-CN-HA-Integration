@@ -10,8 +10,10 @@
       },
       "reauth_confirm": {
         "data": {
-          "password": "Admin password"
-        }
+          "password": "Admin password",
+          "usar_senha_principal": "Use the main router's password (the Mesh copies it to the nodes)"
+        },
+        "description": "The router rejected the saved password. If you changed the admin password on the main router, the Mesh copies it to the repeater too."
       },
       "reconfigure": {
         "data": {

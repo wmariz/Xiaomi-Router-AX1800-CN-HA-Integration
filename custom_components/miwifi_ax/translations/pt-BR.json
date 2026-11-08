@@ -10,8 +10,10 @@
       },
       "reauth_confirm": {
         "data": {
-          "password": "Senha de administrador"
-        }
+          "password": "Senha de administrador",
+          "usar_senha_principal": "Usar a senha do roteador principal (a Mesh copia para os nós)"
+        },
+        "description": "O roteador recusou a senha salva. Se você trocou a senha de administração no principal, a Mesh copia a nova para o repetidor também."
       },
       "reconfigure": {
         "data": {

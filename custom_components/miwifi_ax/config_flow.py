@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 
 import voluptuous as vol
 
-from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlow
+from homeassistant.config_entries import ConfigEntry, ConfigEntryState, ConfigFlow, ConfigFlowResult, OptionsFlow
 from homeassistant.const import CONF_HOST, CONF_PASSWORD
 from homeassistant.core import callback
 from homeassistant.helpers import selector
@@ -126,17 +126,32 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_reauth_confirm(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         errors: dict[str, str] = {}
         entry = self._get_reauth_entry()
+        # A Mesh copia a senha de administração do principal para os nós: oferece reaproveitá-la.
+        outro = next((e for e in self._async_current_entries(include_ignore=False)
+                      if e.entry_id != entry.entry_id and e.state is ConfigEntryState.LOADED), None)
         if user_input is not None:
-            api = MiWiFiApi(async_create_clientsession(self.hass), entry.data[CONF_HOST], user_input[CONF_PASSWORD])
-            try:
-                await api.login()
-            except MiWiFiAuthError:
+            senha = user_input.get(CONF_PASSWORD) or ""
+            if user_input.get(CONF_MESMA_SENHA) and outro:
+                senha = outro.data[CONF_PASSWORD]
+            if not senha:
                 errors["base"] = "invalid_auth"
-            except MiWiFiConnError:
-                errors["base"] = "cannot_connect"
             else:
-                return self.async_update_reload_and_abort(entry, data_updates={CONF_PASSWORD: user_input[CONF_PASSWORD]})
-        return self.async_show_form(step_id="reauth_confirm", data_schema=vol.Schema({vol.Required(CONF_PASSWORD): str}), errors=errors)
+                api = MiWiFiApi(async_create_clientsession(self.hass), entry.data[CONF_HOST], senha)
+                try:
+                    await api.login()
+                except MiWiFiAuthError:
+                    errors["base"] = "invalid_auth"
+                except MiWiFiConnError:
+                    errors["base"] = "cannot_connect"
+                else:
+                    return self.async_update_reload_and_abort(entry, data_updates={CONF_PASSWORD: senha})
+        campos: dict = {}
+        if outro:
+            campos[vol.Optional(CONF_MESMA_SENHA, default=True)] = bool
+            campos[vol.Optional(CONF_PASSWORD)] = str
+        else:
+            campos[vol.Required(CONF_PASSWORD)] = str
+        return self.async_show_form(step_id="reauth_confirm", data_schema=vol.Schema(campos), errors=errors)
 
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Trocar o IP (ex.: roteador mudou de endereço)."""
