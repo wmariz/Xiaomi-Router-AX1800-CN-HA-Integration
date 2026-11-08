@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from homeassistant.components.device_tracker import ScannerEntity, SourceType
+from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import CONF_TRACKED, DOMAIN, ROLE_MAIN
@@ -11,23 +12,29 @@ async def async_setup_entry(hass, entry, async_add_entities):
     c = hass.data[DOMAIN][entry.entry_id]
     if c.role != ROLE_MAIN:
         return
-    async_add_entities(Aparelho(c, mac) for mac in entry.options.get(CONF_TRACKED, []))
+    devs = await c.async_devices()
+    async_add_entities(Aparelho(c, mac, (devs.get(mac.upper()) or {}).get("nome")) for mac in entry.options.get(CONF_TRACKED, []))
 
 
 class Aparelho(CoordinatorEntity, ScannerEntity):
-    def __init__(self, coord, mac: str) -> None:
+    # O HA (2026.x) cria rastreadores de roteador desativados por padrão; aqui o
+    # aparelho foi escolhido de propósito nas opções, então já nasce ativo.
+    _attr_entity_registry_enabled_default = True
+    _attr_source_type = SourceType.ROUTER
+
+    def __init__(self, coord, mac: str, nome: str | None) -> None:
         super().__init__(coord)
         self._mac = mac.upper()
-        self._attr_unique_id = f"miwifi_ax_tracker_{self._mac}"
-        self._attr_name = (coord.devices.get(self._mac) or {}).get("nome") or self._mac
+        # unique_id = MAC (definido pelo ScannerEntity do HA)
+        self._attr_mac_address = self._mac.lower()
+        self._attr_name = None  # usa o nome do dispositivo
+        # Dispositivo do aparelho rastreado (exigido pelo HA a partir de 2027.11);
+        # se já existir um dispositivo com esse MAC (ex.: HASS.Agent), o rastreador se junta a ele.
+        self._attr_device_info = DeviceInfo(connections={(CONNECTION_NETWORK_MAC, self._mac.lower())}, name=nome or self._mac)
 
     @property
     def _d(self):
         return self.coordinator.devices.get(self._mac) or {}
-
-    @property
-    def source_type(self):
-        return SourceType.ROUTER
 
     @property
     def is_connected(self) -> bool:
@@ -36,10 +43,6 @@ class Aparelho(CoordinatorEntity, ScannerEntity):
     @property
     def ip_address(self):
         return self._d.get("ip")
-
-    @property
-    def mac_address(self):
-        return self._mac
 
     @property
     def hostname(self):

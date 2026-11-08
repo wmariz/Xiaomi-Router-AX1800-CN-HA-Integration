@@ -92,6 +92,7 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     async def _fetch(self) -> dict[str, Any]:
         a = self.api
         g = self._grupos()
+        _LOGGER.debug("%s: consultando %s", self.api.host, "tudo (primeira leitura)" if g is None else sorted(g) or "só status")
         quer = (lambda x: True) if g is None else (lambda x: x in g)
         d: dict[str, Any] = {}
 
