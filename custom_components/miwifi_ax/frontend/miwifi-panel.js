@@ -499,4 +499,4 @@ class MiwifiAxPanel extends HTMLElement {
     }
   }
 }
-customElements.define("miwifi-ax-panel", MiwifiAxPanel);
+if (!customElements.get("miwifi-ax-panel")) customElements.define("miwifi-ax-panel", MiwifiAxPanel);

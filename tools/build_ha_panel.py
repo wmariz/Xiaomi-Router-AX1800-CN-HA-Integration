@@ -101,7 +101,7 @@ class MiwifiAxPanel extends HTMLElement {{
     }}
   }}
 }}
-customElements.define("miwifi-ax-panel", MiwifiAxPanel);
+if (!customElements.get("miwifi-ax-panel")) customElements.define("miwifi-ax-panel", MiwifiAxPanel);
 """
 DST.parent.mkdir(parents=True, exist_ok=True)
 DST.write_text(js, encoding="utf-8")
