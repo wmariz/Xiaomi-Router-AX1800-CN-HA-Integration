@@ -44,6 +44,9 @@ Abre em `http://127.0.0.1:8099` (só escuta neste computador). A senha de admini
 Funções ocultas expostas: rede de visitante, desconexão de aparelhos com sinal fraco, varredura AIoT, prioridade para muitos aparelhos, região do Wi-Fi, fuso sem horário de verão, bloqueio de internet por aparelho e chamada direta a todas as funções internas.
 
 ## Notas técnicas
+
+O registro completo das descobertas (API, funções ocultas, app oficial, armadilhas) está em [`docs/DESCOBERTAS.md`](docs/DESCOBERTAS.md).
+
 - Login: `nonce = 0_<deviceId>_<timestamp>_<aleatório>`, senha enviada como `sha1(nonce + sha1(senha + chave))`, `POST /cgi-bin/luci/api/xqsystem/login` → `stok`.
 - Rede de visitante: `xqnetwork/set_wifi` com `wifiIndex=3` (bloco comentado na interface do firmware).
 - LED: `misystem/led?on=0|1`.
