@@ -89,6 +89,8 @@ Com Mesh por cabo, aparelhos ligados nas portas do nó aparecem como "cabo" **se
   - a sessão (`stok`) já aberta **continua valendo** depois da troca: a integração segue funcionando até precisar de um login novo (reinício do HA, recarga da integração);
   - aí o login com a senha antiga devolve `code 401` → o HA abre "Nova autenticação";
   - a **Mesh copia a senha nova para o repetidor** (ele também passa a dar 401) → a tela de nova autenticação oferece "usar a senha do roteador principal";
+  - na integração: o nó Mesh guarda `usar_senha_principal`; se a senha salva for recusada, ele **tenta sozinho a senha atual do principal** e a salva (sem pedir nada). Ao reautenticar o principal, nós em erro de configuração são recarregados e já usam a senha nova;
+  - **adição de nós:** um nó achado na topologia do principal é **adicionado sozinho** com a senha do principal; só aparece o cartão de "descoberto" (pedindo a senha) se ela não funcionar. Um nó apagado pelo usuário fica em `nos_removidos` no principal e passa a só aparecer como cartão (confirmar não pede senha); readicioná-lo o tira da lista. Testado 2026-11-08: readição automática manteve as 11 entidades, áreas e ativações;
   - dois logins quase no mesmo segundo (a validação da nova autenticação e a recarga logo em seguida) dão **`code 1582`**: não é senha errada; a integração espera 2 s e tenta de novo (até 4 vezes).
 
 ## 4. Diagnóstico de rede usado

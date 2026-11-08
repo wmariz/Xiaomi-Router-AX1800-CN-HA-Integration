@@ -10,10 +10,9 @@
       },
       "reauth_confirm": {
         "data": {
-          "password": "Admin password",
-          "usar_senha_principal": "Use the main router's password (the Mesh copies it to the nodes)"
+          "password": "Admin password"
         },
-        "description": "The router rejected the saved password. If you changed the admin password on the main router, the Mesh copies it to the repeater too."
+        "description": "The router **{nome}** rejected the saved password. Enter the current admin password. (Mesh repeaters try the main router's password on their own before asking.)"
       },
       "reconfigure": {
         "data": {
@@ -22,16 +21,16 @@
       },
       "discovery_confirm": {
         "title": "Xiaomi router discovered",
-        "description": "Set up **{nome}** ({host})? In a Mesh network the admin password is usually the same as the main router's.",
+        "description": "Add **{nome}** ({host})? On confirm, the main router's admin password is tried first (the Mesh copies it to the nodes); you are asked for a password only if it fails.",
         "data": {
-          "usar_senha_principal": "Use the main router's password",
-          "password": "Admin password (if different)"
+          "password": "This router's admin password"
         }
       }
     },
     "error": {
       "invalid_auth": "Wrong password",
-      "cannot_connect": "Cannot connect to the router"
+      "cannot_connect": "Cannot connect to the router",
+      "senha_principal_recusada": "The main router's password did not work on this device. Enter its password."
     },
     "abort": {
       "already_configured": "This router is already configured",

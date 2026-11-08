@@ -10,10 +10,9 @@
       },
       "reauth_confirm": {
         "data": {
-          "password": "Senha de administrador",
-          "usar_senha_principal": "Usar a senha do roteador principal (a Mesh copia para os nós)"
+          "password": "Senha de administrador"
         },
-        "description": "O roteador recusou a senha salva. Se você trocou a senha de administração no principal, a Mesh copia a nova para o repetidor também."
+        "description": "O roteador **{nome}** recusou a senha salva. Digite a senha de administrador atual. (Repetidores da Mesh tentam sozinhos a senha do principal antes de pedir.)"
       },
       "reconfigure": {
         "data": {
@@ -22,16 +21,16 @@
       },
       "discovery_confirm": {
         "title": "Roteador Xiaomi descoberto",
-        "description": "Configurar **{nome}** ({host})? Na rede Mesh a senha de administrador costuma ser a mesma do roteador principal.",
+        "description": "Adicionar **{nome}** ({host})? Ao confirmar, a senha de administrador do roteador principal é testada primeiro (a Mesh a copia para os nós); a senha só é pedida se ela não funcionar.",
         "data": {
-          "usar_senha_principal": "Usar a mesma senha do roteador principal",
-          "password": "Senha de administrador (se for diferente)"
+          "password": "Senha de administrador deste roteador"
         }
       }
     },
     "error": {
       "invalid_auth": "Senha incorreta",
-      "cannot_connect": "Não foi possível conectar ao roteador"
+      "cannot_connect": "Não foi possível conectar ao roteador",
+      "senha_principal_recusada": "A senha do roteador principal não funcionou neste aparelho. Digite a senha dele."
     },
     "abort": {
       "already_configured": "Este roteador já está configurado",

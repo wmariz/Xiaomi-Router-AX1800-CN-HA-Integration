@@ -14,7 +14,7 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from .api import MiWiFiApi
-from .const import CONF_PAINEL, DOMAIN, PAINEL_PADRAO, PLATFORMS, ROLE_MAIN
+from .const import CONF_MESMA_SENHA, CONF_NOS_REMOVIDOS, CONF_PAINEL, DOMAIN, PAINEL_PADRAO, PLATFORMS, ROLE_MAIN
 from .coordinator import MiWiFiCoordinator
 from .painel import async_registrar, async_remover
 
@@ -69,6 +69,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEntry, device) -> bool:
     """Permite desvincular aparelhos rastreados (não os próprios roteadores)."""
     return not any(i[0] == DOMAIN for i in device.identifiers)
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Nó Mesh apagado pelo usuário: o principal lembra, para não readicioná-lo sozinho."""
+    if not entry.data.get(CONF_MESMA_SENHA):
+        return
+    host = entry.data.get(CONF_HOST)
+    for e in hass.config_entries.async_entries(DOMAIN):
+        if e.entry_id != entry.entry_id and not e.data.get(CONF_MESMA_SENHA):
+            nos = list(e.data.get(CONF_NOS_REMOVIDOS, []))
+            if host and host not in nos:
+                hass.config_entries.async_update_entry(e, data={**e.data, CONF_NOS_REMOVIDOS: nos + [host]})
 
 
 async def _reload(hass: HomeAssistant, entry: ConfigEntry) -> None:

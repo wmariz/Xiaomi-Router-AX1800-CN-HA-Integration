@@ -6,13 +6,14 @@ import time
 from datetime import timedelta
 from typing import Any
 
+from homeassistant.const import CONF_PASSWORD
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import MiWiFiApi, MiWiFiAuthError, MiWiFiConnError
-from .const import CONN_TYPE, DOMAIN, ROLE_MAIN, ROLE_NODE, SCAN_INTERVAL_S
+from .const import CONF_MESMA_SENHA, CONN_TYPE, DOMAIN, ROLE_MAIN, ROLE_NODE, SCAN_INTERVAL_S
 
 _LOGGER = logging.getLogger(__name__)
 FIRMWARE_INTERVALO_S = 6 * 3600  # check_rom_update consulta os servidores da Xiaomi
@@ -85,9 +86,37 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             self._primeira = False
             return d
         except MiWiFiAuthError as err:
+            if await self._senha_do_principal():
+                try:
+                    d = await self._fetch()
+                    self._primeira = False
+                    return d
+                except MiWiFiAuthError:
+                    pass
             raise ConfigEntryAuthFailed(str(err)) from err
         except MiWiFiConnError as err:
             raise UpdateFailed(f"roteador inacessível: {err}") from err
+
+    async def _senha_do_principal(self) -> bool:
+        """Nó Mesh com "usar a senha do principal": a Mesh copia a senha de administração,
+        então, se a salva foi recusada, tenta a senha atual do principal (e a salva se der certo)."""
+        entry = self.hass.config_entries.async_get_entry(self.entry_id) if self.entry_id else None
+        if not entry or not entry.data.get(CONF_MESMA_SENHA):
+            return False
+        for outro in self.hass.config_entries.async_entries(DOMAIN):
+            senha = outro.data.get(CONF_PASSWORD)
+            if outro.entry_id == entry.entry_id or not senha or senha == self.api._pwd:
+                continue
+            antiga, self.api._pwd = self.api._pwd, senha
+            try:
+                await self.api.login()
+            except MiWiFiAuthError:
+                self.api._pwd = antiga
+                continue
+            _LOGGER.info("%s: senha de administração atualizada a partir de %s (cópia da Mesh)", self.api.host, outro.title)
+            self.hass.config_entries.async_update_entry(entry, data={**entry.data, CONF_PASSWORD: senha})
+            return True
+        return False
 
     async def _fetch(self) -> dict[str, Any]:
         a = self.api
