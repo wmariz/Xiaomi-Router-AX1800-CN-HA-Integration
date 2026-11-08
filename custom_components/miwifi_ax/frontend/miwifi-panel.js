@@ -105,6 +105,8 @@ const confirmar=(t,m,perigo)=>dialogo(t,`<p class="muted" style="margin:0">${m}<
 async function srv(path,body){if(EMBUTIDO)return window.__MIWIFI_SRV__(path,body);const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});return r.json();}
 // leitura
 async function ler(ep,params,mostrar){const r=await srv('/api/chamar',{roteador:rot,endpoint:ep,metodo:'GET',params,mostrar:!!mostrar});if(!r.ok){if(/login/i.test(r.erro||'')){estado.logado[rot]=false;render();}throw new Error(r.erro||'erro');}return r.json||{};}
+// leitura em outro roteador (ex.: topologia sempre do principal)
+async function lerDe(r,ep,params){const x=await srv('/api/chamar',{roteador:r,endpoint:ep,metodo:'GET',params});return x.ok?(x.json||{}):{};}
 // escrita (sempre confirmada)
 async function gravar(ep,params,{titulo='Aplicar alteração',msg='',metodo='POST',perigo=false,silencioso=false}={}){
   if(!silencioso && !await confirmar(titulo,(msg?msg+'<br><br>':'')+`<span class="mono">${esc(ep.replace('api/',''))}</span> no <b>${rot}</b>`,perigo)) return null;
@@ -172,10 +174,18 @@ PAG.rede=async()=>{
 };
 // ESTADO: mesh
 PAG.mesh=async()=>{
-  const [tp,bh,sig]=await Promise.all([ler('api/misystem/topo_graph'),ler('api/xqnetwork/get_son_backhaul_mode').catch(()=>({})),ler('api/xqnetwork/wifiap_signal').catch(()=>({}))]);
+  // Só o principal conhece a árvore completa; no nó, topo_graph devolve apenas o próprio nó.
+  const kp=Object.keys(estado.roteadores).find(k=>papel(k)==='principal'&&estado.logado[k]);
+  const tp=kp?await lerDe(kp,'api/misystem/topo_graph'):await ler('api/misystem/topo_graph');
   const g=tp.graph||{}; const nos=[g,...(g.leafs||[])];
-  let h=mod('Topologia da rede Mesh',`<div class="tabw"><table><tr><th>Nome</th><th>Local</th><th>IP</th><th>Modelo</th><th>Papel</th></tr>${nos.map((n,i)=>`<tr><td>${esc(n.name)}</td><td>${esc(n.locale)}</td><td class="mono">${esc(n.ip)}</td><td>${esc(n.hardware)}</td><td>${i===0?'Principal':'Nó (repetidor)'}</td></tr>`).join('')}</table></div>`);
-  if(sig.signal!==undefined) h+=mod('Qualidade do sinal até o principal',`<p>${sig.signal} %</p>`);
+  const ipSel=estado.roteadores[rot];
+  const papelNo=(n,i)=>kp?(i===0?'Principal':'Repetidor (nó)'):(papel(rot)==='principal'&&i===0?'Principal':'Repetidor (nó)');
+  let h=mod('Topologia da rede Mesh',`<div class="tabw"><table><tr><th>Nome</th><th>Local</th><th>IP</th><th>Modelo</th><th>Papel</th></tr>${nos.map((n,i)=>`<tr${n.ip===ipSel?' style="font-weight:600"':''}><td>${esc(n.name)}${n.ip===ipSel?' <span class="badge ok">este</span>':''}</td><td>${esc(n.locale)}</td><td class="mono">${esc(n.ip)}</td><td>${esc(n.hardware)}</td><td>${papelNo(n,i)}</td></tr>`).join('')}</table></div>`,
+    {desc:kp?'Árvore lida do roteador principal.':'Faça login no roteador principal para ver a árvore completa.'});
+  if(eNo()){
+    const sig=await ler('api/xqnetwork/wifiap_signal').catch(()=>({}));
+    h+=mod('Ligação até o principal',`<p>${+sig.signal>0?sig.signal+' % de qualidade do sinal sem fio':'Ligação por cabo (sem medição de sinal sem fio).'}</p>`);
+  }
   $('#pagina').innerHTML=h;
 };
 // ESTADO: sistema
