@@ -11,7 +11,22 @@ BASE = Path(__file__).resolve().parent.parent
 SRC = BASE / "desktop" / "painel.html"
 DST = BASE / "custom_components" / "miwifi_ax" / "frontend" / "miwifi-panel.js"
 
+import json
+
+# 1) catálogo de funções -> injeta em desktop/painel.html e gera docs/FUNCOES.md
+cat = json.loads((BASE / "desktop" / "funcoes.json").read_text(encoding="utf-8"))
+cat.pop("_legenda", None)
 html = SRC.read_text(encoding="utf-8")
+html = re.sub(r"/\*FUNCOES\*/.*?/\*FIM\*/", lambda m: "/*FUNCOES*/" + json.dumps(cat, ensure_ascii=False) + "/*FIM*/", html, flags=re.S)
+SRC.write_text(html, encoding="utf-8")
+linhas = ["# Funções internas do Xiaomi AX1800 (RM1800)", "",
+          "Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou uso visto no código da interface/app); "
+          "**⚠ INFERÊNCIA** = deduzido só pelo nome/contexto.", "",
+          "| Função | Descrição |", "|---|---|"]
+for ep in sorted(cat):
+    tipo, txt = cat[ep]
+    linhas.append(f"| `{ep}` | {'✓' if tipo == 'c' else '**⚠ INFERÊNCIA** —'} {txt.replace('|', '/')} |")
+(BASE / "docs" / "FUNCOES.md").write_text("\n".join(linhas) + "\n", encoding="utf-8")
 css = re.search(r"<style>(.*?)</style>", html, re.S).group(1)
 corpo = re.search(r"<body>(.*?)<script>", html, re.S).group(1)
 script = re.search(r"<script>(.*?)</script>\s*</body>", html, re.S).group(1)

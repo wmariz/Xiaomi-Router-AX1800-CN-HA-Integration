@@ -86,7 +86,11 @@ class EstadoView(_Base):
         if not self._admin(request):
             return self.json_message("Somente administradores", HTTPStatus.FORBIDDEN)
         cs = _coords(request.app["hass"])
-        return self.json({"roteadores": {r: c.api.host for r, c in cs.items()}, "logado": {r: True for r in cs}})
+        return self.json({
+            "roteadores": {r: c.api.host for r, c in cs.items()},
+            "logado": {r: True for r in cs},
+            "papeis": {r: c.role for r, c in cs.items()},
+        })
 
 
 class ChamarView(_Base):
