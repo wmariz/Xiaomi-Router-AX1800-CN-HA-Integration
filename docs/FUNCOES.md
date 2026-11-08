@@ -6,6 +6,7 @@ Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou u
 |---|---|
 | `misns/wifi_share_clear` | **⚠ INFERÊNCIA** — Apaga a configuração da rede de visitante. |
 | `misns/wifi_share_info` | ✓ Rede de visitante: ligada, nome, senha e segurança. |
+| `misns/wifi_share_switch` | **⚠ INFERÊNCIA** — Interruptor local da rede de visitante usado pela nuvem; parâmetros desconhecidos (code 1523). Use set_wifi_without_restart. |
 | `misystem/active` | ✓ Dispara a atualização do histórico de velocidade (usado após o teste de velocidade). |
 | `misystem/arn_ignore` | **⚠ INFERÊNCIA** — Ignora/libera um aparelho marcado pelo anti-intrusos. |
 | `misystem/arn_records` | ✓ Registros de tentativas de intrusão bloqueadas. |
@@ -115,7 +116,7 @@ Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou u
 | `xqnetwork/pppoe_status` | ✓ Estado da discagem PPPoE (discando, conectado, erro). |
 | `xqnetwork/pppoe_stop` | ✓ Desconecta o PPPoE. |
 | `xqnetwork/scan_mesh_node` | ✓ Procura nós Mesh disponíveis para adicionar. |
-| `xqnetwork/set_all_wifi` | ✓ Altera as duas bandas de uma vez (Wi-Fi unificado). |
+| `xqnetwork/set_all_wifi` | ✓ Altera as duas bandas de uma vez (Wi-Fi unificado; reinicia o Wi-Fi ~30 s). Os campos on3/ssid3/pwd3 da rede de visitante são aceitos mas ignorados no RM1800. |
 | `xqnetwork/set_lan_ap` | ✓ Muda para modo ponto de acesso por cabo. |
 | `xqnetwork/set_lan_dhcp` | ✓ Altera ou desliga o servidor DHCP. |
 | `xqnetwork/set_lan_ip` | ✓ Muda o IP do roteador (reinicia). |
@@ -130,6 +131,7 @@ Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou u
 | `xqnetwork/set_wifi_macfilter` | ✓ Liga/desliga o filtro de MAC e define o modo (model, enable). |
 | `xqnetwork/set_wifi_txbf` | ✓ Liga/desliga o MU-MIMO (txbf). |
 | `xqnetwork/set_wifi_txpwr` | ✓ Potência do sinal (txpwr: max/mid/min). |
+| `xqnetwork/set_wifi_without_restart` | ✓ Muda só os campos enviados sem reiniciar o Wi-Fi. wifiIndex=3 + on=1/0 liga/desliga a rede de visitante; wifiIndex=1/2 + hidden=1/0 oculta/mostra o SSID (não espelha no nó Mesh). |
 | `xqnetwork/wan_info` | ✓ Internet: tipo (PPPoE/DHCP/fixo), IP, gateway, DNS, MTU, tempo conectado, IPv6 e MAC usado. |
 | `xqnetwork/wan_link` | ✓ Cabo WAN conectado (link 1/0). |
 | `xqnetwork/wifi_detail_all` | ✓ Configuração completa do Wi-Fi por banda (nome, senha, segurança, canal, largura, potência, oculto, Wi-Fi 6, MU-MIMO, roaming) e Wi-Fi unificado. |

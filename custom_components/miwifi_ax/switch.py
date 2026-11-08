@@ -24,14 +24,16 @@ class Desc(SwitchEntityDescription):
 
 
 def _visitante(on: bool, d: dict) -> dict:
-    c = d.get("_visitante_cfg") or {}
-    return {"wifiIndex": 3, "on": 1 if on else 0, "ssid": c.get("ssid", ""), "pwd": c.get("password", ""), "encryption": c.get("encryption", "psk2")}
+    """Rede de visitante: xqnetwork/set_wifi_without_restart com wifiIndex=3 e só "on" —
+    mantém nome/senha e não reinicia o Wi-Fi. (set_wifi wifiIndex=3 e o on3 do
+    set_all_wifi são aceitos mas ignorados; mandar ssid/pwd juntos dá código 1615.)"""
+    return {"wifiIndex": 3, "on": int(on)}
 
 
 CHAVES: tuple[Desc, ...] = (
     Desc(key="led", ep="misystem/led", params=lambda on, d: {"on": int(on)}, so_principal=False),
     Desc(key="qos", ep="misystem/qos_switch", params=lambda on, d: {"on": int(on)}),
-    Desc(key="visitante", ep="xqnetwork/set_wifi", params=_visitante, post=True),
+    Desc(key="visitante", ep="xqnetwork/set_wifi_without_restart", params=_visitante),
     Desc(key="mu_mimo", ep="xqnetwork/set_wifi_txbf", params=lambda on, d: {"txbf": int(on)}, post=True, entity_category=CFG),
     Desc(key="modo_wifi5", ep="xqnetwork/set_wifi_ax", params=lambda on, d: {"ax": 0 if on else 1}, post=True, entity_category=CFG),
     Desc(key="conexao_rapida", ep="xqnetwork/miotrelay_switch", params=lambda on, d: {"on": int(on)}, post=True, entity_category=CFG),
@@ -60,7 +62,8 @@ class Chave(MiWiFiEntity, SwitchEntity):
 
     async def _set(self, on: bool) -> None:
         d = self.entity_description
-        j = await self.coordinator.api.call(d.ep, d.params(on, self.coordinator.data), post=d.post)
+        params = d.params(on, self.coordinator.data)
+        j = await self.coordinator.api.call(d.ep, params, post=d.post)
         if j.get("code") != 0:
             raise HomeAssistantError(f"Roteador recusou: {j.get('msg') or j}")
         self.coordinator.data[d.key] = on

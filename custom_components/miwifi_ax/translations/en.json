@@ -224,7 +224,7 @@
         "name": "QoS"
       },
       "visitante": {
-        "name": "Rede de visitante"
+        "name": "Guest network"
       },
       "mu_mimo": {
         "name": "MU-MIMO"

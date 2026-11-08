@@ -59,7 +59,13 @@ Respondem "parâmetro errado" sem argumentos: `ecos_info`, `netacctl_status`, `p
 
 ### Funções escondidas pela própria interface
 - **Rede de visitante:** o bloco "访客Wi-Fi" está **comentado** em `web/setting/wifi`. Leitura: `misns/wifi_share_info` (`info.guest` 1/0, `info.data.{ssid,password,encryption}`).
-  Escrita (do código comentado): `xqnetwork/set_wifi` com **`wifiIndex=3`**, `on, ssid, pwd, encryption` (o SSID não pode ser igual ao do 2,4 GHz).
+  Escrita sugerida pelo código comentado (**não funciona** — testado 2026-11-08): `xqnetwork/set_wifi` com **`wifiIndex=3`**, `on, ssid, pwd, encryption` (o SSID não pode ser igual ao do 2,4 GHz).
+  - ✓ **Funciona:** `xqnetwork/set_wifi_without_restart` com **só** `wifiIndex=3` e `on=1/0` (GET). Aplica em ~1–5 s, **sem reiniciar o Wi-Fi**, mantendo nome e senha. Mandar `ssid`/`pwd` juntos devolve `code 1615` ("访客WiFi设置失败，请检查无线名称和密码"). Usado pelo interruptor "Rede de visitantes" da integração (método descoberto em JuanManuelRomeroGarcia/hass-miwifi).
+  - ✗ `xqnetwork/set_wifi` com `wifiIndex=3`: responde `code 0` mas não muda nada.
+  - ✗ `xqnetwork/set_all_wifi` com `on3, ssid3, encryption3, pwd3…` (documentado em RACErace/MiWiFi-API para outros modelos): `code 0`, ignorado no RM1800, e reinicia o Wi-Fi (~30 s).
+  - `misns/wifi_share_switch` existe localmente, mas os parâmetros não foram descobertos (`code 1523` em todas as tentativas). O app usa a versão de nuvem `/s/sns/wifi_share_switch` (corpo cifrado).
+  - A interface da rede de visitante é `wl14` e só aparece em `xqnetwork/wifi_diag_detail_all` (`status` 0/1, `iftype 3`) — não em `wifi_detail_all`. Só existe no principal; o nó Mesh não transmite a rede de visitante.
+- **SSID oculto sem reiniciar:** `xqnetwork/set_wifi_without_restart` com `wifiIndex=1` (ou 2) e só `hidden=1` oculta a rede preservando nome, senha, canal e potência. **Não é espelhado no nó Mesh** — precisa ser aplicado também no repetidor (testado 2026-11-08).
   ⚠ A escrita ainda **não foi confirmada** neste firmware.
 - **Desconexão por sinal fraco:** formulários `roamset24/roamset50` ocultos → `set_wifi` com `wifiIndex, weakenable, weakthreshold, kickthreshold`.
 - **AIoT** e **prioridade para muitos aparelhos** também estão comentados na página.
