@@ -17,6 +17,14 @@
         "data": {
           "host": "Router IP address"
         }
+      },
+      "discovery_confirm": {
+        "title": "Xiaomi router discovered",
+        "description": "Set up **{nome}** ({host})? In a Mesh network the admin password is usually the same as the main router's.",
+        "data": {
+          "usar_senha_principal": "Use the main router's password",
+          "password": "Admin password (if different)"
+        }
       }
     },
     "error": {
@@ -26,8 +34,10 @@
     "abort": {
       "already_configured": "This router is already configured",
       "reauth_successful": "OK",
-      "reconfigure_successful": "OK"
-    }
+      "reconfigure_successful": "OK",
+      "not_ipv4": "IPv6 announcement ignored (the router is discovered via IPv4)"
+    },
+    "flow_title": "{nome} ({host})"
   },
   "options": {
     "step": {

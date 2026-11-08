@@ -1,9 +1,12 @@
 """Integração local dos roteadores Xiaomi AX1800 (RM1800)."""
 from __future__ import annotations
 
+from datetime import timedelta
+
 import voluptuous as vol
 
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import SOURCE_INTEGRATION_DISCOVERY, ConfigEntry
+from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.const import CONF_HOST, CONF_PASSWORD
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import HomeAssistantError
@@ -29,6 +32,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     await async_registrar(hass)
     entry.async_on_unload(entry.add_update_listener(_reload))
+
+    if coord.role == ROLE_MAIN:
+        async def _procurar_nos(_now=None) -> None:
+            """Oferece para configurar cada nó da Mesh ainda não cadastrado."""
+            topo = (await coord.api.safe("misystem/topo_graph")).get("graph") or {}
+            ja = {e.data.get(CONF_HOST) for e in hass.config_entries.async_entries(DOMAIN)}
+            for no in topo.get("leafs") or []:
+                ip = no.get("ip")
+                if ip and ip not in ja:
+                    hass.async_create_task(hass.config_entries.flow.async_init(
+                        DOMAIN,
+                        context={"source": SOURCE_INTEGRATION_DISCOVERY},
+                        data={CONF_HOST: ip, "nome": no.get("name") or no.get("locale") or ip, "principal": entry.entry_id},
+                    ))
+
+        entry.async_create_background_task(hass, _procurar_nos(), f"{DOMAIN}_procurar_nos")
+        entry.async_on_unload(async_track_time_interval(hass, _procurar_nos, timedelta(hours=6)))
 
     if not hass.services.has_service(DOMAIN, SERVICE_INTERNET):
         async def _internet(call: ServiceCall) -> None:

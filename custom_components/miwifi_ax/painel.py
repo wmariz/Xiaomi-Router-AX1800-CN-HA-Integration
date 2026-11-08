@@ -62,11 +62,21 @@ def _mascarar(obj: Any, mostrar: bool) -> Any:
 
 
 def _coords(hass: HomeAssistant) -> dict[str, Any]:
-    """{papel: coordenador} das entradas carregadas."""
-    out = {}
-    for c in hass.data.get(DOMAIN, {}).values():
-        if c.role:
-            out[c.role] = c
+    """{chave: coordenador}. Um principal = 'principal'; um nó = 'repetidor';
+    com vários nós, 'repetidor (<local ou nome>)'. Chaves sempre únicas."""
+    cs = [c for c in hass.data.get(DOMAIN, {}).values() if c.role]
+    out: dict[str, Any] = {}
+    for papel in ("principal", "repetidor"):
+        grupo = sorted((c for c in cs if c.role == papel), key=lambda c: c.api.host)
+        for c in grupo:
+            if len(grupo) == 1:
+                k = papel
+            else:
+                d = c.data or {}
+                k = f"{papel} ({d.get('local') or d.get('nome') or c.api.host})"
+            if k in out:
+                k = f"{papel} ({c.api.host})"
+            out[k] = c
     return out
 
 

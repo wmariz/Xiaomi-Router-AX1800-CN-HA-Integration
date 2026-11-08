@@ -448,7 +448,10 @@ $('#bcfg').onclick=()=>{
 // ---------- inicialização ----------
 if(EMBUTIDO){$('#bcfg').style.display='none';$('#rodape').innerHTML='Painel do Home Assistant · usa o login da integração · alterações sempre pedem confirmação · <span class="oculto">oculto</span> = função que não aparece na interface original';}
 $$('#menu a').forEach(a=>a.onclick=e=>{e.preventDefault();sec=a.dataset.sec;sub=null;render();});
-(async()=>{estado=await srv('/api/estado');if(!estado.roteadores[rot])rot=Object.keys(estado.roteadores)[0];preencherSel();
+(async()=>{estado=await srv('/api/estado');
+  // ?rot= aceita a chave ('principal', 'repetidor (Sala)'…) ou o IP do roteador
+  if(!estado.roteadores[rot]){const k=Object.keys(estado.roteadores).find(k=>estado.roteadores[k]===rot);rot=k||Object.keys(estado.roteadores)[0];}
+  preencherSel();
   $('#rotsel').onchange=()=>{rot=$('#rotsel').value;localStorage.setItem('rot',rot);render();};render();})();
 
 }

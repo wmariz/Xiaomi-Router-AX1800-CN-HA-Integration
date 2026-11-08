@@ -17,6 +17,14 @@
         "data": {
           "host": "Endereço IP do roteador"
         }
+      },
+      "discovery_confirm": {
+        "title": "Roteador Xiaomi descoberto",
+        "description": "Configurar **{nome}** ({host})? Na rede Mesh a senha de administrador costuma ser a mesma do roteador principal.",
+        "data": {
+          "usar_senha_principal": "Usar a mesma senha do roteador principal",
+          "password": "Senha de administrador (se for diferente)"
+        }
       }
     },
     "error": {
@@ -26,8 +34,10 @@
     "abort": {
       "already_configured": "Este roteador já está configurado",
       "reauth_successful": "OK",
-      "reconfigure_successful": "OK"
-    }
+      "reconfigure_successful": "OK",
+      "not_ipv4": "Anúncio por IPv6 ignorado (o roteador é descoberto pelo IPv4)"
+    },
+    "flow_title": "{nome} ({host})"
   },
   "options": {
     "step": {

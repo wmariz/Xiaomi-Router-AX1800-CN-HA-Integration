@@ -13,7 +13,8 @@ def _url(coord: MiWiFiCoordinator) -> str:
     p = (getattr(coord, "painel_url", "") or "").strip()
     if not p:
         return f"http://{coord.api.host}"
-    return f"{p}{'&' if '?' in p else '?'}rot={coord.role}"
+    # identifica o roteador pelo IP (estável mesmo com vários repetidores)
+    return f"{p}{'&' if '?' in p else '?'}rot={coord.api.host}"
 
 
 # Ativadas por padrão; o resto nasce DESATIVADO (ative só o que usar — a integração
