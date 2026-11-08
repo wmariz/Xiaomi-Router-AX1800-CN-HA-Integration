@@ -65,7 +65,7 @@ Respondem "parâmetro errado" sem argumentos: `ecos_info`, `netacctl_status`, `p
   - ✗ `xqnetwork/set_all_wifi` com `on3, ssid3, encryption3, pwd3…` (documentado em RACErace/MiWiFi-API para outros modelos): `code 0`, ignorado no RM1800, e reinicia o Wi-Fi (~30 s).
   - `misns/wifi_share_switch` existe localmente, mas os parâmetros não foram descobertos (`code 1523` em todas as tentativas). O app usa a versão de nuvem `/s/sns/wifi_share_switch` (corpo cifrado).
   - A interface da rede de visitante é `wl14` e só aparece em `xqnetwork/wifi_diag_detail_all` (`status` 0/1, `iftype 3`) — não em `wifi_detail_all`. Só existe no principal; o nó Mesh não transmite a rede de visitante.
-- **SSID oculto sem reiniciar:** `xqnetwork/set_wifi_without_restart` com `wifiIndex=1` (ou 2) e só `hidden=1` oculta a rede preservando nome, senha, canal e potência. **Não é espelhado no nó Mesh** — precisa ser aplicado também no repetidor (testado 2026-11-08).
+- **SSID oculto sem reiniciar:** `xqnetwork/set_wifi_without_restart` com `wifiIndex=1` (ou 2) e só `hidden=1` oculta a rede preservando nome, senha, canal e potência. **Não é espelhado no nó Mesh** — precisa ser aplicado também no repetidor. No principal vale na hora; no repetidor a opção é salva mas o rádio só passa a ocultar depois de reiniciar o nó (varredura Wi-Fi do PC, 2026-11-08). Ainda não há função conhecida para forçar a sincronização da Mesh sem reiniciar.
   ⚠ A escrita ainda **não foi confirmada** neste firmware.
 - **Desconexão por sinal fraco:** formulários `roamset24/roamset50` ocultos → `set_wifi` com `wifiIndex, weakenable, weakthreshold, kickthreshold`.
 - **AIoT** e **prioridade para muitos aparelhos** também estão comentados na página.
