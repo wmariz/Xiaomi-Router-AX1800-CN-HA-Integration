@@ -65,7 +65,7 @@ Ao abrir, o painel sobe em `http://127.0.0.1:8099` e o navegador abre sozinho; a
 só reabre a página; o botão **Sair** encerra. A senha é digitada na página e não é guardada;
 os endereços dos roteadores ficam em `%APPDATA%\MiWiFiPainel`.
 
-Gerar: `powershell -File instalador\windowsuild.ps1` (precisa de `uv` e do Inno Setup 6).
+Gerar: `powershell -File instalador\windows\build.ps1` (precisa de `uv` e do Inno Setup 6).
 
 ### Android — `MiWiFiPainel-<versão>.apk`
 App independente: fala direto com os roteadores pela rede de casa (não depende do Home
