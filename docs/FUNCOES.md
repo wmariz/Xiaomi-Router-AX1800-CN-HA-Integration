@@ -91,6 +91,8 @@ Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou u
 | `xqnetdetect/netupspeed` | ✓ Mede a velocidade de upload da internet. |
 | `xqnetwork/add_mesh_node` | ✓ Adiciona um nó Mesh encontrado (mac, locate). |
 | `xqnetwork/check_wan_type` | ✓ Detecta o tipo de conexão de internet recomendado. |
+| `xqnetwork/ddns` | ✓ Estado do DDNS: on (ligado), flag, list[] de provedores configurados. |
+| `xqnetwork/ddns_switch` | ✓ Liga/desliga o DDNS (on=1/0). Testado 2026-11-08 (on=0 → xqnetwork/ddns on=0). |
 | `xqnetwork/disable_ap` | ✓ Sai do modo repetidor sem fio (volta a roteador). |
 | `xqnetwork/disable_lan_ap` | ✓ Sai do modo ponto de acesso (volta a roteador). |
 | `xqnetwork/dmz` | **⚠ INFERÊNCIA** — DMZ: estado e IP de destino. Significado do status (1 = ligada, 2 = desligada) deduzido — confirmado só o 2 com a DMZ desligada. |

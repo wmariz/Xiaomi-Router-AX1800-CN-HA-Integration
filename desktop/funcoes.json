@@ -348,6 +348,14 @@
     "c",
     "Detecta o tipo de conexão de internet recomendado."
   ],
+  "xqnetwork/ddns": [
+    "c",
+    "Estado do DDNS: on (ligado), flag, list[] de provedores configurados."
+  ],
+  "xqnetwork/ddns_switch": [
+    "c",
+    "Liga/desliga o DDNS (on=1/0). Testado 2026-11-08 (on=0 → xqnetwork/ddns on=0)."
+  ],
   "xqnetwork/disable_ap": [
     "c",
     "Sai do modo repetidor sem fio (volta a roteador)."
