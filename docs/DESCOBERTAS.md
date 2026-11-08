@@ -94,3 +94,14 @@ Conclusão: a versão de desenvolvedor não traz recursos extras para este rotea
 O HA 2026.x serve ícones de integrações personalizadas a partir de `custom_components/<domínio>/brand/`
 (`icon.png` 256×256, `icon@2x.png` 512×512, `logo.png`/`logo@2x.png`) pela rota autenticada
 `/api/brands/integration/<domínio>/icon.png`. A pasta só é lida na inicialização — é preciso reiniciar o HA.
+
+## 7. App internacional (Mi Wi-Fi 5.9.0, APKMirror) × chinês (5.6.7)
+- O internacional tem **64 bits** (arm64-v8a + armeabi-v7a) e usa o **mesmo pacote** `com.xiaomi.router` — por isso um não instala por cima do outro.
+- Mesmas 94 rotas de nuvem; só 5 funções locais a mais (`mesh/adapter`, `misystem/get_usb_u2`, `misystem/usb_u2`, `misystem/set_router_wifiap_init`, `xqnetdetect/nettb2`), **todas inexistentes** no firmware do AX1800 — são de modelos tribanda/USB.
+- Conclusão: não traz funções novas para este roteador.
+
+## 8. O que o nó Mesh (repetidor) tem de próprio
+Comparando as respostas do principal e do nó:
+- **Espelho do principal:** configuração de Wi-Fi (canal, largura, potência, nomes, estado) e avisos — iguais nos dois.
+- **Próprio de cada aparelho:** tempo ligado, CPU, memória, **clientes conectados por banda** (ex.: principal 10, nó 4), firmware, relógio (que pode divergir — o do nó chegou a ficar 11 h adiantado), LED e reinício.
+A integração só cria no nó as entidades próprias.

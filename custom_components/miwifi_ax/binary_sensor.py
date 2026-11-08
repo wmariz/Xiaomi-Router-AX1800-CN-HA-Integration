@@ -17,13 +17,14 @@ class Desc(BinarySensorEntityDescription):
     so_principal: bool = False
 
 
+# No nó Mesh (repetidor) a configuração de Wi-Fi é cópia da do principal: só o principal expõe.
 BINARIOS: tuple[Desc, ...] = (
     Desc(key="internet", device_class=BinarySensorDeviceClass.CONNECTIVITY, so_principal=True),
     Desc(key="wan_cabo", device_class=BinarySensorDeviceClass.PLUG, so_principal=True),
     Desc(key="repetidor_na_mesh", device_class=BinarySensorDeviceClass.CONNECTIVITY, so_principal=True),
     Desc(key="firmware_atualizacao", device_class=BinarySensorDeviceClass.UPDATE, so_principal=True),
-    Desc(key="wifi_24", icon="mdi:wifi", entity_category=DIAG),
-    Desc(key="wifi_5", icon="mdi:wifi", entity_category=DIAG),
+    Desc(key="wifi_24", icon="mdi:wifi", entity_category=DIAG, so_principal=True),
+    Desc(key="wifi_5", icon="mdi:wifi", entity_category=DIAG, so_principal=True),
     Desc(key="wifi_unificado", icon="mdi:wifi-sync", so_principal=True, entity_category=DIAG),
     Desc(key="anti_intrusos", icon="mdi:shield-check", so_principal=True),
     Desc(key="firewall_sites", icon="mdi:web-cancel", so_principal=True, entity_category=DIAG),
