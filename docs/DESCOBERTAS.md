@@ -73,7 +73,7 @@ Com Mesh por cabo, aparelhos ligados nas portas do nó aparecem como "cabo" **se
 - **Fuso "(UTC−3) Brasília" aplica o horário de verão antigo** (+1 h em novembro). Todas as opções UTC−3 mandam `timezone=CST+3`, mas o roteador guarda também o **`index`** da opção. Use **"(UTC−3) Caiena, Fortaleza"** (`index` 3).
 - Na Mesh, o fuso só pode ser alterado no **principal** e é repassado ao nó. Salvar de novo o fuso no principal forçou o nó a acertar um relógio que estava **11 h adiantado** (sem NTP).
 - O **reinício agendado** do app vale para a Mesh toda; com o relógio do nó errado, ele reiniciava em outro horário (ex.: "06:00" do nó = 19:00 locais), derrubando tudo o que estava ligado nele.
-- O app chinês **5.6.5 e 5.7.5 só têm `armeabi-v7a`** (32 bits): não instalam em celulares novos sem suporte a 32 bits. Rodam num emulador Android 11 x86 (que traduz ARM 32 bits).
+- O app chinês (estável **5.6.7** e de desenvolvedor **5.7.7** — o site anuncia 5.6.5/5.7.5) **só tem `armeabi-v7a`** (32 bits): não instalam em celulares novos sem suporte a 32 bits. Rodam num emulador Android 11 x86 (que traduz ARM 32 bits).
 - O app fala com a nuvem (`api.miwifi.com`): `/r/api/<grupo>/<função>` repassa ao roteador **as mesmas funções locais**, com parâmetros e respostas cifrados (RC4 com a sessão da conta). Rede de visitante e agendamentos no app usam também `/s/guest_wifi/…` e `xqsmarthome/request_smartcontroller`.
 - Antivírus com inspeção de HTTPS (ex.: Avast) quebram o login do app e ferramentas Java/Python que não usam o repositório de certificados do Windows.
 - O roteador é limitado (4× Cortex-A53 716 MHz, 256 MB, ~50–60 % de memória em uso em repouso). Ficou visivelmente instável com muitos aparelhos extras conectados.
@@ -82,3 +82,10 @@ Com Mesh por cabo, aparelhos ligados nas portas do nó aparecem como "cabo" **se
 - `xqsystem/init_info` responde **sem login** — útil como "ping" do serviço web.
 - O tempo ligado (`misystem/status.upTime`) de cada aparelho revela reinícios.
 - `xqnetwork/wan_info.uptime` zera a cada reconexão PPPoE.
+
+## 5. App oficial: versão estável × desenvolvedor
+Comparação dos APKs `xqapp.apk` (estável, 5.6.7) e `xqapp_dev.apk` (desenvolvedor, 5.7.7) baixados de miwifi.com:
+- mesmos arquivos e recursos; mudam só `AndroidManifest.xml` (número de versão), a assinatura e `classes.dex`/`classes2.dex` (24 bytes de diferença);
+- **nenhuma função, endpoint ou texto novo** — as 252 referências de API e todas as strings legíveis são idênticas.
+
+Conclusão: a versão de desenvolvedor não traz recursos extras para este roteador.
