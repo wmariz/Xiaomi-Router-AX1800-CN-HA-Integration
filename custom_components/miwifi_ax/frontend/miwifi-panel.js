@@ -1,0 +1,475 @@
+// GERADO por tools/build_ha_panel.py a partir de desktop/painel.html — não edite à mão.
+const CSS = `
+:host{--azul:#2b8af0;--azul2:#1f7be3;--fundo:#2b8af0;--card:#fff;--tx:#333;--mut:#8a8f99;--bd:#eceef2;--sep:#e6e8ec;--verde:#33c272;--lar:#ff8a3d;--roxo:#8c78f0;--amarelo:#ffb21e;--ciano:#2fb8f4;--verm:#f0524b;--ipt:#fff;--iptbd:#d9dce2;--hover:#f6f8fb}
+:host([dark]){--fundo:#123a66;--card:#1d2330;--tx:#e6e9ef;--mut:#97a0ae;--bd:#2b3240;--sep:#2b3240;--ipt:#151a24;--iptbd:#38404f;--hover:#232a38}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fundo);color:var(--tx);font:14px/1.5 "Helvetica Neue",Helvetica,Arial,"Segoe UI",sans-serif}
+a{color:var(--azul);text-decoration:none}
+#topo{max-width:1100px;margin:0 auto;padding:18px 16px 0;display:flex;align-items:center;gap:28px;color:#fff;flex-wrap:wrap}
+#logo{font-size:30px;font-weight:200;letter-spacing:1px}
+#menu{display:flex;gap:26px;flex:1;flex-wrap:wrap}
+#menu a{color:rgba(255,255,255,.75);font-size:15px;padding:6px 0;border-bottom:2px solid transparent}
+#menu a.act{color:#fff;border-color:#fff}
+#rotsel{width:auto;height:auto;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:4px;padding:5px 8px;font-size:13px}
+#rotsel option{color:#333}
+#icones{max-width:1100px;margin:22px auto 0;padding:0 16px;display:flex;justify-content:space-around;flex-wrap:wrap;gap:8px}
+.ico{display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,.8);font-size:12px;cursor:pointer;padding-bottom:14px;position:relative;min-width:90px}
+.ico .c{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.ico.act{color:#fff}
+.ico.act:after{content:"";position:absolute;bottom:0;border:10px solid transparent;border-bottom-color:var(--card)}
+#corpo{max-width:1100px;margin:0 auto 30px;padding:0 16px}
+#pagina{background:var(--card);border-radius:6px;padding:10px 34px 30px;min-height:300px}
+.mod{border-bottom:1px solid var(--sep);padding:20px 0}
+.mod:last-child{border-bottom:0}
+.mod .hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.mod h3{margin:0;font-size:16px;font-weight:500;color:var(--azul)}
+.mod .desc{color:var(--mut);font-size:13px;margin:0 0 10px}
+.oculto{display:inline-block;font-size:11px;background:#fff1e6;color:#d56a14;border-radius:3px;padding:1px 6px;margin-left:8px;vertical-align:middle;font-weight:400}
+.exp{background:#fdecec;color:#c0392b}
+:host([dark]) .oculto{background:#3a2a18;color:#ffb36b}:host([dark]) .exp{background:#3b1f1f;color:#ff8f86}
+.sw{width:46px;height:26px;border-radius:13px;background:#d3d6dc;position:relative;cursor:pointer;flex:none;transition:.2s;border:0;padding:0}
+.sw:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.sw.on{background:var(--verde)}.sw.on:after{left:23px}
+.sw[disabled]{opacity:.5;cursor:default}
+.f{display:grid;grid-template-columns:150px minmax(0,320px) 1fr;gap:10px 14px;align-items:center;max-width:820px}
+.f label.k{color:var(--mut);text-align:right}
+.f .t{color:var(--mut);font-size:12px}
+@media (max-width:700px){.f{grid-template-columns:1fr}.f label.k{text-align:left}#pagina{padding:8px 16px 20px}}
+input[type=text],input[type=password],input[type=number],select{width:100%;height:34px;border:1px solid var(--iptbd);border-radius:3px;padding:0 10px;background:var(--ipt);color:var(--tx);font:inherit}
+input:focus,select:focus{outline:0;border-color:var(--azul)}
+.btn{display:inline-block;background:var(--azul);color:#fff;border:0;border-radius:3px;height:34px;padding:0 22px;font:inherit;cursor:pointer}
+.btn:hover{background:var(--azul2)}.btn.sec{background:transparent;color:var(--azul);border:1px solid var(--azul)}
+.btn.perigo{background:var(--verm)}.btn.peq{height:26px;padding:0 10px;font-size:12px}
+.acoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.chk{display:flex;align-items:center;gap:6px;color:var(--tx)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--mut);font-weight:400;border-bottom:1px solid var(--sep);padding:8px 6px}
+td{border-bottom:1px solid var(--sep);padding:8px 6px;vertical-align:middle}
+tr:hover td{background:var(--hover)}
+.tabw{overflow-x:auto}
+.mono{font-family:Consolas,ui-monospace,monospace;font-size:12px}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.kv .i{background:var(--hover);border-radius:6px;padding:12px 14px}
+.kv .i b{display:block;font-size:20px;font-weight:500;margin-top:2px}
+.kv .i span{color:var(--mut);font-size:12px}
+.badge{font-size:11px;border-radius:10px;padding:1px 8px;background:var(--hover);color:var(--mut)}
+.badge.ok{background:#e6f7ee;color:#1e9e57}.badge.no{background:#fdecec;color:#c0392b}
+:host([dark]) .badge.ok{background:#173426;color:#5ad897}:host([dark]) .badge.no{background:#3b1f1f;color:#ff8f86}
+pre{background:var(--hover);border-radius:4px;padding:10px;overflow:auto;max-height:60vh;font-size:12px;white-space:pre-wrap;word-break:break-word}
+#login{max-width:420px;margin:60px auto;background:var(--card);border-radius:6px;padding:30px;text-align:center}
+#login h2{font-weight:300;margin:0 0 6px}
+.muted{color:var(--mut)} .err{color:var(--verm)}
+#veu{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}
+#dlg{background:var(--card);border-radius:6px;max-width:440px;width:100%;padding:22px 24px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#dlg h4{margin:0 0 10px;font-size:16px;font-weight:500}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:9px 18px;border-radius:4px;font-size:13px;display:none;z-index:11;max-width:90vw}
+.carregando{color:var(--mut);padding:20px 0}
+#rodape{text-align:center;color:rgba(255,255,255,.7);font-size:12px;padding:0 16px 24px}
+
+.mw-body{min-height:100vh}
+#hamb{display:contents;color:#fff}
+`;
+const HTML = `<div class="mw-body">
+<div id="topo">
+  <span id="hamb"></span><div id="logo">MiWiFi</div>
+  <nav id="menu">
+    <a data-sec="estado">Estado do roteador</a>
+    <a data-sec="comuns">Configurações comuns</a>
+    <a data-sec="avancadas">Configurações avançadas</a>
+  </nav>
+  <select id="rotsel" title="Roteador"></select>
+  <button id="bcfg" title="Endereços dos roteadores" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:4px;padding:5px 10px;cursor:pointer;font:inherit;font-size:13px">⚙ Roteadores</button>
+</div>
+<div id="icones"></div>
+<div id="corpo"><div id="pagina"><div class="carregando">Carregando…</div></div></div>
+<div id="rodape">Painel local · somente neste computador · alterações sempre pedem confirmação · <span class="oculto">oculto</span> = função que não aparece na interface original</div>
+<div id="veu"><div id="dlg"></div></div>
+<div id="toast"></div>
+</div>`;
+
+function runPanel() {
+
+// ---------- infraestrutura ----------
+// O mesmo código roda no PC (servidor painel.py) e dentro do Home Assistant (integração miwifi_ax).
+// No HA, o componente define window.__MIWIFI_ROOT__ (shadow root) e window.__MIWIFI_SRV__ (ponte via hass.callApi).
+const ROOT=window.__MIWIFI_ROOT__||document, EMBUTIDO=!!window.__MIWIFI_SRV__;
+const $=s=>ROOT.querySelector(s), $$=s=>[...ROOT.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const _q=new URLSearchParams(window.__MIWIFI_QUERY__??location.search);
+let estado={roteadores:{},logado:{}}, rot=_q.get('rot')||localStorage.getItem('rot')||'principal', sec='estado', sub=null;
+function toast(m,ms=3000){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',ms);}
+function dialogo(titulo,html,botoes){return new Promise(res=>{$('#dlg').innerHTML=`<h4>${titulo}</h4><div>${html}</div><div class="acoes" style="justify-content:flex-end">${botoes.map((b,i)=>`<button class="btn ${b.cls||''}" data-i="${i}">${b.t}</button>`).join('')}</div>`;$('#veu').style.display='flex';$$('#dlg [data-i]').forEach(b=>b.onclick=()=>{$('#veu').style.display='none';res(botoes[+b.dataset.i].v);});});}
+const confirmar=(t,m,perigo)=>dialogo(t,`<p class="muted" style="margin:0">${m}</p>`,[{t:'Cancelar',cls:'sec',v:false},{t:'Confirmar',cls:perigo?'perigo':'',v:true}]);
+async function srv(path,body){if(EMBUTIDO)return window.__MIWIFI_SRV__(path,body);const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});return r.json();}
+// leitura
+async function ler(ep,params,mostrar){const r=await srv('/api/chamar',{roteador:rot,endpoint:ep,metodo:'GET',params,mostrar:!!mostrar});if(!r.ok){if(/login/i.test(r.erro||'')){estado.logado[rot]=false;render();}throw new Error(r.erro||'erro');}return r.json||{};}
+// escrita (sempre confirmada)
+async function gravar(ep,params,{titulo='Aplicar alteração',msg='',metodo='POST',perigo=false,silencioso=false}={}){
+  if(!silencioso && !await confirmar(titulo,(msg?msg+'<br><br>':'')+`<span class="mono">${esc(ep.replace('api/',''))}</span> no <b>${rot}</b>`,perigo)) return null;
+  const r=await srv('/api/chamar',{roteador:rot,endpoint:ep,metodo,params,confirmado:true});
+  const j=r.json||{}; if(!r.ok||j.code!==0){toast('Falhou: '+(r.erro||j.msg||('código '+j.code)),5000);return null;}
+  toast('Aplicado.'); return j;
+}
+const sw=(on,id,dis)=>`<button class="sw ${on?'on':''}" id="${id}" ${dis?'disabled':''} title="${on?'Ligado':'Desligado'}"></button>`;
+const mod=(titulo,corpo,{direita='',desc='',tag=''}={})=>`<div class="mod"><div class="hd"><h3>${titulo}${tag==='oculto'?'<span class="oculto">oculto</span>':tag==='exp'?'<span class="oculto exp">oculto · experimental</span>':''}</h3>${direita}</div>${desc?`<p class="desc">${desc}</p>`:''}${corpo||''}</div>`;
+const fmtT=s=>{s=+s||0;const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return (d?d+' d ':'')+h+' h '+m+' min';};
+const fmtB=b=>{b=+b||0;const u=['B','KB','MB','GB','TB'];let i=0;while(b>=1024&&i<4){b/=1024;i++;}return b.toFixed(i?1:0)+' '+u[i];};
+const fmtV=b=>fmtB(b)+'/s';
+const ENC={'ccmp':'WPA3 pessoal (máxima)','psk2+ccmp':'WPA3/WPA2 pessoal (misto)','psk2':'WPA2 pessoal','mixed-psk':'WPA/WPA2 pessoal (misto)','none':'Sem senha (aberta)'};
+const TXP={'max':'Atravessar paredes (máxima)','mid':'Padrão','min':'Economia'};
+
+// ---------- estrutura de navegação (igual ao original) ----------
+const SECOES={
+  estado:{icones:[['rede','Rede e aparelhos','#2fb8f4','⌂'],['mesh','Mesh','#8c78f0','◎'],['sistema_est','Sistema','#ffb21e','i']]},
+  comuns:{icones:[['wifi','Wi-Fi','#2fb8f4','≋'],['internet','Internet','#8c78f0','⊕'],['seguranca','Segurança','#33c272','⛨'],['lan','Rede local','#ff8a3d','⧉'],['sistema','Sistema','#ffb21e','i']]},
+  avancadas:{icones:[['qos','QoS / Banda','#33c272','⇅'],['ocultas','Funções ocultas','#ff8a3d','✱'],['api','Todas as funções','#8c78f0','{ }']]},
+};
+function render(){
+  $$('#menu a').forEach(a=>a.classList.toggle('act',a.dataset.sec===sec));
+  if($('#rotsel').value!==rot) $('#rotsel').value=rot;
+  const ics=SECOES[sec].icones; if(!sub||!ics.find(i=>i[0]===sub)) sub=ics[0][0];
+  $('#icones').innerHTML=ics.map(([id,n,cor,s])=>`<div class="ico ${id===sub?'act':''}" data-sub="${id}"><div class="c" style="background:${cor}">${s}</div>${n}</div>`).join('');
+  $$('.ico').forEach(e=>e.onclick=()=>{sub=e.dataset.sub;render();});
+  if(!estado.logado[rot]) return telaLogin();
+  $('#pagina').innerHTML='<div class="carregando">Carregando…</div>';
+  (PAG[sub]||(()=>{}))().catch(e=>{$('#pagina').innerHTML=`<p class="err">Erro: ${esc(e.message)}</p>`;});
+}
+function telaLogin(){
+  $('#pagina').innerHTML=`<div id="login"><h2>${esc(rot[0].toUpperCase()+rot.slice(1))}</h2><p class="muted">${estado.roteadores[rot]} · digite a senha de administrador do roteador</p>
+  <form id="flogin"><input type="password" name="s" placeholder="Senha de administrador" autocomplete="current-password" required style="margin:10px 0"><button class="btn" style="width:100%">Entrar</button><p class="err" id="lerr"></p></form>
+  <p class="muted" style="font-size:12px">A senha vai direto ao roteador (mesmo método da interface original) e não é guardada.</p></div>`;
+  $('#flogin').onsubmit=async e=>{e.preventDefault();const s=e.target.s.value;e.target.s.value='';const r=await srv('/api/login',{roteador:rot,senha:s});if(!r.ok){$('#lerr').textContent=r.erro||'Falhou';return;}estado.logado[rot]=true;render();};
+}
+
+// ---------- páginas ----------
+const PAG={};
+
+// ESTADO: rede e aparelhos
+PAG.rede=async()=>{
+  const [st,wan,mb]=await Promise.all([ler('api/misystem/status'),ler('api/xqnetwork/wan_info').catch(()=>({})),ler('api/xqnetwork/macbind_info').catch(()=>({}))]);
+  const w=(wan.info||{}), v4=(w.ipv4||[])[0]||{};
+  const devs=(mb.devicelist||[]).filter(d=>d.online!==0).sort((a,b)=>(a.type>b.type?1:-1));
+  let h=mod('Visão geral',`<div class="kv">
+    <div class="i"><span>Ligado há</span><b>${fmtT(st.upTime)}</b></div>
+    <div class="i"><span>Processador</span><b>${Math.round((st.cpu?.load||0)*100)} %</b><span>${st.cpu?.core||''} núcleos · ${st.cpu?.hz||''}</span></div>
+    <div class="i"><span>Memória</span><b>${Math.round((st.mem?.usage||0)*100)} %</b><span>de ${st.mem?.total||''}</span></div>
+    <div class="i"><span>Aparelhos</span><b>${st.count?.online??'—'} online</b><span>${st.count?.all??'—'} conhecidos</span></div>
+    <div class="i"><span>Internet</span><b>${w.link===1||w.status!==undefined?(v4.ip||'—'):'—'}</b><span>${w.details?.wanType||''}${w.uptime?' · conectado há '+fmtT(w.uptime):''}</span></div>
+    <div class="i"><span>Tráfego WAN agora</span><b>↓ ${fmtV(st.wan?.downspeed)}</b><span>↑ ${fmtV(st.wan?.upspeed)}</span></div>
+  </div>`);
+  h+=mod('Aparelhos conectados',`<div class="tabw"><table><tr><th>Nome</th><th>IP</th><th>MAC</th><th>Conexão</th><th>Velocidade</th><th>Online há</th><th></th></tr>${devs.map(d=>{const s=d.statistics||{};const via=d.type==='line'?'Cabo':(s.dev==='wl1'?'Wi-Fi 2,4 GHz':s.dev==='wl0'?'Wi-Fi 5 GHz':'Wi-Fi');const pai=d.parent?' · via repetidor':'';const bloq=d.authority&&d.authority.wan===0;return `<tr><td>${esc(d.name||d.hostname)}</td><td class="mono">${esc(d.ip)}</td><td class="mono">${esc(d.mac)}</td><td>${via}${pai}</td><td class="mono">↓${fmtV(s.downspeed)} ↑${fmtV(s.upspeed)}</td><td>${fmtT(s.online)}</td><td><button class="btn peq ${bloq?'':'sec'}" data-mac="${esc(d.mac)}" data-n="${esc(d.name)}" data-bl="${bloq?1:0}">${bloq?'Liberar internet':'Bloquear internet'}</button></td></tr>`;}).join('')}</table></div>`,{desc:`${devs.length} aparelhos online. O bloqueio corta só o acesso à internet (o aparelho continua na rede local).`});
+  $('#pagina').innerHTML=h;
+  $$('#pagina [data-mac]').forEach(b=>b.onclick=async()=>{const lib=b.dataset.bl==='1';if(await gravar('api/xqsystem/set_mac_filter',{mac:b.dataset.mac,wan:lib?1:0},{titulo:(lib?'Liberar':'Bloquear')+' internet',msg:`Aparelho: <b>${esc(b.dataset.n)}</b>`,metodo:'GET'}))render();});
+};
+// ESTADO: mesh
+PAG.mesh=async()=>{
+  const [tp,bh,sig]=await Promise.all([ler('api/misystem/topo_graph'),ler('api/xqnetwork/get_son_backhaul_mode').catch(()=>({})),ler('api/xqnetwork/wifiap_signal').catch(()=>({}))]);
+  const g=tp.graph||{}; const nos=[g,...(g.leafs||[])];
+  let h=mod('Topologia da rede Mesh',`<div class="tabw"><table><tr><th>Nome</th><th>Local</th><th>IP</th><th>Modelo</th><th>Papel</th></tr>${nos.map((n,i)=>`<tr><td>${esc(n.name)}</td><td>${esc(n.locale)}</td><td class="mono">${esc(n.ip)}</td><td>${esc(n.hardware)}</td><td>${i===0?'Principal':'Nó (repetidor)'}</td></tr>`).join('')}</table></div>`);
+  if(sig.signal!==undefined) h+=mod('Qualidade do sinal até o principal',`<p>${sig.signal} %</p>`);
+  $('#pagina').innerHTML=h;
+};
+// ESTADO: sistema
+PAG.sistema_est=async()=>{
+  const [st,tm,nm,msg]=await Promise.all([ler('api/misystem/status'),ler('api/misystem/sys_time'),ler('api/misystem/router_name'),ler('api/misystem/messages').catch(()=>({}))]);
+  const hw=st.hardware||{},t=tm.time||{};
+  let h=mod('Informações do sistema',`<div class="kv">
+    <div class="i"><span>Nome</span><b>${esc(nm.name)}</b><span>${esc(nm.locale)}</span></div>
+    <div class="i"><span>Modelo / firmware</span><b>${esc(hw.platform)}</b><span>versão ${esc(hw.version)} (${esc(hw.channel)})</span></div>
+    <div class="i"><span>Hora do roteador</span><b>${String(t.hour).padStart(2,'0')}:${String(t.min).padStart(2,'0')}</b><span>${t.day}/${t.month}/${t.year} · PC: ${new Date().toTimeString().slice(0,5)}</span></div>
+    <div class="i"><span>MAC / série</span><b class="mono" style="font-size:14px">${esc(hw.mac)}</b><span>${esc(hw.sn)}</span></div>
+  </div>`);
+  h+=mod('Avisos do roteador',`<p class="muted">${msg.count?msg.count+' aviso(s)':'Nenhum aviso.'}</p>${(msg.list||[]).length?`<pre>${esc(JSON.stringify(msg.list,null,2))}</pre>`:''}`);
+  h+=mod('Reiniciar / desligar',`<div class="acoes"><button class="btn" id="bReboot">Reiniciar</button><button class="btn perigo" id="bShut">Desligar</button></div>`,{desc:'Reiniciar derruba a rede por ~1–2 minutos. Desligar exige religar o aparelho na tomada.'});
+  $('#pagina').innerHTML=h;
+  $('#bReboot').onclick=()=>gravar('api/xqsystem/reboot',{client:'web'},{titulo:'Reiniciar roteador',msg:'A rede vai cair por 1–2 minutos.',metodo:'GET',perigo:true});
+  $('#bShut').onclick=()=>gravar('api/xqsystem/shutdown',{},{titulo:'Desligar roteador',msg:'Ele só volta religando na tomada.',metodo:'GET',perigo:true});
+};
+
+// COMUNS: Wi-Fi
+const CANAIS={1:['0',...Array.from({length:13},(_,i)=>String(i+1))],2:['0','36','40','44','48']};
+const BANDAS={1:['0','20','40'],2:['0','20','40','80']};
+PAG.wifi=async()=>{
+  const [wf,ax]=await Promise.all([ler('api/xqnetwork/wifi_detail_all',null,true),Promise.resolve()]);
+  const info=wf.info||[];
+  const [ckl,aiot,mt]=await Promise.all([ler('api/xqnetwork/get_miotrelay_switch').catch(()=>({})),ler('api/xqnetwork/get_miscan_switch').catch(()=>({})),ler('api/xqnetwork/get_son_backhaul_mode').catch(()=>({}))]);
+  const compat=info.some(i=>i.ax==='0'), txbf=(info[1]||info[0]||{}).txbf==='1';
+  let h=mod('Wi-Fi dual band unificado',`<p class="muted">Situação: <b>${wf.bsd==1?'ligado (um só nome)':'desligado (nomes separados)'}</b>. Para mudar, use o app — exige reconfigurar as duas redes juntas.</p>`,{desc:'Com ele ligado, 2,4 e 5 GHz usam o mesmo nome e o roteador escolhe a banda de cada aparelho. Pode causar quedas em alguns aparelhos.'});
+  info.forEach((w,i)=>{const idx=i+1,nome=idx===1?'Wi-Fi 2,4 GHz':'Wi-Fi 5 GHz';
+    h+=mod(nome,`<form class="f" data-idx="${idx}">
+      <label class="k">Nome (SSID)</label><input type="text" name="ssid" value="${esc(w.ssid)}" maxlength="28" required><span class="t"></span>
+      <label class="k"></label><label class="chk"><input type="checkbox" name="hidden" ${w.hidden==='1'?'checked':''}> Ocultar rede</label><span></span>
+      <label class="k">Segurança</label><select name="encryption">${Object.entries(ENC).map(([k,v])=>`<option value="${k}" ${w.encryption===k?'selected':''}>${v}</option>`).join('')}</select><span class="t">WPA3 pode não funcionar em aparelhos antigos</span>
+      <label class="k">Senha</label><input type="password" name="pwd" value="${esc(w.password)}" minlength="8" maxlength="63"><span class="t"><label class="chk"><input type="checkbox" class="ver"> mostrar</label></span>
+      <label class="k">Canal</label><select name="channel">${CANAIS[idx].map(c=>`<option value="${c}" ${String(w.channel)===c?'selected':''}>${c==='0'?'Automático'+(w.channelInfo?.channel?' (agora '+w.channelInfo.channel+')':''):c}</option>`).join('')}</select><span class="t"></span>
+      <label class="k">Largura de banda</label><select name="bandwidth">${BANDAS[idx].map(b=>`<option value="${b}" ${String(w.bandwidth)===b?'selected':''}>${b==='0'?'Automática':b+' MHz'}</option>`).join('')}</select><span class="t"></span>
+      <label class="k">Potência do sinal</label><select name="txpwr">${Object.entries(TXP).map(([k,v])=>`<option value="${k}" ${w.txpwr===k?'selected':''}>${v}</option>`).join('')}</select><span class="t"></span>
+      <span></span><div><button class="btn">Salvar</button></div><span></span>
+    </form>`,{direita:`<span class="badge ${w.status==='1'?'ok':'no'}">${w.status==='1'?'ligada':'desligada'}</span>`,desc:'Na rede Mesh não é possível desligar o Wi-Fi. Salvar reinicia o Wi-Fi (quedas de ~30 s).'});
+  });
+  // rede de visitante (oculta)
+  let gi={}; try{gi=(await ler('api/misns/wifi_share_info',null,true)).info||{};}catch(e){}
+  const gd=gi.data||{};
+  h+=mod('Rede de visitante',`<form class="f" id="fguest">
+      <label class="k">Nome (SSID)</label><input type="text" name="ssid" value="${esc(gd.ssid)}" maxlength="28" required><span class="t">não pode ser igual ao da rede 2,4 GHz</span>
+      <label class="k">Segurança</label><select name="encryption">${Object.entries(ENC).map(([k,v])=>`<option value="${k}" ${gd.encryption===k?'selected':''}>${v}</option>`).join('')}</select><span></span>
+      <label class="k">Senha</label><input type="password" name="pwd" value="${esc(gd.password)}" minlength="8" maxlength="63"><span class="t"><label class="chk"><input type="checkbox" class="ver"> mostrar</label></span>
+      <span></span><div><button class="btn">Salvar</button></div><span></span>
+    </form>`,{tag:'exp',direita:sw(gi.guest==1,'swGuest'),desc:'Rede isolada para visitantes. Removida da interface pelo firmware; usa a mesma função do Wi-Fi com o índice 3. Depois de salvar, o painel relê a configuração para conferir.'});
+  // chaves
+  h+=mod('Modo de compatibilidade Wi-Fi 5','',{direita:sw(compat,'swCompat'),desc:'Para aparelhos antigos que não encontram ou não conectam no Wi-Fi 6. Liga o modo Wi-Fi 5 e desativa recursos do Wi-Fi 6 (OFDMA, BSS Coloring).'});
+  h+=mod('MU-MIMO','',{direita:sw(txbf,'swTxbf'),desc:'Permite ao roteador falar com vários aparelhos ao mesmo tempo. Só tem efeito se o aparelho também suportar.'});
+  h+=mod('Conexão rápida (畅快连)','',{direita:sw(ckl.enabled==1,'swCkl'),desc:'Descobre automaticamente aparelhos Wi-Fi novos compatíveis para configurar pelo app Mi Home; também sincroniza mudanças de senha com eles.'});
+  h+=mod('Varredura AIoT da antena','',{tag:'oculto',direita:sw(aiot.enabled==1,'swAiot'),desc:'Procura aparelhos inteligentes Xiaomi não configurados. O próprio firmware avisa: pode aumentar perda de pacotes e latência em redes congestionadas.'});
+  h+=mod('Prioridade para muitos aparelhos','',{tag:'oculto',direita:sw(mt.mode==1,'swMulti'),desc:'Reserva o 2,4 GHz para estabilidade de conexão dos aparelhos. O firmware avisa: pode afetar o link entre os roteadores Mesh e causar desconexões breves ao ligar.'});
+  // roaming (oculto)
+  h+=mod('Desconectar aparelhos com sinal fraco',info.map((w,i)=>`<form class="f roam" data-idx="${i+1}" style="margin-bottom:12px">
+      <label class="k">${i===0?'2,4 GHz':'5 GHz'}</label><label class="chk"><input type="checkbox" name="weakenable" ${w.weakenable==='1'?'checked':''}> ativar</label><span></span>
+      <label class="k">Sinal fraco abaixo de</label><input type="number" name="weakthreshold" value="${esc(w.weakthreshold)}" placeholder="-75"><span class="t">dBm</span>
+      <label class="k">Desconectar abaixo de</label><input type="number" name="kickthreshold" value="${esc(w.kickthreshold)}" placeholder="-85"><span class="t">dBm</span>
+      <span></span><div><button class="btn sec">Salvar</button></div><span></span></form>`).join(''),{tag:'oculto',desc:'Força aparelhos com sinal muito fraco a se reconectar (normalmente no outro roteador da Mesh). Valores negativos em dBm.'});
+  $('#pagina').innerHTML=h;
+  $$('#pagina .ver').forEach(c=>c.onchange=()=>{c.closest('form').querySelector('[name=pwd]').type=c.checked?'text':'password';});
+  $$('#pagina form[data-idx]:not(.roam)').forEach(f=>f.onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));
+    const p={wifiIndex:f.dataset.idx,on:1,ssid:d.ssid,pwd:d.pwd,encryption:d.encryption,channel:d.channel,bandwidth:d.bandwidth,hidden:d.hidden?1:0,txpwr:d.txpwr};
+    if(await gravar('api/xqnetwork/set_wifi',p,{titulo:'Salvar '+(f.dataset.idx==='1'?'2,4 GHz':'5 GHz'),msg:'O Wi-Fi reinicia e os aparelhos caem por ~30 s.'}))setTimeout(render,3000);});
+  $$('#pagina form.roam').forEach(f=>f.onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));
+    if(await gravar('api/xqnetwork/set_wifi',{wifiIndex:f.dataset.idx,weakenable:d.weakenable?1:0,weakthreshold:d.weakthreshold||0,kickthreshold:d.kickthreshold||0},{titulo:'Desconexão por sinal fraco'}))render();});
+  const guestSalvar=async on=>{const d=Object.fromEntries(new FormData($('#fguest')));
+    if(on&&d.ssid===(info[0]||{}).ssid){toast('O nome não pode ser igual ao da rede 2,4 GHz.');return;}
+    const r=await gravar('api/xqnetwork/set_wifi',{wifiIndex:3,on:on?1:0,ssid:d.ssid,pwd:d.pwd,encryption:d.encryption},{titulo:'Rede de visitante',msg:`Vai ${on?'aplicar a configuração':'desligar a rede de visitante'}. Função oculta: o painel confere o resultado em seguida.`});
+    if(r){setTimeout(async()=>{try{const n=(await ler('api/misns/wifi_share_info')).info||{};toast(`Conferido: rede de visitante ${n.guest==1?'LIGADA':'desligada'} · ${n.data?.ssid||''}`,6000);}catch(e){}render();},5000);}};
+  $('#fguest').onsubmit=e=>{e.preventDefault();guestSalvar(true);};
+  $('#swGuest').onclick=()=>guestSalvar(!$('#swGuest').classList.contains('on'));
+  const tog=(id,ep,par,titulo,msg)=>{$(id).onclick=async()=>{const on=!$(id).classList.contains('on');if(await gravar(ep,par(on),{titulo:titulo+(on?': ligar':': desligar'),msg}))setTimeout(render,1500);};};
+  tog('#swCompat','api/xqnetwork/set_wifi_ax',on=>({ax:on?0:1}),'Compatibilidade Wi-Fi 5','O Wi-Fi reinicia.');
+  tog('#swTxbf','api/xqnetwork/set_wifi_txbf',on=>({txbf:on?1:0}),'MU-MIMO','O Wi-Fi reinicia.');
+  tog('#swCkl','api/xqnetwork/miotrelay_switch',on=>({on:on?1:0}),'Conexão rápida','');
+  tog('#swAiot','api/xqnetwork/miscan_switch',on=>({on:on?1:0}),'Varredura AIoT','');
+  tog('#swMulti','api/xqnetwork/set_son_backhaul_mode',on=>({mode:on?1:0}),'Prioridade para muitos aparelhos','Pode desconectar aparelhos brevemente e afetar o link Mesh.');
+};
+
+// COMUNS: Internet
+PAG.internet=async()=>{
+  const [wan,pp,lk]=await Promise.all([ler('api/xqnetwork/wan_info',null,true),ler('api/xqnetwork/pppoe_status').catch(()=>({})),ler('api/xqnetwork/wan_link').catch(()=>({}))]);
+  const w=wan.info||{},d=w.details||{},v4=(w.ipv4||[])[0]||{},v6=w.ipv6_info||{};
+  let h=mod('Estado da conexão',`<div class="kv">
+    <div class="i"><span>Cabo WAN</span><b>${lk.link==1?'conectado':'desconectado'}</b></div>
+    <div class="i"><span>Tipo</span><b>${esc((d.wanType||'').toUpperCase())}</b><span>${pp.status===2?'discagem OK':''}</span></div>
+    <div class="i"><span>IP público</span><b class="mono" style="font-size:15px">${esc(v4.ip||'—')}</b><span>gateway ${esc(w.gateWay||'—')}</span></div>
+    <div class="i"><span>Conectado há</span><b>${fmtT(w.uptime)}</b><span>MTU ${esc(d.mtu||w.mtu||'—')}</span></div>
+    <div class="i"><span>DNS</span><b class="mono" style="font-size:14px">${esc((d.dns||[]).join(' · ')||'automático')}</b></div>
+    <div class="i"><span>IPv6</span><b>${esc(v6.wanType||'—')}</b><span class="mono">${esc((v6.ip6addr||[])[0]||'')}</span></div>
+  </div>${d.wanType==='pppoe'?`<div class="acoes"><button class="btn sec" id="bPpStop">Desconectar PPPoE</button><button class="btn sec" id="bPpStart">Reconectar PPPoE</button></div>`:''}`);
+  h+=mod('Configuração da internet',`<form class="f" id="fwan">
+    <label class="k">Tipo de conexão</label><select name="wanType"><option value="pppoe" ${d.wanType==='pppoe'?'selected':''}>PPPoE (usuário e senha da operadora)</option><option value="dhcp" ${d.wanType==='dhcp'?'selected':''}>DHCP (automático)</option><option value="static" ${d.wanType==='static'?'selected':''}>IP fixo</option></select><span></span>
+    <label class="k pp">Usuário PPPoE</label><input class="pp" type="text" name="pppoeName" value="${esc(d.username)}"><span class="pp"></span>
+    <label class="k pp">Senha PPPoE</label><input class="pp" type="password" name="pppoePwd" value="${esc(d.password)}"><span class="pp t"><label class="chk"><input type="checkbox" class="ver"> mostrar</label></span>
+    <label class="k pp">MTU</label><input class="pp" type="number" name="mtu" value="${esc(d.mtu||1480)}"><span class="pp t">padrão 1480</span>
+    <label class="k pp">Nome do serviço</label><input class="pp" type="text" name="service" value="${esc(d.service)}"><span class="pp t">normalmente vazio</span>
+    <label class="k st">IP</label><input class="st" type="text" name="staticIp"><span class="st"></span>
+    <label class="k st">Máscara</label><input class="st" type="text" name="staticMask" value="255.255.255.0"><span class="st"></span>
+    <label class="k st">Gateway</label><input class="st" type="text" name="staticGateway"><span class="st"></span>
+    <label class="k">DNS</label><label class="chk"><input type="checkbox" name="manualdns" ${d.peerdns==='0'||(d.dns||[]).length?'checked':''}> definir manualmente</label><span></span>
+    <label class="k">DNS 1</label><input type="text" name="dns1" value="${esc((d.dns||[])[0])}"><span></span>
+    <label class="k">DNS 2</label><input type="text" name="dns2" value="${esc((d.dns||[])[1])}"><span></span>
+    <span></span><div><button class="btn">Salvar</button></div><span></span></form>`,{desc:'Atenção: errar aqui derruba a internet da casa. Hoje: PPPoE da Vivo com o modem em bridge.'});
+  h+=mod('Velocidade da porta WAN',`<form class="f" id="fspeed"><label class="k">Velocidade</label><select name="speed"><option value="0">Automática (recomendado)</option><option value="1000">1000 Mbps</option><option value="100">100 Mbps</option></select><span></span><span></span><div><button class="btn sec">Salvar</button></div><span></span></form>`);
+  h+=mod('Clonar endereço MAC',`<p class="muted">MAC usado na internet: <b class="mono">${esc(w.mac||'—')}</b></p><form class="f" id="fmac"><label class="k">Novo MAC</label><input type="text" name="mac" value="${esc(w.mac)}" placeholder="AA:BB:CC:DD:EE:FF"><span class="t">só necessário se a operadora prender a conexão a um aparelho</span><span></span><div><button class="btn sec">Salvar</button></div><span></span></form>`);
+  h+=mod('IPv6',`<p class="muted">Modo atual: <b>${esc(v6.wanType||'—')}</b>. Prefixo da rede: <span class="mono">${esc((v6.lan_ip6prefix||[])[0]||'—')}</span></p><div class="acoes"><button class="btn sec" id="b6off">Desligar IPv6</button><button class="btn sec" id="b6nat">Modo nativo</button></div>`);
+  $('#pagina').innerHTML=h;
+  const vis=()=>{const t=$('#fwan [name=wanType]').value;$$('#fwan .pp').forEach(e=>e.style.display=t==='pppoe'?'':'none');$$('#fwan .st').forEach(e=>e.style.display=t==='static'?'':'none');};vis();$('#fwan [name=wanType]').onchange=vis;
+  $$('#pagina .ver').forEach(c=>c.onchange=()=>{c.closest('form').querySelector('[name=pppoePwd]').type=c.checked?'text':'password';});
+  $('#fwan').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const p={wanType:f.wanType,dns1:f.manualdns?f.dns1:'',dns2:f.manualdns?f.dns2:'',autoset:f.manualdns?0:1};
+    if(f.wanType==='pppoe')Object.assign(p,{pppoeName:f.pppoeName,pppoePwd:f.pppoePwd,mtu:f.mtu,service:f.service,special:0});
+    if(f.wanType==='static')Object.assign(p,{staticIp:f.staticIp,staticMask:f.staticMask,staticGateway:f.staticGateway});
+    if(await gravar('api/xqnetwork/set_wan',p,{titulo:'Alterar conexão de internet',msg:'A internet da casa vai cair e reconectar. Se algum dado estiver errado, ela não volta.',perigo:true}))setTimeout(render,8000);};
+  $('#fspeed').onsubmit=async e=>{e.preventDefault();if(await gravar('api/xqnetwork/set_wan_speed',{speed:e.target.speed.value},{titulo:'Velocidade da porta WAN',msg:'A porta WAN renegocia (queda breve).'}))render();};
+  $('#fmac').onsubmit=async e=>{e.preventDefault();if(await gravar('api/xqnetwork/mac_clone',{mac:e.target.mac.value.trim()},{titulo:'Clonar MAC',msg:'A internet reconecta.',metodo:'GET',perigo:true}))render();};
+  const b=(id,ep,p,t,m)=>{const el=$(id);if(el)el.onclick=async()=>{if(await gravar(ep,p,{titulo:t,msg:m,metodo:'GET',perigo:true}))setTimeout(render,3000);};};
+  b('#bPpStop','api/xqnetwork/pppoe_stop',{},'Desconectar PPPoE','A internet da casa fica fora até reconectar.');
+  b('#bPpStart','api/xqnetwork/pppoe_start',{},'Reconectar PPPoE','');
+  $('#b6off').onclick=async()=>{if(await gravar('api/xqnetwork/set_wan6',{wanType:'off'},{titulo:'Desligar IPv6',perigo:true}))setTimeout(render,3000);};
+  $('#b6nat').onclick=async()=>{if(await gravar('api/xqnetwork/set_wan6',{wanType:'native',autosetipv6:1},{titulo:'IPv6 nativo'}))setTimeout(render,3000);};
+};
+
+// COMUNS: Segurança
+PAG.seguranca=async()=>{
+  const [mf,wa]=await Promise.all([ler('api/xqnetwork/wifi_macfilter_info'),ler('api/misystem/web_access_info').catch(()=>({}))]);
+  const lista=mf.macfilter||[];
+  let h=mod('Filtro de MAC do Wi-Fi',`<p class="muted">Modo: <b>${mf.model==1?'lista branca (só os da lista entram)':'lista negra (os da lista são bloqueados)'}</b></p>
+    <div class="tabw"><table><tr><th>Nome</th><th>MAC</th><th></th></tr>${lista.map(d=>`<tr><td>${esc(d.name)}</td><td class="mono">${esc(d.mac)}</td><td><button class="btn peq sec" data-del="${esc(d.mac)}">Remover</button></td></tr>`).join('')||'<tr><td colspan="3" class="muted">Lista vazia.</td></tr>'}</table></div>
+    <form class="f" id="faddmac" style="margin-top:12px"><label class="k">Adicionar MAC</label><input type="text" name="mac" placeholder="AA:BB:CC:DD:EE:FF"><span></span><span></span><div><button class="btn sec">Adicionar à lista</button></div><span></span></form>`,
+    {direita:sw(mf.enable==1,'swMf'),desc:'Atenção: aparelhos Apple trocam o MAC (endereço privado) — o bloqueio pode não segurar. Trocar a senha da rede é mais eficaz.'});
+  h+=mod('Controle de acesso à administração',`${wa.open&&(wa.list||[]).length?`<p class="muted">Só estes aparelhos podem abrir a administração:</p><p class="mono">${(wa.list||[]).map(esc).join('<br>')}</p>`:''}`,{direita:sw(!!wa.open,'swWa'),desc:'Restringe quem pode abrir a página de administração do roteador (por MAC). Cuidado para não se trancar do lado de fora.'});
+  h+=mod('Senha de administrador',`<p class="muted">Por segurança, troque pela interface original (Segurança → Senha de administrador) — ela usa criptografia própria.</p><a class="btn sec" href="http://${estado.roteadores[rot]}/" target="_blank" style="line-height:34px">Abrir interface original</a>`);
+  $('#pagina').innerHTML=h;
+  $('#swMf').onclick=async()=>{const on=!$('#swMf').classList.contains('on');if(await gravar('api/xqnetwork/set_wifi_macfilter',{model:mf.model??0,enable:on?1:0},{titulo:'Filtro de MAC: '+(on?'ligar':'desligar')}))render();};
+  $$('#pagina [data-del]').forEach(b=>b.onclick=async()=>{if(await gravar('api/xqnetwork/edit_device',{mac:b.dataset.del,model:mf.model??0,option:1},{titulo:'Remover da lista',msg:'MAC '+esc(b.dataset.del),metodo:'GET'}))render();});
+  $('#faddmac').onsubmit=async e=>{e.preventDefault();const m=e.target.mac.value.trim().toUpperCase();if(!/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(m)){toast('MAC inválido');return;}if(await gravar('api/xqnetwork/edit_device',{mac:m,model:mf.model??0,option:0},{titulo:'Adicionar à lista',msg:'MAC '+m,metodo:'GET'}))render();};
+  $('#swWa').onclick=async()=>{const on=!$('#swWa').classList.contains('on');if(await gravar('api/misystem/web_access_opt',{open:on?1:0},{titulo:'Controle de acesso: '+(on?'ligar':'desligar'),msg:on?'Garanta que este PC fique na lista, senão você perde o acesso.':'',perigo:on}))render();};
+};
+
+// COMUNS: Rede local
+PAG.lan=async()=>{
+  const [li,dh,mb]=await Promise.all([ler('api/xqnetwork/lan_info'),ler('api/xqnetwork/lan_dhcp'),ler('api/xqnetwork/macbind_info')]);
+  const ip=((li.info||{}).ipv4||[])[0]?.ip||'', d=dh.info||{}, pre=ip.split('.').slice(0,3).join('.')+'.';
+  const fim=(+d.start)+(+d.limit)-1;
+  let h=mod('Servidor DHCP',`<form class="f" id="fdhcp">
+    <label class="k">Faixa de IPs</label><div style="display:flex;gap:6px;align-items:center"><span class="mono">${pre}</span><input type="number" name="start" value="${esc(d.start)}" style="width:80px"> a <input type="number" name="end" value="${fim}" style="width:80px"></div><span></span>
+    <label class="k">Tempo de concessão</label><input type="number" name="leasetime" value="${esc(d.leasetimeNum)}"><span class="t">minutos</span>
+    <label class="k">DNS 1</label><input type="text" name="dns1" value="${esc(d.dns1)}"><span></span>
+    <label class="k">DNS 2</label><input type="text" name="dns2" value="${esc(d.dns2)}"><span></span>
+    <label class="k">Gateway anunciado</label><input type="text" name="router" value="${esc(d.router||ip)}"><span></span>
+    <span></span><div><button class="btn">Salvar</button></div><span></span></form>`,{direita:sw(d.ignore!=='1','swDhcp'),desc:'Distribui IPs automaticamente na rede.'});
+  h+=mod('Endereço IP do roteador',`<form class="f" id="flanip"><label class="k">IP</label><input type="text" name="ip" value="${esc(ip)}"><span class="t">mudar exige reiniciar e muda o endereço desta página</span><span></span><div><button class="btn perigo">Salvar</button></div><span></span></form>`);
+  const res=(mb.list||[]);
+  h+=mod('Reservas de IP (DHCP estático)',`<div class="tabw"><table><tr><th>Nome</th><th>MAC</th><th>IP</th><th></th></tr>${res.map(r=>`<tr><td>${esc(r.name)}</td><td class="mono">${esc(r.mac)}</td><td class="mono">${esc(r.ip)}</td><td><button class="btn peq sec" data-unb="${esc(r.mac)}" data-n="${esc(r.name)}">Remover</button></td></tr>`).join('')}</table></div>
+    <form class="f" id="fbind" style="margin-top:12px"><label class="k">Nome</label><input type="text" name="name"><span></span><label class="k">MAC</label><input type="text" name="mac" placeholder="AA:BB:CC:DD:EE:FF"><span></span><label class="k">IP</label><div style="display:flex;gap:6px;align-items:center"><span class="mono">${pre}</span><input type="number" name="ip" style="width:90px"></div><span></span><span></span><div><button class="btn sec">Adicionar reserva</button></div><span></span></form>`,{desc:`${res.length} reservas.`});
+  $('#pagina').innerHTML=h;
+  $('#fdhcp').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));if(await gravar('api/xqnetwork/set_lan_dhcp',{leasetime:f.leasetime+'m',start:f.start,end:f.end,ignore:0,dns1:f.dns1,dns2:f.dns2,router:f.router},{titulo:'Servidor DHCP',metodo:'GET'}))render();};
+  $('#swDhcp').onclick=async()=>{const on=!$('#swDhcp').classList.contains('on');if(await gravar('api/xqnetwork/set_lan_dhcp',on?{ignore:0,start:d.start,end:fim,leasetime:d.leasetime,dns1:d.dns1,dns2:d.dns2,router:d.router||ip}:{ignore:1},{titulo:'DHCP: '+(on?'ligar':'desligar'),msg:on?'':'Sem DHCP, aparelhos novos não recebem IP.',metodo:'GET',perigo:!on}))render();};
+  $('#flanip').onsubmit=async e=>{e.preventDefault();if(await gravar('api/xqnetwork/set_lan_ip',{ip:e.target.ip.value.trim()},{titulo:'Mudar IP do roteador',msg:'O roteador reinicia. Todas as reservas e integrações que usam 192.168.0.x podem quebrar.',metodo:'GET',perigo:true}))toast('Reiniciando…');};
+  $$('#pagina [data-unb]').forEach(b=>b.onclick=async()=>{if(await gravar('api/xqnetwork/mac_unbind',{mac:b.dataset.unb},{titulo:'Remover reserva',msg:esc(b.dataset.n)+' · '+esc(b.dataset.unb)}))render();});
+  $('#fbind').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const mac=f.mac.trim().toUpperCase();if(!/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(mac)||!f.ip){toast('MAC ou IP inválido');return;}
+    if(await gravar('api/xqnetwork/mac_bind',{data:JSON.stringify([{ip:pre+f.ip,mac,name:f.name}])},{titulo:'Adicionar reserva',msg:`${esc(f.name)} · ${mac} → ${pre}${esc(f.ip)}`}))render();};
+};
+
+// COMUNS: Sistema
+PAG.sistema=async()=>{
+  const [tm,nm,cc,lg]=await Promise.all([ler('api/misystem/sys_time'),ler('api/misystem/router_name'),ler('api/xqsystem/country_code').catch(()=>({})),ler('api/xqsystem/get_languages').catch(()=>({}))]);
+  const t=tm.time||{};
+  const FUSOS=[['CST+3',3,'(UTC−3) Fortaleza / Caiena — sem horário de verão (recomendado)'],['CST+3',0,'(UTC−3) Brasília — ⚠ aplica horário de verão antigo (+1 h)'],['CST+3',1,'(UTC−3) Buenos Aires'],['CST+3',4,'(UTC−3) Montevidéu'],['CST+2',0,'(UTC−2) Fernando de Noronha'],['CST+4',0,'(UTC−4) Manaus / Cuiabá'],['CST+5',0,'(UTC−5) Rio Branco'],['CST-8',0,'(UTC+8) China']];
+  let h=mod('Data, hora e fuso',`<p>Hora do roteador: <b>${String(t.hour).padStart(2,'0')}:${String(t.min).padStart(2,'0')}:${String(t.sec).padStart(2,'0')}</b> ${t.day}/${t.month}/${t.year} · fuso <span class="mono">${esc(t.timezone)}</span> (item ${t.index}) · PC: ${new Date().toTimeString().slice(0,8)}</p>
+    <form class="f" id="ftz"><label class="k">Fuso horário</label><select name="tz">${FUSOS.map((f,i)=>`<option value="${i}" ${f[0]===t.timezone&&f[1]===t.index?'selected':''}>${f[2]}</option>`).join('')}</select><span class="t">na Mesh, defina no principal (é repassado ao repetidor)</span><span></span><div class="acoes" style="margin:0"><button class="btn sec">Salvar fuso</button><button class="btn sec" type="button" id="bHoraPc">Acertar hora pelo PC</button></div><span></span></form>`);
+  h+=mod('Nome e local do roteador',`<form class="f" id="fnome"><label class="k">Nome</label><input type="text" name="name" value="${esc(nm.name)}"><span></span><label class="k">Local</label><input type="text" name="locale" value="${esc(nm.locale)}"><span></span><span></span><div><button class="btn sec">Salvar</button></div><span></span></form>`);
+  h+=mod('Região do Wi-Fi',`<form class="f" id="fcc"><label class="k">Região</label><select name="code">${(cc.list||[]).map(c=>`<option value="${c.code}" ${c.code===cc.current?'selected':''}>${({CN:'China continental',HK:'Hong Kong',TW:'Taiwan',KR:'Coreia',EU:'Europa'})[c.code]||esc(c.name)}</option>`).join('')}</select><span class="t">muda canais e potência permitidos; o Wi-Fi reinicia</span><span></span><div><button class="btn sec">Salvar</button></div><span></span></form>`,{tag:'oculto'});
+  h+=mod('Idioma da interface original',`<form class="f" id="flang"><label class="k">Idioma</label><select name="language">${(lg.list||[]).map(l=>`<option value="${l.lang}" ${l.lang===lg.lang?'selected':''}>${esc(l.name)}</option>`).join('')}</select><span></span><span></span><div><button class="btn sec">Salvar</button></div><span></span></form>`);
+  h+=mod('Registros (log)',`<div class="acoes"><button class="btn sec" id="bLog">Gerar e baixar log do sistema</button></div>`,{desc:'O roteador gera um arquivo com os registros do sistema — útil para investigar as travadas.'});
+  h+=mod('Backup da configuração',`<div class="acoes"><button class="btn sec" id="bBkp">Gerar backup</button></div>`,{desc:'Gera um arquivo com Wi-Fi, rede local e demais ajustes para restaurar depois (restauração pela interface original).'});
+  h+=mod('Firmware',`<div class="acoes"><button class="btn sec" id="bUpd">Procurar atualização</button></div><p class="muted" id="updr"></p>`);
+  h+=mod('Restaurar padrão de fábrica',`<div class="acoes"><button class="btn perigo" id="bReset">Restaurar padrão de fábrica</button></div>`,{desc:'Apaga TODA a configuração (internet, Wi-Fi, reservas). Só como último recurso.'});
+  $('#pagina').innerHTML=h;
+  $('#ftz').onsubmit=async e=>{e.preventDefault();const f=FUSOS[+e.target.tz.value];if(await gravar('api/misystem/set_sys_time',{timezone:f[0],index:f[1]},{titulo:'Fuso horário',msg:f[2]}))setTimeout(render,2000);};
+  $('#bHoraPc').onclick=async()=>{const n=new Date(),p=x=>String(x).padStart(2,'0');const s=`${n.getFullYear()}-${p(n.getMonth()+1)}-${p(n.getDate())} ${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;if(await gravar('api/misystem/set_sys_time',{time:s},{titulo:'Acertar hora',msg:'Definir a hora do roteador para '+s}))setTimeout(render,1500);};
+  $('#fnome').onsubmit=async e=>{e.preventDefault();if(await gravar('api/misystem/set_router_name',{name:e.target.name.value,locale:e.target.locale.value},{titulo:'Nome do roteador',metodo:'GET'}))render();};
+  $('#fcc').onsubmit=async e=>{e.preventDefault();if(await gravar('api/xqsystem/set_country_code',{country:e.target.code.value},{titulo:'Região do Wi-Fi',msg:'O Wi-Fi reinicia. Canais/potência mudam conforme a região.',perigo:true}))setTimeout(render,3000);};
+  $('#flang').onsubmit=async e=>{e.preventDefault();if(await gravar('api/xqsystem/set_language',{language:e.target.language.value},{titulo:'Idioma'}))render();};
+  $('#bLog').onclick=async()=>{toast('Gerando log…');try{const r=await ler('api/misystem/sys_log');if(r.path)window.open('http://'+r.path,'_blank');else toast('Sem caminho: '+JSON.stringify(r));}catch(e){toast(e.message);}};
+  $('#bBkp').onclick=async()=>{const r=await gravar('api/misystem/c_backup',{keys:'mi_basic_info,mi_network_info,mi_wifi_info,mi_lan_info,mi_arn_info'},{titulo:'Gerar backup',msg:'Só gera um arquivo — não altera nada.',metodo:'GET'});if(r&&r.url)window.open('http://'+r.url,'_blank');};
+  $('#bUpd').onclick=async()=>{$('#updr').textContent='Procurando…';try{const r=await ler('api/xqsystem/check_rom_update');$('#updr').textContent=r.needUpdate==1?`Nova versão ${r.version||''} disponível (${r.size||''}).`:'Firmware atualizado.';}catch(e){$('#updr').textContent=e.message;}};
+  $('#bReset').onclick=async()=>{if(!await confirmar('Tem certeza?','Isto APAGA toda a configuração e a internet da casa para de funcionar até reconfigurar.',true))return;gravar('api/xqsystem/reset',{format:0},{titulo:'Restaurar padrão de fábrica',msg:'Última confirmação.',metodo:'GET',perigo:true});};
+};
+
+// AVANÇADAS: QoS
+PAG.qos=async()=>{
+  const q=await ler('api/misystem/qos_info');const on=q.status?.on==1,b=q.band||{};
+  const MODOS={0:'Automático',1:'Prioridade para jogos',2:'Prioridade para navegação',3:'Prioridade para vídeo',4:'Manual por aparelho'};
+  let h=mod('QoS inteligente (controle de banda)',`<p class="muted">Banda configurada: <b>↓ ${b.download} Mbps · ↑ ${b.upload} Mbps</b> · modo: <b>${MODOS[q.status?.mode]||q.status?.mode}</b></p>
+    <form class="f" id="fband"><label class="k">Download</label><input type="number" name="download" value="${esc(b.download)}"><span class="t">Mbps</span><label class="k">Upload</label><input type="number" name="upload" value="${esc(b.upload)}"><span class="t">Mbps</span><span></span><div><button class="btn sec">Salvar banda</button></div><span></span></form>
+    <form class="f" id="fmodo" style="margin-top:10px"><label class="k">Modo</label><select name="mode">${Object.entries(MODOS).map(([k,v])=>`<option value="${k}" ${String(q.status?.mode)===k?'selected':''}>${v}</option>`).join('')}</select><span></span><span></span><div><button class="btn sec">Salvar modo</button></div><span></span></form>`,
+    {direita:sw(on,'swQos'),desc:'O QoS classifica e limita o tráfego de cada aparelho. Consome bastante processador neste roteador — se o roteador trava sob carga, desligar o QoS é um bom teste.'});
+  h+=mod('Limite da rede de visitante',`<p class="muted">Hoje: até <b>${(q.guest?.percent*b.download).toFixed(1)} Mbps</b> de download e <b>${(q.guest?.percent_up*b.upload).toFixed(1)} Mbps</b> de upload.</p>
+    <form class="f" id="fqg"><label class="k">Download máx.</label><input type="number" step="0.1" name="down" value="${(q.guest?.percent*b.download).toFixed(1)}"><span class="t">Mbps</span><label class="k">Upload máx.</label><input type="number" step="0.1" name="up" value="${(q.guest?.percent_up*b.upload).toFixed(1)}"><span class="t">Mbps</span><span></span><div><button class="btn sec">Salvar</button></div><span></span></form>`);
+  const lst=q.list||[];
+  h+=mod('Limites por aparelho',`<div class="tabw"><table><tr><th>Aparelho</th><th>IP</th><th>Agora</th><th>Limite ↓ / ↑</th><th></th></tr>${lst.map(d=>{const s=d.statistics||{},qq=d.qos||{};return `<tr><td>${esc(d.name)}</td><td class="mono">${esc(d.ip)}</td><td class="mono">↓${fmtV(s.downspeed)} ↑${fmtV(s.upspeed)}</td><td>${qq.downmax?fmtV(qq.downmax*1024)+' / '+fmtV(qq.upmax*1024):'sem limite'}</td><td>${qq.downmax?`<button class="btn peq sec" data-off="${esc(d.mac)}">Remover limite</button>`:''}</td></tr>`;}).join('')}</table></div>`);
+  $('#pagina').innerHTML=h;
+  $('#swQos').onclick=async()=>{const v=!$('#swQos').classList.contains('on');if(await gravar('api/misystem/qos_switch',{on:v?1:0},{titulo:'QoS: '+(v?'ligar':'desligar'),metodo:'GET'}))render();};
+  $('#fband').onsubmit=async e=>{e.preventDefault();if(await gravar('api/misystem/set_band',{manual:1,upload:e.target.upload.value,download:e.target.download.value},{titulo:'Banda contratada'}))render();};
+  $('#fmodo').onsubmit=async e=>{e.preventDefault();if(await gravar('api/misystem/qos_mode',{mode:e.target.mode.value},{titulo:'Modo do QoS',metodo:'GET'}))render();};
+  $('#fqg').onsubmit=async e=>{e.preventDefault();const pd=e.target.down.value/b.download,pu=e.target.up.value/b.upload;if(await gravar('api/misystem/qos_guest',{percent:pd,percent_up:pu},{titulo:'Limite da rede de visitante',metodo:'GET'}))render();};
+  $$('#pagina [data-off]').forEach(x=>x.onclick=async()=>{if(await gravar('api/misystem/qos_offlimit',{mac:x.dataset.off},{titulo:'Remover limite',metodo:'GET'}))render();});
+};
+
+// AVANÇADAS: funções ocultas (resumo)
+PAG.ocultas=async()=>{
+  $('#pagina').innerHTML=mod('O que este painel expõe além da interface original',`<table>
+   <tr><th>Função</th><th>Onde</th></tr>
+   <tr><td>Rede de visitante (ligar, nome, senha, segurança)</td><td><a href="#" data-go="comuns:wifi">Wi-Fi</a></td></tr>
+   <tr><td>Desconectar aparelhos com sinal fraco (roaming por limiar)</td><td><a href="#" data-go="comuns:wifi">Wi-Fi</a></td></tr>
+   <tr><td>Varredura AIoT da antena</td><td><a href="#" data-go="comuns:wifi">Wi-Fi</a></td></tr>
+   <tr><td>Prioridade para muitos aparelhos</td><td><a href="#" data-go="comuns:wifi">Wi-Fi</a></td></tr>
+   <tr><td>Região do Wi-Fi</td><td><a href="#" data-go="comuns:sistema">Sistema</a></td></tr>
+   <tr><td>Fuso sem horário de verão + acertar hora pelo PC</td><td><a href="#" data-go="comuns:sistema">Sistema</a></td></tr>
+   <tr><td>Bloquear internet por aparelho, velocidades em tempo real</td><td><a href="#" data-go="estado:rede">Rede e aparelhos</a></td></tr>
+   <tr><td>Todas as ${'90+'} funções internas, com chamada livre</td><td><a href="#" data-go="avancadas:api">Todas as funções</a></td></tr>
+  </table>`);
+  $$('#pagina [data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();[sec,sub]=a.dataset.go.split(':');render();});
+};
+
+// AVANÇADAS: explorador de API
+let EPS={};
+PAG.api=async()=>{
+  if(!EPS[rot]) EPS[rot]=await srv('/api/endpoints?roteador='+rot);
+  $('#pagina').innerHTML=mod('Todas as funções internas',`<div style="display:grid;grid-template-columns:minmax(220px,320px) 1fr;gap:14px">
+   <div><input type="text" id="flt" placeholder="filtrar (wifi, qos, time…)"><div id="eps" style="max-height:60vh;overflow:auto;margin-top:8px"></div></div>
+   <div><div style="display:flex;gap:6px"><select id="met" style="width:90px"><option>GET</option><option>POST</option></select><input type="text" id="ep" class="mono" placeholder="api/xqnetwork/wifi_detail_all"></div>
+   <input type="text" id="par" class="mono" placeholder='parâmetros JSON, ex.: {"mac":"AA:BB:…"}' style="margin-top:6px">
+   <div class="acoes"><button class="btn" id="exe">Executar</button><label class="chk"><input type="checkbox" id="mos"> mostrar senhas</label></div><pre id="out" class="muted">O resultado aparece aqui.</pre></div></div>`,{desc:'Chamada direta à API interna. Funções que alteram algo pedem confirmação.'});
+  const lst=()=>{const f=$('#flt').value.toLowerCase();$('#eps').innerHTML=EPS[rot].filter(e=>e.endpoint.includes(f)).map(e=>`<div class="mono" style="padding:5px 4px;border-bottom:1px solid var(--sep);cursor:pointer;display:flex;justify-content:space-between" data-ep="${e.endpoint}" data-w="${e.escrita?1:0}"><span>${e.endpoint.replace('api/','')}</span><span class="badge ${e.escrita?'no':''}">${e.escrita?'altera':'leitura'}</span></div>`).join('');
+    $$('#eps [data-ep]').forEach(x=>x.onclick=()=>{$('#ep').value=x.dataset.ep;$('#met').value=x.dataset.w==='1'?'POST':'GET';if(x.dataset.w!=='1')$('#exe').click();});};
+  $('#flt').oninput=lst;lst();
+  $('#exe').onclick=async()=>{let p={};try{if($('#par').value.trim())p=JSON.parse($('#par').value);}catch{toast('JSON inválido');return;}
+    const ep=$('#ep').value.trim(),w=$('#met').value==='POST'||(EPS[rot].find(e=>e.endpoint===ep)||{}).escrita;
+    if(w&&!await confirmar('Executar função que altera o roteador',`<span class="mono">${esc(ep)}</span><br>${esc(JSON.stringify(p))}`,true))return;
+    $('#out').textContent='…';const r=await srv('/api/chamar',{roteador:rot,endpoint:ep,metodo:$('#met').value,params:p,confirmado:!!w,mostrar:$('#mos').checked});$('#out').textContent=JSON.stringify(r.json??r.texto??r,null,2);};
+};
+
+// ---------- configuração de endereços ----------
+function preencherSel(){$('#rotsel').innerHTML=Object.entries(estado.roteadores).map(([n,ip])=>`<option value="${esc(n)}" ${n===rot?'selected':''}>${esc(n[0].toUpperCase()+n.slice(1))} · ${esc(ip)}</option>`).join('');}
+$('#bcfg').onclick=()=>{
+  const linha=(n,ip)=>`<div class="lcfg" style="display:flex;gap:6px;margin-bottom:6px"><input type="text" class="cn" value="${esc(n)}" placeholder="nome (ex.: principal)" style="flex:1"><input type="text" class="ci mono" value="${esc(ip)}" placeholder="192.168.0.1" style="flex:1"><button class="btn peq sec crm" type="button" title="remover">✕</button></div>`;
+  $('#dlg').innerHTML=`<h4>Endereços dos roteadores</h4><p class="muted" style="margin-top:0">Se um roteador mudar de IP, corrija aqui. Fica salvo em %APPDATA%\\MiWiFiPainel.</p><div id="lcfgs">${Object.entries(estado.roteadores).map(([n,ip])=>linha(n,ip)).join('')}</div>
+   <button class="btn peq sec" type="button" id="cadd">+ adicionar roteador</button><p class="err" id="cerr"></p>
+   <div class="acoes" style="justify-content:flex-end"><button class="btn sec" id="ccan">Cancelar</button><button class="btn" id="csal">Salvar</button></div>`;
+  $('#veu').style.display='flex';
+  const liga=()=>$$('.crm').forEach(b=>b.onclick=()=>b.closest('.lcfg').remove());liga();
+  $('#cadd').onclick=()=>{$('#lcfgs').insertAdjacentHTML('beforeend',linha('',''));liga();};
+  $('#ccan').onclick=()=>$('#veu').style.display='none';
+  $('#csal').onclick=async()=>{const lst=$$('.lcfg').map(l=>({nome:l.querySelector('.cn').value,ip:l.querySelector('.ci').value}));
+    const r=await srv('/api/config',{roteadores:lst});if(!r.ok){$('#cerr').textContent=r.erro;return;}
+    $('#veu').style.display='none';estado=await srv('/api/estado');if(!estado.roteadores[rot])rot=Object.keys(estado.roteadores)[0];preencherSel();EPS={};render();toast('Endereços salvos.');};
+};
+
+// ---------- inicialização ----------
+if(EMBUTIDO){$('#bcfg').style.display='none';$('#rodape').innerHTML='Painel do Home Assistant · usa o login da integração · alterações sempre pedem confirmação · <span class="oculto">oculto</span> = função que não aparece na interface original';}
+$$('#menu a').forEach(a=>a.onclick=e=>{e.preventDefault();sec=a.dataset.sec;sub=null;render();});
+(async()=>{estado=await srv('/api/estado');if(!estado.roteadores[rot])rot=Object.keys(estado.roteadores)[0];preencherSel();
+  $('#rotsel').onchange=()=>{rot=$('#rotsel').value;localStorage.setItem('rot',rot);render();};render();})();
+
+}
+
+class MiwifiAxPanel extends HTMLElement {
+  set hass(h) {
+    this._hass = h;
+    if (this._mb) this._mb.hass = h;
+    this.toggleAttribute("dark", !!(h.themes && h.themes.darkMode));
+    if (!this._ok) { this._ok = true; this._init(); }
+  }
+  set narrow(n) { this._narrow = n; if (this._mb) this._mb.narrow = n; }
+  _init() {
+    const root = this.attachShadow({ mode: "open" });
+    root.innerHTML = `<style>${CSS}</style>${HTML}`;
+    const slot = root.querySelector("#hamb");
+    if (slot && customElements.get("ha-menu-button")) {
+      this._mb = document.createElement("ha-menu-button");
+      this._mb.hass = this._hass; this._mb.narrow = this._narrow;
+      slot.appendChild(this._mb);
+    }
+    window.__MIWIFI_ROOT__ = root;
+    window.__MIWIFI_SRV__ = (path, body) => this._srv(path, body);
+    runPanel();
+  }
+  async _srv(path, body) {
+    const h = this._hass;
+    try {
+      if (path === "/api/estado") return await h.callApi("GET", "miwifi_ax/estado");
+      if (path === "/api/chamar") return await h.callApi("POST", "miwifi_ax/chamar", body);
+      if (path.startsWith("/api/endpoints")) return await h.callApi("GET", "miwifi_ax/endpoints" + path.slice(14));
+      return { ok: false, erro: "Função disponível só no painel do PC." };
+    } catch (e) {
+      return { ok: false, erro: (e && ((e.body && e.body.message) || e.message || e.error)) || String(e) };
+    }
+  }
+}
+customElements.define("miwifi-ax-panel", MiwifiAxPanel);

@@ -87,11 +87,12 @@ class MiWiFiOptions(OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(data=user_input)
         coord = self.hass.data[DOMAIN][self.config_entry.entry_id]
+        devs = await coord.async_devices() if coord.role == "principal" else {}
         opts = sorted(
-            ({"value": mac, "label": f"{d['nome']} · {d.get('ip') or '-'} · {mac}"} for mac, d in coord.devices.items() if not d.get("isap")),
+            ({"value": mac, "label": f"{d['nome']} · {d.get('ip') or '-'} · {mac}"} for mac, d in devs.items() if not d.get("isap")),
             key=lambda o: o["label"].lower(),
         )
-        atual = [m for m in self.config_entry.options.get(CONF_TRACKED, []) if m in coord.devices]
+        atual = [m for m in self.config_entry.options.get(CONF_TRACKED, []) if m in devs]
         campos: dict = {}
         if opts:
             campos[vol.Optional(CONF_TRACKED, default=atual)] = selector.SelectSelector(

@@ -128,6 +128,15 @@ class MiWiFiApi:
                 return j
             return j
 
+    async def page(self, path: str) -> str:
+        """Página da interface web (para descobrir funções). Nunca 'logout'."""
+        if "logout" in path or "login" in path:
+            return ""
+        async with self._lock:
+            if not self._token:
+                await self.login()
+            return await self._text(f"http://{self.host}/cgi-bin/luci/;stok={self._token}/{path}")
+
     async def safe(self, ep: str, params: dict | None = None) -> dict[str, Any]:
         try:
             j = await self.call(ep, params)

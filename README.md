@@ -6,8 +6,10 @@ O projeto tem duas partes, que usam a mesma API local (LuCI) do roteador:
 
 | Parte | Pasta | O que é |
 |---|---|---|
-| Integração do Home Assistant | `custom_components/miwifi_ax` | Cria um **dispositivo** por roteador com sensores, interruptores, botões e rastreamento de presença |
-| Painel do PC | `desktop/` | Interface web local em português, no estilo da original, com **todas** as funções — inclusive as que o firmware esconde |
+| Integração do Home Assistant | `custom_components/miwifi_ax` | Cria um **dispositivo** por roteador com sensores, interruptores, botões e rastreamento de presença, e o painel **Roteadores** na barra lateral |
+| Painel do PC | `desktop/` | A mesma interface do painel do HA, rodando sozinha no PC — útil quando o HA ou a rede estão com problema |
+
+A interface (em português, no estilo da original, com **todas** as funções — inclusive as que o firmware esconde) é uma só: `desktop/painel.html`. O painel do HA é gerado a partir dela por `python tools/build_ha_panel.py`.
 
 ## Integração do Home Assistant
 
@@ -26,7 +28,10 @@ O projeto tem duas partes, que usam a mesma API local (LuCI) do roteador:
 - **Rastreamento:** aparelhos escolhidos (online/offline, IP, conexão, velocidade).
 - **Serviço** `miwifi_ax.definir_internet` (`mac`, `liberar`): bloqueia/libera a internet de um aparelho.
 
-Entidades que você não usa podem ser desativadas normalmente pela interface.
+Por padrão só ficam **ativadas** *Internet* (principal) e *Reiniciar* (cada roteador); as demais vêm **desativadas** — ative só o que for usar. A integração consulta no roteador apenas o que alguma entidade ativada precisa (menos tráfego e menos gravações no banco). A verificação de firmware, que consulta os servidores da Xiaomi, roda no máximo a cada 6 h.
+
+### Painel "Roteadores" (barra lateral)
+Aparece para administradores. Usa o login já guardado pela integração (não pede senha), funciona no app do HA e fora de casa. O botão **Visitar** da página do dispositivo abre o painel já no roteador certo (configurável nas opções — pode apontar para o painel do PC).
 
 ## Painel do PC
 

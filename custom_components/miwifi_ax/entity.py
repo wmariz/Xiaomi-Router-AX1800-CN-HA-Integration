@@ -16,6 +16,11 @@ def _url(coord: MiWiFiCoordinator) -> str:
     return f"{p}{'&' if '?' in p else '?'}rot={coord.role}"
 
 
+# Ativadas por padrão; o resto nasce DESATIVADO (ative só o que usar — a integração
+# só consulta no roteador o que alguma entidade ativada precisa).
+VISIVEIS = {"internet", "reiniciar"}
+
+
 class MiWiFiEntity(CoordinatorEntity[MiWiFiCoordinator]):
     _attr_has_entity_name = True
 
@@ -23,6 +28,7 @@ class MiWiFiEntity(CoordinatorEntity[MiWiFiCoordinator]):
         super().__init__(coord)
         mac = (coord.hw.get("mac") or coord.api.host).upper()
         self._key = key
+        self._attr_entity_registry_enabled_default = key in VISIVEIS
         self._attr_unique_id = f"{mac}_{key}"
         self._attr_translation_key = key
         self._attr_device_info = DeviceInfo(

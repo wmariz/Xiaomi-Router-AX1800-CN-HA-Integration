@@ -74,7 +74,7 @@ pre{background:var(--hover);border-radius:4px;padding:10px;overflow:auto;max-hei
 </head>
 <body>
 <div id="topo">
-  <div id="logo">MiWiFi</div>
+  <span id="hamb"></span><div id="logo">MiWiFi</div>
   <nav id="menu">
     <a data-sec="estado">Estado do roteador</a>
     <a data-sec="comuns">Configurações comuns</a>
@@ -90,13 +90,17 @@ pre{background:var(--hover);border-radius:4px;padding:10px;overflow:auto;max-hei
 <div id="toast"></div>
 <script>
 // ---------- infraestrutura ----------
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+// O mesmo código roda no PC (servidor painel.py) e dentro do Home Assistant (integração miwifi_ax).
+// No HA, o componente define window.__MIWIFI_ROOT__ (shadow root) e window.__MIWIFI_SRV__ (ponte via hass.callApi).
+const ROOT=window.__MIWIFI_ROOT__||document, EMBUTIDO=!!window.__MIWIFI_SRV__;
+const $=s=>ROOT.querySelector(s), $$=s=>[...ROOT.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let estado={roteadores:{},logado:{}}, rot=localStorage.getItem('rot')||'principal', sec='estado', sub=null;
+const _q=new URLSearchParams(window.__MIWIFI_QUERY__??location.search);
+let estado={roteadores:{},logado:{}}, rot=_q.get('rot')||localStorage.getItem('rot')||'principal', sec='estado', sub=null;
 function toast(m,ms=3000){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',ms);}
 function dialogo(titulo,html,botoes){return new Promise(res=>{$('#dlg').innerHTML=`<h4>${titulo}</h4><div>${html}</div><div class="acoes" style="justify-content:flex-end">${botoes.map((b,i)=>`<button class="btn ${b.cls||''}" data-i="${i}">${b.t}</button>`).join('')}</div>`;$('#veu').style.display='flex';$$('#dlg [data-i]').forEach(b=>b.onclick=()=>{$('#veu').style.display='none';res(botoes[+b.dataset.i].v);});});}
 const confirmar=(t,m,perigo)=>dialogo(t,`<p class="muted" style="margin:0">${m}</p>`,[{t:'Cancelar',cls:'sec',v:false},{t:'Confirmar',cls:perigo?'perigo':'',v:true}]);
-async function srv(path,body){const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});return r.json();}
+async function srv(path,body){if(EMBUTIDO)return window.__MIWIFI_SRV__(path,body);const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});return r.json();}
 // leitura
 async function ler(ep,params,mostrar){const r=await srv('/api/chamar',{roteador:rot,endpoint:ep,metodo:'GET',params,mostrar:!!mostrar});if(!r.ok){if(/login/i.test(r.erro||'')){estado.logado[rot]=false;render();}throw new Error(r.erro||'erro');}return r.json||{};}
 // escrita (sempre confirmada)
@@ -428,6 +432,7 @@ $('#bcfg').onclick=()=>{
 };
 
 // ---------- inicialização ----------
+if(EMBUTIDO){$('#bcfg').style.display='none';$('#rodape').innerHTML='Painel do Home Assistant · usa o login da integração · alterações sempre pedem confirmação · <span class="oculto">oculto</span> = função que não aparece na interface original';}
 $$('#menu a').forEach(a=>a.onclick=e=>{e.preventDefault();sec=a.dataset.sec;sub=null;render();});
 (async()=>{estado=await srv('/api/estado');if(!estado.roteadores[rot])rot=Object.keys(estado.roteadores)[0];preencherSel();
   $('#rotsel').onchange=()=>{rot=$('#rotsel').value;localStorage.setItem('rot',rot);render();};render();})();
