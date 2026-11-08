@@ -90,18 +90,26 @@ class MiWiFiApi:
         page = await self._text(f"http://{self.host}/cgi-bin/luci/web")
         dev = re.search(r"deviceId\s*=\s*'([^']+)'", page)
         key = re.search(r"key:\s*'([0-9a-f]{32})'", page)
-        nonce = f"0_{dev.group(1) if dev else ''}_{int(time.time())}_{random.randint(0, 9999)}"
         k = key.group(1) if key else DEFAULT_KEY
         inner = hashlib.sha1((self._pwd + k).encode()).hexdigest()
-        pwd = hashlib.sha1((nonce + inner).encode()).hexdigest()
-        txt = await self._text(
-            f"http://{self.host}/cgi-bin/luci/api/xqsystem/login",
-            {"username": "admin", "password": pwd, "logtype": 2, "nonce": nonce},
-        )
-        try:
-            j = json.loads(txt)
-        except ValueError as err:
-            raise MiWiFiConnError("resposta inválida no login") from err
+        for tentativa in range(4):
+            nonce = f"0_{dev.group(1) if dev else ''}_{int(time.time())}_{random.randint(0, 9999)}"
+            pwd = hashlib.sha1((nonce + inner).encode()).hexdigest()
+            txt = await self._text(
+                f"http://{self.host}/cgi-bin/luci/api/xqsystem/login",
+                {"username": "admin", "password": pwd, "logtype": 2, "nonce": nonce},
+            )
+            try:
+                j = json.loads(txt)
+            except ValueError as err:
+                raise MiWiFiConnError("resposta inválida no login") from err
+            # 1582: login logo após outro (nonce com o mesmo segundo/recusado) — não é senha errada.
+            if j.get("code") == 1582 and tentativa < 3:
+                await asyncio.sleep(2)
+                continue
+            break
+        if j.get("code") == 1582:
+            raise MiWiFiConnError("roteador recusou logins seguidos (code 1582)")
         if j.get("code") != 0 or not j.get("token"):
             raise MiWiFiAuthError(f"code {j.get('code')}")
         self._token = j["token"]
