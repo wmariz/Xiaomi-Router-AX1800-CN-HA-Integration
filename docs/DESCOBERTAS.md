@@ -85,6 +85,12 @@ Com Mesh por cabo, aparelhos ligados nas portas do nó aparecem como "cabo" **se
 - Antivírus com inspeção de HTTPS (ex.: Avast) quebram o login do app e ferramentas Java/Python que não usam o repositório de certificados do Windows.
 - O roteador é limitado (4× Cortex-A53 716 MHz, 256 MB, ~50–60 % de memória em uso em repouso). Ficou visivelmente instável com muitos aparelhos extras conectados.
 
+- **Troca da senha de administração (testado 2026-11-08):**
+  - a sessão (`stok`) já aberta **continua valendo** depois da troca: a integração segue funcionando até precisar de um login novo (reinício do HA, recarga da integração);
+  - aí o login com a senha antiga devolve `code 401` → o HA abre "Nova autenticação";
+  - a **Mesh copia a senha nova para o repetidor** (ele também passa a dar 401) → a tela de nova autenticação oferece "usar a senha do roteador principal";
+  - dois logins quase no mesmo segundo (a validação da nova autenticação e a recarga logo em seguida) dão **`code 1582`**: não é senha errada; a integração espera 2 s e tenta de novo (até 4 vezes).
+
 ## 4. Diagnóstico de rede usado
 - `xqsystem/init_info` responde **sem login** — útil como "ping" do serviço web.
 - O tempo ligado (`misystem/status.upTime`) de cada aparelho revela reinícios.
