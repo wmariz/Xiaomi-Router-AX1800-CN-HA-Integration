@@ -66,6 +66,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
+async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEntry, device) -> bool:
+    """Permite desvincular aparelhos rastreados (não os próprios roteadores)."""
+    return not any(i[0] == DOMAIN for i in device.identifiers)
+
+
 async def _reload(hass: HomeAssistant, entry: ConfigEntry) -> None:
     await hass.config_entries.async_reload(entry.entry_id)
 
