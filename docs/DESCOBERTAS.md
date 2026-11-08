@@ -89,3 +89,8 @@ Comparação dos APKs `xqapp.apk` (estável, 5.6.7) e `xqapp_dev.apk` (desenvolv
 - **nenhuma função, endpoint ou texto novo** — as 252 referências de API e todas as strings legíveis são idênticas.
 
 Conclusão: a versão de desenvolvedor não traz recursos extras para este roteador.
+
+## 6. Ícone da integração no Home Assistant
+O HA 2026.x serve ícones de integrações personalizadas a partir de `custom_components/<domínio>/brand/`
+(`icon.png` 256×256, `icon@2x.png` 512×512, `logo.png`/`logo@2x.png`) pela rota autenticada
+`/api/brands/integration/<domínio>/icon.png`. A pasta só é lida na inicialização — é preciso reiniciar o HA.
