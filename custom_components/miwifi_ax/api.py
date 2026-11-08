@@ -8,11 +8,28 @@ import random
 import re
 import time
 from typing import Any
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 
 import aiohttp
 
 DEFAULT_KEY = "a2ffa5c9be07488bbb04a3a47d3c5f6a"
+
+
+def _dechunk(b: bytes) -> bytes:
+    out, i = b"", 0
+    while i < len(b):
+        j = b.find(b"\r\n", i)
+        if j < 0:
+            break
+        try:
+            n = int(b[i:j].split(b";")[0], 16)
+        except ValueError:
+            return b
+        if n == 0:
+            break
+        out += b[j + 2 : j + 2 + n]
+        i = j + 2 + n + 2
+    return out
 
 
 class MiWiFiAuthError(Exception):
@@ -32,15 +49,42 @@ class MiWiFiApi:
         self._lock = asyncio.Lock()
 
     async def _text(self, url: str, data: dict | None = None) -> str:
+        """HTTP/1.0 simples e tolerante.
+
+        Alguns endpoints do firmware (ex.: misystem/led?on=1 no repetidor) respondem
+        com cabeçalhos malformados, que o parser do aiohttp rejeita. Aqui o corpo é
+        extraído sem validar cabeçalhos.
+        """
+        u = urlsplit(url)
+        path = u.path + (f"?{u.query}" if u.query else "")
+        corpo = urlencode(data).encode() if data is not None else b""
+        linhas = [
+            f"{'POST' if data is not None else 'GET'} {path} HTTP/1.0",
+            f"Host: {u.hostname}",
+            "Connection: close",
+            "User-Agent: miwifi_ax",
+        ]
+        if data is not None:
+            linhas += ["Content-Type: application/x-www-form-urlencoded", f"Content-Length: {len(corpo)}"]
+        req = ("\r\n".join(linhas) + "\r\n\r\n").encode() + corpo
+        writer = None
         try:
             async with asyncio.timeout(12):
-                if data is None:
-                    r = await self._s.get(url)
-                else:
-                    r = await self._s.post(url, data=data)
-                return await r.text()
-        except (aiohttp.ClientError, TimeoutError) as err:
+                reader, writer = await asyncio.open_connection(u.hostname, u.port or 80)
+                writer.write(req)
+                await writer.drain()
+                bruto = await reader.read()
+        except (OSError, TimeoutError) as err:
             raise MiWiFiConnError(str(err)) from err
+        finally:
+            if writer is not None:
+                writer.close()
+        cab, sep, resto = bruto.partition(b"\r\n\r\n")
+        if not sep:
+            cab, sep, resto = bruto.partition(b"\n\n")
+        if b"chunked" in cab.lower():
+            resto = _dechunk(resto)
+        return resto.decode("utf-8", "replace")
 
     async def login(self) -> None:
         page = await self._text(f"http://{self.host}/cgi-bin/luci/web")

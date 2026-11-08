@@ -75,7 +75,8 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             b = "24" if i == 0 else "5"
             ci = w.get("channelInfo") or {}
             d[f"canal_{b}"] = ci.get("channel") or w.get("channel")
-            d[f"largura_{b}"] = ci.get("bandwidth") or w.get("bandwidth")
+            lg = str(ci.get("bandwidth") or w.get("bandwidth") or "0")
+            d[f"largura_{b}"] = "automática" if lg == "0" else f"{lg} MHz"
             d[f"potencia_{b}"] = {"max": "máxima", "mid": "padrão", "min": "economia"}.get(w.get("txpwr"), w.get("txpwr"))
             d[f"wifi_{b}"] = w.get("status") == "1"
         if self.role == ROLE_NODE:
