@@ -1,0 +1,251 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Xiaomi Router AX1800",
+        "data": {
+          "host": "Router IP address",
+          "password": "Admin password"
+        }
+      },
+      "reauth_confirm": {
+        "data": {
+          "password": "Admin password"
+        }
+      },
+      "reconfigure": {
+        "data": {
+          "host": "Router IP address"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Wrong password",
+      "cannot_connect": "Cannot connect to the router"
+    },
+    "abort": {
+      "already_configured": "This router is already configured",
+      "reauth_successful": "OK",
+      "reconfigure_successful": "OK"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "tracked_macs": "Devices to track (presence)",
+          "painel_url": "Panel URL (Visit button)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "ligado_ha": {
+        "name": "Ligado há"
+      },
+      "cpu": {
+        "name": "Processador"
+      },
+      "memoria": {
+        "name": "Memória"
+      },
+      "clientes_24": {
+        "name": "Clientes 2,4 GHz"
+      },
+      "clientes_5": {
+        "name": "Clientes 5 GHz"
+      },
+      "canal_24": {
+        "name": "Canal 2,4 GHz"
+      },
+      "canal_5": {
+        "name": "Canal 5 GHz"
+      },
+      "largura_24": {
+        "name": "Largura 2,4 GHz"
+      },
+      "largura_5": {
+        "name": "Largura 5 GHz"
+      },
+      "potencia_24": {
+        "name": "Potência 2,4 GHz"
+      },
+      "potencia_5": {
+        "name": "Potência 5 GHz"
+      },
+      "avisos": {
+        "name": "Avisos"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "hora_roteador": {
+        "name": "Hora do roteador"
+      },
+      "relogio_diferenca": {
+        "name": "Diferença do relógio"
+      },
+      "sinal_ate_principal": {
+        "name": "Sinal até o principal"
+      },
+      "aparelhos_online": {
+        "name": "Aparelhos online"
+      },
+      "aparelhos_conhecidos": {
+        "name": "Aparelhos conhecidos"
+      },
+      "qtd_cabo": {
+        "name": "Aparelhos por cabo"
+      },
+      "qtd_24": {
+        "name": "Aparelhos no 2,4 GHz"
+      },
+      "qtd_5": {
+        "name": "Aparelhos no 5 GHz"
+      },
+      "qtd_visitante": {
+        "name": "Aparelhos na rede de visitante"
+      },
+      "qtd_reservas": {
+        "name": "Reservas de IP"
+      },
+      "filtro_mac_qtd": {
+        "name": "Aparelhos no filtro de MAC"
+      },
+      "visitante_ssid": {
+        "name": "Nome da rede de visitante"
+      },
+      "intrusoes_bloqueadas": {
+        "name": "Intrusões bloqueadas"
+      },
+      "anti_intrusos_nivel": {
+        "name": "Nível anti-intrusos"
+      },
+      "vpn_status": {
+        "name": "Estado da VPN"
+      },
+      "ip_publico": {
+        "name": "IP público"
+      },
+      "ipv6": {
+        "name": "IPv6"
+      },
+      "gateway_wan": {
+        "name": "Gateway da operadora"
+      },
+      "dns": {
+        "name": "DNS"
+      },
+      "internet_conectada_ha": {
+        "name": "Internet conectada há"
+      },
+      "download": {
+        "name": "Download agora"
+      },
+      "upload": {
+        "name": "Upload agora"
+      },
+      "pico_download": {
+        "name": "Pico de download"
+      },
+      "pico_upload": {
+        "name": "Pico de upload"
+      },
+      "total_baixado": {
+        "name": "Total baixado"
+      },
+      "total_enviado": {
+        "name": "Total enviado"
+      }
+    },
+    "binary_sensor": {
+      "internet": {
+        "name": "Internet"
+      },
+      "wan_cabo": {
+        "name": "Cabo da operadora"
+      },
+      "repetidor_na_mesh": {
+        "name": "Repetidor na Mesh"
+      },
+      "firmware_atualizacao": {
+        "name": "Atualização de firmware"
+      },
+      "wifi_24": {
+        "name": "Wi-Fi 2,4 GHz"
+      },
+      "wifi_5": {
+        "name": "Wi-Fi 5 GHz"
+      },
+      "wifi_unificado": {
+        "name": "Wi-Fi unificado"
+      },
+      "anti_intrusos": {
+        "name": "Anti-intrusos"
+      },
+      "firewall_sites": {
+        "name": "Firewall de sites"
+      },
+      "firewall_virus": {
+        "name": "Firewall de vírus"
+      },
+      "wps": {
+        "name": "WPS ativo"
+      }
+    },
+    "switch": {
+      "led": {
+        "name": "LED"
+      },
+      "qos": {
+        "name": "QoS"
+      },
+      "visitante": {
+        "name": "Rede de visitante"
+      },
+      "mu_mimo": {
+        "name": "MU-MIMO"
+      },
+      "modo_wifi5": {
+        "name": "Modo de compatibilidade Wi-Fi 5"
+      },
+      "conexao_rapida": {
+        "name": "Conexão rápida"
+      },
+      "varredura_aiot": {
+        "name": "Varredura AIoT"
+      },
+      "prioridade_muitos_aparelhos": {
+        "name": "Prioridade para muitos aparelhos"
+      },
+      "filtro_mac": {
+        "name": "Filtro de MAC"
+      }
+    },
+    "button": {
+      "reiniciar": {
+        "name": "Reiniciar"
+      },
+      "atualizar_dados": {
+        "name": "Atualizar dados"
+      }
+    }
+  },
+  "services": {
+    "definir_internet": {
+      "name": "Allow or block internet",
+      "description": "Allows or blocks internet access for a device on the main router.",
+      "fields": {
+        "mac": {
+          "name": "MAC",
+          "description": "Device MAC address"
+        },
+        "liberar": {
+          "name": "Allow",
+          "description": "On = allow; off = block"
+        }
+      }
+    }
+  }
+}

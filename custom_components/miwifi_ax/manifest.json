@@ -1,0 +1,11 @@
+{
+  "domain": "miwifi_ax",
+  "name": "Xiaomi Router AX1800 (MiWiFi local)",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://github.com/",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "requirements": [],
+  "version": "1.0.0"
+}

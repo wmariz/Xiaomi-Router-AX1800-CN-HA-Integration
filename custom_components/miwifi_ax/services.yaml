@@ -1,0 +1,12 @@
+definir_internet:
+  fields:
+    mac:
+      required: true
+      example: "AA:BB:CC:DD:EE:FF"
+      selector:
+        text:
+    liberar:
+      required: true
+      default: true
+      selector:
+        boolean:

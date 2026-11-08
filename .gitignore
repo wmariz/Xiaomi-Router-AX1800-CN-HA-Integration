@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+dump/
+.token_*
+.estado_*
+*.log
