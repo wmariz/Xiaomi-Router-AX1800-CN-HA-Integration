@@ -54,3 +54,25 @@ O registro completo das descobertas (API, funções ocultas, app oficial, armadi
 - Reinício agendado e configuração da rede de visitante pelo app oficial passam pela nuvem da Xiaomi.
 
 Testado com firmware 1.0.399 (versão chinesa). Projeto não oficial, sem relação com a Xiaomi. Use por sua conta e risco.
+
+
+## Painel fora do Home Assistant
+
+### Windows — `MiWiFiPainel-Setup-<versão>.exe`
+Instala o painel local (o mesmo de `desktop/`) como programa: atalho no menu Iniciar,
+atalho na área de trabalho (opcional) e início com o Windows (opcional, desmarcado).
+Ao abrir, o painel sobe em `http://127.0.0.1:8099` e o navegador abre sozinho; abrir de novo
+só reabre a página; o botão **Sair** encerra. A senha é digitada na página e não é guardada;
+os endereços dos roteadores ficam em `%APPDATA%\MiWiFiPainel`.
+
+Gerar: `powershell -File instalador\windowsuild.ps1` (precisa de `uv` e do Inno Setup 6).
+
+### Android — `MiWiFiPainel-<versão>.apk`
+App independente: fala direto com os roteadores pela rede de casa (não depende do Home
+Assistant) e mostra o mesmo painel. Um servidor interno em Java (`instalador/android/src`)
+faz o papel do `painel.py`: login com hash SHA1+nonce, cliente HTTP/1.0 tolerante (o repetidor
+manda cabeçalhos malformados), confirmação antes de qualquer alteração e senhas mascaradas.
+
+Gerar: `uv run --with pillow python instalador/android/build_apk.py` — sem Gradle, só com o
+JDK e o Android SDK (build-tools 34, platforms;android-34). A chave de assinatura é criada em
+`instalador/android/assinatura/` (fora do git): sem ela, uma versão nova não instala por cima.

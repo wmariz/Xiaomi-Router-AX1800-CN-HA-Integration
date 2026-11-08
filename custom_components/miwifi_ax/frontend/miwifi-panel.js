@@ -81,6 +81,7 @@ const HTML = `<div class="mw-body">
   </nav>
   <select id="rotsel" title="Roteador"></select>
   <button id="bcfg" title="Endereços dos roteadores" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:4px;padding:5px 10px;cursor:pointer;font:inherit;font-size:13px">⚙ Roteadores</button>
+  <button id="bsair" title="Encerrar o painel" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:4px;padding:5px 10px;cursor:pointer;font:inherit;font-size:13px;margin-left:6px">Sair</button>
 </div>
 <div id="icones"></div>
 <div id="corpo"><div id="pagina"><div class="carregando">Carregando…</div></div></div>
@@ -456,7 +457,9 @@ $('#bcfg').onclick=()=>{
 };
 
 // ---------- inicialização ----------
-if(EMBUTIDO){$('#bcfg').style.display='none';$('#rodape').innerHTML='Painel do Home Assistant · usa o login da integração · alterações sempre pedem confirmação · <span class="oculto">oculto</span> = função que não aparece na interface original';}
+$('#bsair').onclick=async()=>{if(!confirm('Encerrar o painel?'))return;try{await srv('/api/sair',{});}catch(e){}document.body.innerHTML='<p style="font:16px sans-serif;padding:40px">Painel encerrado. Pode fechar esta aba.</p>';};
+if(window.__MIWIFI_RODAPE__)$('#rodape').innerHTML=window.__MIWIFI_RODAPE__;
+if(EMBUTIDO){$('#bcfg').style.display='none';$('#bsair').style.display='none';$('#rodape').innerHTML='Painel do Home Assistant · usa o login da integração · alterações sempre pedem confirmação · <span class="oculto">oculto</span> = função que não aparece na interface original';}
 $$('#menu a').forEach(a=>a.onclick=e=>{e.preventDefault();sec=a.dataset.sec;sub=null;render();});
 (async()=>{estado=await srv('/api/estado');
   // ?rot= aceita a chave ('principal', 'repetidor (Sala)'…) ou o IP do roteador

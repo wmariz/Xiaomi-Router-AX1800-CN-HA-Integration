@@ -3,7 +3,8 @@
 Expõe a API interna (LuCI /api/...) do roteador principal e do repetidor,
 inclusive funções que não aparecem na interface web.
 
-Uso:  python painel.py      → abra http://127.0.0.1:8099
+Uso:  python painel.py      → abre http://127.0.0.1:8099 no navegador
+(no instalador do Windows ele vira MiWiFiPainel.exe; abrir de novo só reabre a página)
 Só escuta em 127.0.0.1. A senha é digitada na página, vai direto ao roteador
 (hash SHA1 com nonce, como a interface oficial) e NÃO é guardada.
 Só a sessão (token) fica na memória deste processo.
@@ -20,9 +21,15 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import os
+import socket
+import sys
+import threading
+import webbrowser
 
 PASTA_CFG = Path(os.environ.get("APPDATA", Path.home())) / "MiWiFiPainel"
 ARQ_CFG = PASTA_CFG / "config.json"
+# dentro do .exe (PyInstaller) os arquivos ficam em sys._MEIPASS
+BASE = Path(getattr(sys, "_MEIPASS", Path(__file__).parent))
 PADRAO = {"principal": "192.168.0.1", "repetidor": "192.168.0.2"}
 IP_RE = re.compile(r"^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$")
 
@@ -185,7 +192,7 @@ def despejar(nome):
     if nome not in sessoes:
         return {"ok": False, "erro": "Faça login primeiro."}
     ip, token = ROTEADORES[nome], sessoes[nome]
-    pasta = Path(__file__).parent / "dump" / nome
+    pasta = PASTA_CFG / "dump" / nome
     pasta.mkdir(parents=True, exist_ok=True)
     salvos = []
     paginas = set(PAGINAS)
@@ -217,9 +224,6 @@ def despejar(nome):
     return {"ok": True, "paginas": salvos, "pasta": str(pasta)}
 
 
-HTML = (Path(__file__).parent / "painel.html").read_text(encoding="utf-8")
-
-
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *a):
         pass
@@ -236,7 +240,7 @@ class Handler(BaseHTTPRequestHandler):
         u = urllib.parse.urlparse(self.path)
         q = dict(urllib.parse.parse_qsl(u.query))
         if u.path == "/":
-            dados = (Path(__file__).parent / "painel.html").read_bytes()
+            dados = (BASE / "painel.html").read_bytes()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(dados)))
@@ -252,6 +256,10 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         tam = int(self.headers.get("Content-Length", 0))
         corpo = json.loads(self.rfile.read(tam) or b"{}")
+        if self.path == "/api/sair":
+            self._json({"ok": True})
+            threading.Thread(target=SERVIDOR.shutdown, daemon=True).start()
+            return
         if self.path == "/api/config":
             novos = {}
             for item in corpo.get("roteadores", []):
@@ -294,6 +302,26 @@ class Handler(BaseHTTPRequestHandler):
         self._json({"erro": "não encontrado"}, 404)
 
 
+SERVIDOR: ThreadingHTTPServer | None = None
+
+
+def _ja_rodando() -> bool:
+    with socket.socket() as s:
+        s.settimeout(0.5)
+        return s.connect_ex(("127.0.0.1", PORTA)) == 0
+
+
 if __name__ == "__main__":
-    print(f"Painel em http://127.0.0.1:{PORTA}  (Ctrl+C para sair)")
-    ThreadingHTTPServer(("127.0.0.1", PORTA), Handler).serve_forever()
+    url = f"http://127.0.0.1:{PORTA}"
+    if _ja_rodando():  # já aberto: só mostra a página
+        webbrowser.open(url)
+        sys.exit(0)
+    SERVIDOR = ThreadingHTTPServer(("127.0.0.1", PORTA), Handler)
+    if "--sem-navegador" not in sys.argv:
+        threading.Timer(0.6, webbrowser.open, args=(url,)).start()
+    if sys.stdout:
+        print(f"Painel em {url}  (Ctrl+C ou o botão Sair da página para encerrar)")
+    try:
+        SERVIDOR.serve_forever()
+    except KeyboardInterrupt:
+        pass

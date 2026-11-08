@@ -4,3 +4,12 @@ dump/
 .token_*
 .estado_*
 *.log
+# instaladores gerados
+instalador/windows/dist/
+instalador/windows/build/
+instalador/windows/saida/
+instalador/windows/miwifi.ico
+instalador/android/obra/
+instalador/android/saida/
+# chave de assinatura do APK: guardar fora do git (backup próprio)
+instalador/android/assinatura/
