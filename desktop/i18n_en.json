@@ -400,5 +400,12 @@
   "Modo trocado": "Mode switched",
   "Novo endereço de administração": "New admin address",
   "Rede Wi-Fi": "Wi-Fi network",
-  "Atualize o endereço deste roteador em ⚙ Roteadores (ou na integração do HA) se ele mudou.": "Update this router's address in ⚙ Routers (or in the HA integration) if it changed."
+  "Atualize o endereço deste roteador em ⚙ Roteadores (ou na integração do HA) se ele mudou.": "Update this router's address in ⚙ Routers (or in the HA integration) if it changed.",
+  "Editar": "Edit",
+  "Cancelar edição": "Cancel editing",
+  "Salvar alteração": "Save changes",
+  "Editar reserva": "Edit reservation",
+  "passa a ser": "becomes",
+  "Este IP já está reservado para": "This IP is already reserved for",
+  "A reserva nova foi criada, mas a antiga não foi removida.": "The new reservation was created, but the old one was not removed."
 }

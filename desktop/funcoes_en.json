@@ -100,7 +100,7 @@
   "xqnetwork/ipv6_status": "IPv6 status.",
   "xqnetwork/lan_dhcp": "DHCP server settings (range, lease, DNS, gateway).",
   "xqnetwork/lan_info": "Router LAN IP.",
-  "xqnetwork/mac_bind": "Creates IP reservations (data = JSON [{ip, mac, name}]).",
+  "xqnetwork/mac_bind": "Creates IP reservations (data = JSON [{ip, mac, name}]). With an already reserved MAC, it replaces the name and IP (tested 2026-11-09) — this is how the panel edits a reservation.",
   "xqnetwork/mac_clone": "Clones a MAC address on the WAN.",
   "xqnetwork/mac_unbind": "Removes an IP reservation (mac).",
   "xqnetwork/macbind_info": "IP reservations (static DHCP) and device list.",

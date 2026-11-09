@@ -104,7 +104,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/ipv6_status` | ✓ IPv6 status. |  |
 | `xqnetwork/lan_dhcp` | ✓ DHCP server settings (range, lease, DNS, gateway). |  |
 | `xqnetwork/lan_info` | ✓ Router LAN IP. |  |
-| `xqnetwork/mac_bind` | ✓ Creates IP reservations (data = JSON [{ip, mac, name}]). | `POST {"data": "[{\"ip\": \"192.168.0.50\", \"mac\": \"AA:BB:CC:DD:EE:FF\", \"name\": \"Aparelho\"}]"}` |
+| `xqnetwork/mac_bind` | ✓ Creates IP reservations (data = JSON [{ip, mac, name}]). With an already reserved MAC, it replaces the name and IP (tested 2026-11-09) — this is how the panel edits a reservation. | `POST {"data": "[{\"ip\": \"192.168.0.50\", \"mac\": \"AA:BB:CC:DD:EE:FF\", \"name\": \"Aparelho\"}]"}` |
 | `xqnetwork/mac_clone` | ✓ Clones a MAC address on the WAN. | `GET {"mac": "8C:DE:F9:92:E0:94"}` |
 | `xqnetwork/mac_unbind` | ✓ Removes an IP reservation (mac). | `POST {"mac": "AA:BB:CC:DD:EE:FF"}` |
 | `xqnetwork/macbind_info` | ✓ IP reservations (static DHCP) and device list. |  |

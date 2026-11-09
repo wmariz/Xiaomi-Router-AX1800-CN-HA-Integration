@@ -495,7 +495,7 @@
   ],
   "xqnetwork/mac_bind": [
     "c",
-    "Cria reservas de IP (data = JSON [{ip, mac, name}]).",
+    "Cria reservas de IP (data = JSON [{ip, mac, name}]). Com um MAC já reservado, substitui o nome e o IP (testado 2026-11-09) — é assim que o painel edita uma reserva.",
     {
       "m": "POST",
       "p": {
