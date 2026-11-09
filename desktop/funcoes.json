@@ -486,7 +486,7 @@
   ],
   "xqnetwork/set_wan6": [
     "c",
-    "Configura o IPv6 (off/native/static/nat)."
+    "Modo IPv6 (POST): wanType=native (repassa o prefixo da operadora, que muda a cada reconexão), nat (NAT6: rede de casa com prefixo fixo fd00:6868:6868::/64) ou static; autosetipv6=0/1 (DNS automático/manual), dns1, dns2."
   ],
   "xqnetwork/set_wan_speed": [
     "c",

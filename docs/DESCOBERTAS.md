@@ -93,6 +93,9 @@ Com Mesh por cabo, aparelhos ligados nas portas do nó aparecem como "cabo" **se
   - **adição de nós:** um nó achado na topologia do principal é **adicionado sozinho** com a senha do principal; só aparece o cartão de "descoberto" (pedindo a senha) se ela não funcionar. Um nó apagado pelo usuário fica em `nos_removidos` no principal e passa a só aparecer como cartão (confirmar não pede senha); readicioná-lo o tira da lista. Testado 2026-11-08: readição automática manteve as 11 entidades, áreas e ativações;
   - dois logins quase no mesmo segundo (a validação da nova autenticação e a recarga logo em seguida) dão **`code 1582`**: não é senha errada; a integração espera 2 s e tenta de novo (até 4 vezes).
 
+- **IPv6 em modo Native troca o prefixo da rede a cada reconexão** (PPPoE da Vivo, 2026-11-08): reinício do roteador ou troca de MAC da WAN geraram prefixos novos (`…:1ec5::` → `…:2cfb::` → `…:13::`). Os aparelhos (incluindo o Home Assistant) **mantêm os endereços velhos** junto dos novos, e isso quebrou o pareamento Matter com o Google até reiniciar o host do HA.
+  - Solução adotada (2026-11-09): **NAT6** — `xqnetwork/set_wan6` (POST) com `wanType=nat`, `autosetipv6=1`, `dns1`, `dns2`. A LAN passa a usar o prefixo fixo **`fd00:6868:6868::/64`** (o roteador faz NAT66 para a internet), que não muda com a operadora. Depois da troca, um reinício do host do HA limpou os endereços antigos de uma vez.
+
 ## 4. Diagnóstico de rede usado
 - `xqsystem/init_info` responde **sem login** — útil como "ping" do serviço web.
 - O tempo ligado (`misystem/status.upTime`) de cada aparelho revela reinícios.

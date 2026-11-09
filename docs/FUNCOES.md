@@ -125,7 +125,7 @@ Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou u
 | `xqnetwork/set_peer_wifi_auto_ap_mode` | **⚠ INFERÊNCIA** — Configuração automática de ponto de acesso entre nós Mesh. |
 | `xqnetwork/set_son_backhaul_mode` | ✓ Liga/desliga a prioridade para muitos aparelhos (mode). |
 | `xqnetwork/set_wan` | ✓ Altera a conexão de internet (PPPoE, DHCP ou IP fixo). |
-| `xqnetwork/set_wan6` | ✓ Configura o IPv6 (off/native/static/nat). |
+| `xqnetwork/set_wan6` | ✓ Modo IPv6 (POST): wanType=native (repassa o prefixo da operadora, que muda a cada reconexão), nat (NAT6: rede de casa com prefixo fixo fd00:6868:6868::/64) ou static; autosetipv6=0/1 (DNS automático/manual), dns1, dns2. |
 | `xqnetwork/set_wan_speed` | ✓ Velocidade da porta WAN (speed 0 auto/100/1000). |
 | `xqnetwork/set_wifi` | ✓ Altera uma rede Wi-Fi (wifiIndex 1=2,4 GHz, 2=5 GHz, 3=visitante): nome, senha, segurança, canal, largura, oculto, potência; e o roaming por sinal fraco. |
 | `xqnetwork/set_wifi_ap` | ✓ Muda para modo repetidor sem fio. |
