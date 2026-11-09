@@ -142,3 +142,31 @@ The pages `web/prosetting/{ddns,nat,vpn,upnp}` are only linked from the QoS page
 - **Notices:** `misystem/messages` returns `messages[]` (not `list`): type 1 new firmware, 3 5 GHz failed, 4 IP conflict with `data.ip`, fixed by `misystem/r_ip_conflict` (POST).
 - **QoS:** per-device limits `misystem/qos_limits` (KB/s, 0 = none; list only has devices while QoS is on); the router's own limit is `qos_xq`, read back as `qos_info.local`.
 - Slow endpoints (scans, diagnosis, uploads) get a 60 s timeout in the integration and both standalone servers.
+
+## 11. App-only features and the full firmware API (2026-11-09)
+Parameters taken from the decompiled LuCI controllers of this exact firmware family (RM1800 1.0.394) published in
+[dmamontov/miwifi-luci-api](https://github.com/dmamontov/miwifi-luci-api), then checked on the device. The firmware has **448 API
+functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md)) — untested ones are marked as inferred.
+- **Wi-Fi optimization:** `misystem/channel_scan_start` (analysis only, 2.4 GHz) → after ~10 s `channel_scan_result` →
+  `2G{cchannel, cscore, schannel, sscore, ranking}` (interference score: lower is better; here channel 3 = 49, suggested 2 = 16).
+  `misystem/set_channel?channel1=&channel2=` applies **and saves** the channel in ~5 s with the radios up (tested; put back to 3).
+- **Full diagnostics:** `misystem/net_diagnose_start` → `net_diagnose_result` (`status` 1 = ok after ~5 s; 2 = problem with `wan`
+  down/up and `diagnose` 111 DHCP, 112 IP, 113 gateway, 114 ISP, 678 PPPoE server, 633 port busy, 101 PPPoE, 691 PPPoE auth, 100 DNS).
+  There is **no network repair** endpoint: `repair_status`/`check_status` are about USB disks. `xqnetdetect/detect` (the app's
+  "health check") returned error 500 with `simple=1`.
+- **Security check:** `start_portscan` / `get_portscan_result` (`tcp_port`, `udp_port`) and `start_weakdetect` /
+  `get_weakdetect_result` (FTP/SSH/Telnet), both with `ip` + `mac` of a LAN device (tested on the HA host: ports 22 80, no weak passwords).
+- **Anti-intrusion:** `arn_status` (`open`, `level`, `count`, `wifimode` 1 = MAC filter in block-list model, `wifilevel`/`adminlevel`
+  = password strength). `arn_switch` `open` 0/1 **also enables/disables the Wi-Fi MAC filter** (`mode` = filter model to keep);
+  `level` alone only changes the level. `arn_records` returned error 500.
+- **Security center:** `arn_security` + `arn_security_switch` (POST `info` = JSON `{malicious_url_firewall, virus_file_firewall,
+  privacy_protection}`; including `wifi_arn` touches the MAC filter). Tested on/off.
+- **Parental control:** `parctl_add` (`mac, enable, frequency "1,2,3,4,5", timeseg "22:00-07:00"` → `id`), `parctl_update`,
+  `parctl_delete`, `parctl_info`; site filter `parctl_set_filter` (`mode` none/black/white), `parctl_get_url`,
+  `parctl_set_url` (`opt` 0 add / 1 remove). All tested with a dummy MAC and removed.
+- **WPS:** `xqsystem/wps`, `wps_cancel`, `wps_status` (0 idle, 1 waiting, 2 connected + `device{mac, company}`, 3–7 failed).
+- **Automatic firmware update:** `misystem/ota` / `set_ota` (`auto`, `time` hour, `plugin`).
+- **Per-device band (unified Wi-Fi only):** `get_dev_bsd` / `set_dev_bsd` (`mac`, `mode`; restarts the Wi-Fi).
+- Not found in the web UI nor tested yet, but present: hardware NAT (`hwnat_status/switch`), Wi-Fi log (`xqsystem/wifi_log`),
+  Mesh link metrics (`get_mesh_metric`), traffic history (`device(s)_statistics`, `wan_statistics`), device rename
+  (`set_device_nickname`), radios/WAN up/down, router-side ping, and an SSH server (`xqsystem/start_dropbear`).

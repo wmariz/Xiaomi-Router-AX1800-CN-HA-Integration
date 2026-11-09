@@ -29,8 +29,14 @@
     "Centro de segurança: proteção de privacidade, firewall de sites maliciosos e de arquivos com vírus."
   ],
   "misystem/arn_security_switch": [
-    "i",
-    "Liga/desliga as proteções do centro de segurança."
+    "c",
+    "Centro de segurança: info = JSON com malicious_url_firewall, virus_file_firewall, privacy_protection (0/1); wifi_arn mexe no filtro de MAC. Testado.",
+    {
+      "m": "POST",
+      "p": {
+        "info": "{\"malicious_url_firewall\": 1}"
+      }
+    }
   ],
   "misystem/arn_status": [
     "c",
@@ -38,7 +44,13 @@
   ],
   "misystem/arn_switch": [
     "i",
-    "Liga/desliga o anti-intrusos e define o nível (parâmetros não confirmados)."
+    "Anti-intrusos: open 0/1 (também liga/desliga o filtro de MAC do Wi-Fi, no modelo mode 0 lista negra / 1 branca) e/ou level.",
+    {
+      "m": "GET",
+      "p": {
+        "level": 2
+      }
+    }
   ],
   "misystem/bandwidth_test": [
     "c",
@@ -70,15 +82,23 @@
   ],
   "misystem/channel_scan_result": [
     "c",
-    "Resultado da otimização de canal (canal atual/sugerido e nota)."
+    "Resultado da otimização: 2G{cchannel atual, cscore, schannel sugerido, sscore (interferência: menor é melhor), ranking, code 0 = pronto}.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "misystem/channel_scan_start": [
-    "i",
-    "Inicia a varredura de canais da otimização de Wi-Fi."
+    "c",
+    "Inicia a análise de canais do 2,4 GHz (otimização do Wi-Fi do app); resultado em channel_scan_result após ~10 s.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "misystem/check_status": [
     "c",
-    "Verificação rápida do roteador usada pelo app."
+    "Estado da verificação de DISCO — sem uso no AX1800."
   ],
   "misystem/device_detail": [
     "i",
@@ -104,11 +124,18 @@
   ],
   "misystem/get_dev_bsd": [
     "c",
-    "Banda preferida de um aparelho no Wi-Fi unificado (pede parâmetros)."
+    "Banda do aparelho no Wi-Fi unificado (mac) → bsd, mode."
   ],
   "misystem/get_portscan_result": [
     "c",
-    "Resultado da varredura de portas (pede parâmetros de varredura)."
+    "Resultado: tcp_port e udp_port (lista separada por espaço).",
+    {
+      "m": "GET",
+      "p": {
+        "ip": "192.168.0.50",
+        "mac": "AA:BB:CC:DD:EE:FF"
+      }
+    }
   ],
   "misystem/get_usb_u3": [
     "c",
@@ -116,7 +143,14 @@
   ],
   "misystem/get_weakdetect_result": [
     "c",
-    "Resultado da verificação de senhas fracas (pede parâmetros de varredura)."
+    "Resultado: ftp_weak_detect, ssh_weak_detect, telnet_weak_detect (vazio = nenhuma).",
+    {
+      "m": "GET",
+      "p": {
+        "ip": "192.168.0.50",
+        "mac": "AA:BB:CC:DD:EE:FF"
+      }
+    }
   ],
   "misystem/http_status": [
     "c",
@@ -154,11 +188,19 @@
   ],
   "misystem/net_diagnose_result": [
     "c",
-    "Resultado do diagnóstico de rede."
+    "Resultado: status 1 ok, 2 problema (wan up/down, diagnose 111/112/113/114/678/633/101/691/100, dns), 3 indefinido.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "misystem/net_diagnose_start": [
-    "i",
-    "Inicia o diagnóstico de rede do app."
+    "c",
+    "Inicia o diagnóstico de rede do app (assíncrono).",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "misystem/netacctl_set": [
     "i",
@@ -174,35 +216,54 @@
   ],
   "misystem/ota": [
     "i",
-    "Atualização de firmware pelo ar (OTA)."
+    "Atualização automática: auto 0/1, time (hora), plugin 0/1.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "misystem/parctl_add": [
-    "i",
-    "Proteção infantil: cria regra de horário."
+    "c",
+    "Cria regra: mac, enable, frequency \"1,2,3,4,5\", timeseg \"22:00-07:00\"; devolve id. Testado.",
+    {
+      "m": "GET",
+      "p": {
+        "mac": "AA:BB:CC:DD:EE:FF",
+        "enable": 1,
+        "frequency": "1,2,3,4,5",
+        "timeseg": "22:00-07:00"
+      }
+    }
   ],
   "misystem/parctl_delete": [
-    "i",
-    "Proteção infantil: remove regra."
+    "c",
+    "Remove regra (id). Testado."
   ],
   "misystem/parctl_get_url": [
-    "i",
-    "Proteção infantil: lista de sites bloqueados."
+    "c",
+    "Lista de sites (mac, mode black/white)."
   ],
   "misystem/parctl_info": [
-    "c",
-    "Proteção infantil: regras por aparelho (pede parâmetros)."
+    "i",
+    "Controle dos pais: regras do aparelho (mac) — id, enable, frequency [1..7], timeseg {from, to}.",
+    {
+      "m": "GET",
+      "p": {
+        "mac": "AA:BB:CC:DD:EE:FF"
+      }
+    }
   ],
   "misystem/parctl_set_filter": [
-    "i",
-    "Proteção infantil: modo de filtro (lista branca/negra)."
+    "c",
+    "Define o filtro de sites (mac, mode none/black/white). Testado."
   ],
   "misystem/parctl_set_url": [
-    "i",
-    "Proteção infantil: define sites bloqueados."
+    "c",
+    "Adiciona (opt 0) ou remove (opt 1) site (mac, mode, url; newurl para trocar). Testado."
   ],
   "misystem/parctl_update": [
-    "i",
-    "Proteção infantil: altera regra."
+    "c",
+    "Altera regra (id, mac, enable, frequency, timeseg). Testado."
   ],
   "misystem/qos_dev_info": [
     "i",
@@ -292,7 +353,7 @@
   ],
   "misystem/repair_status": [
     "c",
-    "Estado do reparo automático de rede do diagnóstico."
+    "Estado do reparo de DISCO (não de rede) — sem uso no AX1800."
   ],
   "misystem/router_common_status": [
     "c",
@@ -315,16 +376,31 @@
     }
   ],
   "misystem/set_channel": [
-    "i",
-    "Aplica o canal sugerido pela otimização."
+    "c",
+    "Aplica canais (channel1 = 2,4 GHz, channel2 = 5 GHz); salva na configuração; ~5 s sem derrubar o Wi-Fi (testado).",
+    {
+      "m": "GET",
+      "p": {
+        "channel1": 6,
+        "channel2": 36
+      }
+    }
   ],
   "misystem/set_dev_bsd": [
     "i",
-    "Fixa a banda de um aparelho no Wi-Fi unificado."
+    "Fixa a banda do aparelho (mac, mode); reinicia o Wi-Fi."
   ],
   "misystem/set_ota": [
     "i",
-    "Configura a atualização automática de firmware."
+    "Configura a atualização automática (auto, time, plugin).",
+    {
+      "m": "GET",
+      "p": {
+        "auto": 1,
+        "time": 4,
+        "plugin": 0
+      }
+    }
   ],
   "misystem/set_router_name": [
     "c",
@@ -398,12 +474,26 @@
     "Resultado do teste de velocidade do app."
   ],
   "misystem/start_portscan": [
-    "i",
-    "Inicia varredura de portas expostas."
+    "c",
+    "Procura portas abertas num aparelho (ip, mac).",
+    {
+      "m": "GET",
+      "p": {
+        "ip": "192.168.0.50",
+        "mac": "AA:BB:CC:DD:EE:FF"
+      }
+    }
   ],
   "misystem/start_weakdetect": [
-    "i",
-    "Inicia a verificação de senhas fracas (Wi-Fi/administração)."
+    "c",
+    "Testa senhas fracas de FTP/SSH/Telnet num aparelho (ip, mac).",
+    {
+      "m": "GET",
+      "p": {
+        "ip": "192.168.0.50",
+        "mac": "AA:BB:CC:DD:EE:FF"
+      }
+    }
   ],
   "misystem/status": [
     "c",
@@ -1125,15 +1215,27 @@
   ],
   "xqsystem/wps": [
     "i",
-    "Inicia o pareamento WPS."
+    "Abre o pareamento WPS (2 min).",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqsystem/wps_cancel": [
     "i",
-    "Cancela o pareamento WPS."
+    "Cancela o pareamento WPS.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqsystem/wps_status": [
     "c",
-    "Estado do WPS (pareamento por botão)."
+    "Estado do WPS: 0 parado, 1 aguardando, 2 conectado (device{mac, company}), 3–7 falha/expirou.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/add_server": [
     "c",
@@ -1304,5 +1406,1027 @@
         "switch": 1
       }
     }
+  ],
+  "misystem/parctl_get_filter": [
+    "i",
+    "Filtro de sites do aparelho: urlfilter{mode none/black/white, count}.",
+    {
+      "m": "GET",
+      "p": {
+        "mac": "AA:BB:CC:DD:EE:FF"
+      }
+    }
+  ],
+  "xqnetdetect/detect": [
+    "i",
+    "\"Exame\" do app: cpuavg, memoryuse, cputemp, link, wan, gateway, dnsstatus, ping, wifi (força das senhas), speed, disk (params simple, target; simple=1 deu erro 500)."
+  ],
+  "cportal/allow": [
+    "i",
+    "Função do firmware 1.0.394 (controlador captivePortalAllow; não testada)."
+  ],
+  "miats/wifi_macfilter_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWifiMacfilterInfo; não testada)."
+  ],
+  "miats/set_wifi_blist": [
+    "i",
+    "Função do firmware 1.0.394 (controlador set_wifi_black_device; não testada)."
+  ],
+  "miats/get_wifi_danger_device": [
+    "i",
+    "Função do firmware 1.0.394 (controlador get_wifi_danger_device; não testada)."
+  ],
+  "miats/get_wifi_new_block": [
+    "i",
+    "Função do firmware 1.0.394 (controlador get_wifi_new_block; não testada)."
+  ],
+  "miats/get_new_access": [
+    "i",
+    "Função do firmware 1.0.394 (controlador get_new_access; não testada)."
+  ],
+  "miats/get_cw_event_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador get_cw_event_info; não testada)."
+  ],
+  "miats/remote_call": [
+    "i",
+    "Função do firmware 1.0.394 (controlador remote_call; não testada)."
+  ],
+  "miats/get_free_speed_up_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador get_free_speed_up_info; não testada)."
+  ],
+  "miats/free_speed_up": [
+    "i",
+    "Função do firmware 1.0.394 (controlador free_speed_up; não testada)."
+  ],
+  "miats/vip_speed_up": [
+    "i",
+    "Função do firmware 1.0.394 (controlador vip_speed_up; não testada)."
+  ],
+  "miats/get_vip_pay_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador get_vip_pay_info; não testada)."
+  ],
+  "miats/get_speed_up_total_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador get_speed_up_total_info; não testada)."
+  ],
+  "miats/get_gg_block_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador get_ad_block_info; não testada)."
+  ],
+  "miats/valid_show_cb": [
+    "i",
+    "Função do firmware 1.0.394 (controlador valid_show_cb; não testada)."
+  ],
+  "miats/web_enable_show": [
+    "i",
+    "Função do firmware 1.0.394 (controlador web_enable_show; não testada)."
+  ],
+  "miats/uplink_free_speed_up": [
+    "i",
+    "Função do firmware 1.0.394 (controlador uplink_free_speed_up; não testada)."
+  ],
+  "miats/uplink_get_free_speed_up_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador uplink_get_free_speed_up_info; não testada)."
+  ],
+  "miats/uplink_vip_speed_up": [
+    "i",
+    "Função do firmware 1.0.394 (controlador uplink_vip_speed_up; não testada)."
+  ],
+  "miats/validate_token_v2": [
+    "i",
+    "Função do firmware 1.0.394 (controlador validate_token; não testada)."
+  ],
+  "miats/general_event_get": [
+    "i",
+    "Função do firmware 1.0.394 (controlador general_event_get; não testada)."
+  ],
+  "miats/ccgame": [
+    "i",
+    "Função do firmware 1.0.394 (controlador turbo_ccgame_call; não testada)."
+  ],
+  "miats/ipv6": [
+    "i",
+    "Função do firmware 1.0.394 (controlador turbo_ipv6_call; não testada)."
+  ],
+  "misns/prepare": [
+    "i",
+    "Função do firmware 1.0.394 (controlador prepare; não testada)."
+  ],
+  "misns/wifi_access": [
+    "i",
+    "Função do firmware 1.0.394 (controlador wifiAccess; não testada)."
+  ],
+  "misns/sns_list": [
+    "i",
+    "Função do firmware 1.0.394 (controlador snsList; não testada)."
+  ],
+  "misns/sns_init": [
+    "i",
+    "Função do firmware 1.0.394 (controlador snsInit; não testada)."
+  ],
+  "misns/wifi_share_blist": [
+    "i",
+    "Função do firmware 1.0.394 (controlador wifiShareBlacklist; não testada)."
+  ],
+  "misns/wifi_share_blist_edit": [
+    "i",
+    "Função do firmware 1.0.394 (controlador wifiShareBlacklistEdit; não testada)."
+  ],
+  "misns/authorization_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador authorizationStatus; não testada)."
+  ],
+  "misns/wifi_share_info_web": [
+    "i",
+    "Função do firmware 1.0.394 (controlador wifiShareInfoWeb; não testada)."
+  ],
+  "misns/wifi_share_rent_switch": [
+    "i",
+    "Função do firmware 1.0.394 (controlador wifiShareRentSwitch; não testada)."
+  ],
+  "misns/prepare_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador prepareStatus; não testada)."
+  ],
+  "misns/prepare_bytype": [
+    "i",
+    "Função do firmware 1.0.394 (controlador prepare; não testada)."
+  ],
+  "misns/ios_ready": [
+    "i",
+    "Função do firmware 1.0.394 (controlador iosReady; não testada)."
+  ],
+  "misystem/router_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getRouterBaseInfo; não testada)."
+  ],
+  "misystem/set_log": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setConfigLog; não testada)."
+  ],
+  "misystem/check_ip_conflict": [
+    "i",
+    "Verifica conflito de IP na hora. (controlador checkIpConflict; não testada)."
+  ],
+  "misystem/get_config_result": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getConfigResult; não testada)."
+  ],
+  "misystem/set_router_wifiap": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setWifiApMode; não testada)."
+  ],
+  "misystem/set_router_lanap": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setLanApMode; não testada)."
+  ],
+  "misystem/set_router_normal": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setRouterInfo; não testada)."
+  ],
+  "misystem/set_router_wifiap_init": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setWifiApMode_Init; não testada)."
+  ],
+  "misystem/set_router_lanap_init": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setLanApMode_Init; não testada)."
+  ],
+  "misystem/set_wan": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setWan; não testada)."
+  ],
+  "misystem/pppoe_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getPPPoEStatus; não testada)."
+  ],
+  "misystem/pppoe_stop": [
+    "i",
+    "Função do firmware 1.0.394 (controlador pppoeStop; não testada)."
+  ],
+  "misystem/device_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDeviceInfo; não testada)."
+  ],
+  "misystem/qos_limit": [
+    "i",
+    "Função do firmware 1.0.394 (controlador qosLimit; não testada)."
+  ],
+  "misystem/qos_limit_flag": [
+    "i",
+    "Função do firmware 1.0.394 (controlador qosLimitFlag; não testada)."
+  ],
+  "misystem/disk_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDiskinfo; não testada)."
+  ],
+  "misystem/io_data": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getIOData; não testada)."
+  ],
+  "misystem/disk_check": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskCheck; não testada)."
+  ],
+  "misystem/disk_repair": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskRepair; não testada)."
+  ],
+  "misystem/disk_init": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskInit; não testada)."
+  ],
+  "misystem/disk_format": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskFormat; não testada)."
+  ],
+  "misystem/disk_format_async": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskFormatAsync; não testada)."
+  ],
+  "misystem/disk_format_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskFormatStatus; não testada)."
+  ],
+  "misystem/disk_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskStatus; não testada)."
+  ],
+  "misystem/disk_smartctl": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskSmartCtl; não testada)."
+  ],
+  "misystem/log_upload": [
+    "i",
+    "Função do firmware 1.0.394 (controlador syslogUpload; não testada)."
+  ],
+  "misystem/register": [
+    "i",
+    "Função do firmware 1.0.394 (controlador register; não testada)."
+  ],
+  "misystem/debug": [
+    "i",
+    "Função do firmware 1.0.394 (controlador debug; não testada)."
+  ],
+  "misystem/password": [
+    "i",
+    "Função do firmware 1.0.394 (controlador changePassword; não testada)."
+  ],
+  "misystem/ecos_switch": [
+    "i",
+    "Função do firmware 1.0.394 (controlador ecosSwitch; não testada)."
+  ],
+  "misystem/ecos_upgrade": [
+    "i",
+    "Função do firmware 1.0.394 (controlador ecosUpgrade; não testada)."
+  ],
+  "misystem/ecos_upgrade_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getEcosUpgradeStatus; não testada)."
+  ],
+  "misystem/hwnat_status": [
+    "i",
+    "Estado da aceleração de NAT por hardware. (controlador hwnatStatus; não testada)."
+  ],
+  "misystem/hwnat_switch": [
+    "i",
+    "Liga/desliga a aceleração de NAT por hardware. (controlador hwnatSwitch; não testada)."
+  ],
+  "misystem/lsusb": [
+    "i",
+    "Função do firmware 1.0.394 (controlador lsusb; não testada)."
+  ],
+  "misystem/tb_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador toolbarInfo; não testada)."
+  ],
+  "misystem/miwifi": [
+    "i",
+    "Função do firmware 1.0.394 (controlador isMiWiFi; não testada)."
+  ],
+  "misystem/qos_app_entry": [
+    "i",
+    "Função do firmware 1.0.394 (controlador qosApp; não testada)."
+  ],
+  "misystem/conf_upload_enable": [
+    "i",
+    "Função do firmware 1.0.394 (controlador confUploadEnable; não testada)."
+  ],
+  "misystem/vas_info_new": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getVasInfoNew; não testada)."
+  ],
+  "misystem/vas_switch_new": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setVasInfoNew; não testada)."
+  ],
+  "misystem/app_status_switch": [
+    "i",
+    "Função do firmware 1.0.394 (controlador ustackSwitch; não testada)."
+  ],
+  "misystem/minet_get_cfg": [
+    "i",
+    "Função do firmware 1.0.394 (controlador minetGetConfig; não testada)."
+  ],
+  "misystem/minet_set_cfg": [
+    "i",
+    "Função do firmware 1.0.394 (controlador minetSetConfig; não testada)."
+  ],
+  "misystem/minet_list_dev": [
+    "i",
+    "Função do firmware 1.0.394 (controlador minetListDevice; não testada)."
+  ],
+  "misystem/minet_grant_dev": [
+    "i",
+    "Função do firmware 1.0.394 (controlador minetGrantDevice; não testada)."
+  ],
+  "misystem/minet_ctrl_state": [
+    "i",
+    "Função do firmware 1.0.394 (controlador minetCtrlState; não testada)."
+  ],
+  "misystem/mem_test_cfg": [
+    "i",
+    "Função do firmware 1.0.394 (controlador memTestConfig; não testada)."
+  ],
+  "misystem/mem_test_res": [
+    "i",
+    "Função do firmware 1.0.394 (controlador memTestResGet; não testada)."
+  ],
+  "misystem/qos_wangzhe": [
+    "i",
+    "Função do firmware 1.0.394 (controlador qosWangZhe; não testada)."
+  ],
+  "misystem/set_mesh_normal": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setMeshInfo; não testada)."
+  ],
+  "misystem/get_mesh_device_info": [
+    "i",
+    "Informações dos nós Mesh. (controlador getMeshDevInfo; não testada)."
+  ],
+  "misystem/set_mesh_device": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setMeshDev; não testada)."
+  ],
+  "misystem/set_band_app": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setBandApp; não testada)."
+  ],
+  "misystem/get_wifi_ret": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWifiRet; não testada)."
+  ],
+  "misystem/set_bt": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setBt; não testada)."
+  ],
+  "misystem/get_wan_mac": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWanMac; não testada)."
+  ],
+  "misystem/get_mesh_metric": [
+    "i",
+    "Qualidade da ligação Mesh entre os nós. (controlador getMeshMetric; não testada)."
+  ],
+  "misystem/get_wifi_pwd": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWifiPwd; não testada)."
+  ],
+  "misystem/get_wifi_pwd_url": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWifiPwdUrl; não testada)."
+  ],
+  "misystem/flash_test_cfg": [
+    "i",
+    "Função do firmware 1.0.394 (controlador flashTestConfig; não testada)."
+  ],
+  "misystem/flash_test_res": [
+    "i",
+    "Função do firmware 1.0.394 (controlador flashTestResGet; não testada)."
+  ],
+  "misystem/get_netwan_mode": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getNetWanMode; não testada)."
+  ],
+  "misystem/get_iotdev_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getIotDevStatus; não testada)."
+  ],
+  "misystem/set_config_iotdev_hidessid": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setConfigIotDevHidessid; não testada)."
+  ],
+  "misystem/get_unconfig_iotdev_hidessid": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getunConfigIotDevHidessid; não testada)."
+  ],
+  "misystem/get_iotdev_status_hidessid": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getIotDevStatusHidessid; não testada)."
+  ],
+  "xqdatacenter/download": [
+    "i",
+    "Função do firmware 1.0.394 (controlador download; não testada)."
+  ],
+  "xqdatacenter/upload": [
+    "i",
+    "Função do firmware 1.0.394 (controlador upload; não testada)."
+  ],
+  "xqdatacenter/thumb": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getThumb; não testada)."
+  ],
+  "xqdatacenter/device_id": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDeviceId; não testada)."
+  ],
+  "xqdatacenter/check_file_exist": [
+    "i",
+    "Função do firmware 1.0.394 (controlador checkFileExist; não testada)."
+  ],
+  "xqdatacenter/plugin_ssh": [
+    "i",
+    "Função do firmware 1.0.394 (controlador pluginSSH; não testada)."
+  ],
+  "xqdatacenter/plugin_ssh_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador pluginSSHStatus; não testada)."
+  ],
+  "xqdatacenter/fsys_probe": [
+    "i",
+    "Função do firmware 1.0.394 (controlador fsysProbe; não testada)."
+  ],
+  "xqdatacenter/fsys_resume": [
+    "i",
+    "Função do firmware 1.0.394 (controlador fsysResume; não testada)."
+  ],
+  "xqnetdetect/sys_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getSysInfo; não testada)."
+  ],
+  "xqnetdetect/ping_test": [
+    "i",
+    "Ping feito pelo próprio roteador. (controlador pingTest; não testada)."
+  ],
+  "xqnetdetect/sys_status": [
+    "i",
+    "Estado do sistema. (controlador systemStatus; não testada)."
+  ],
+  "xqnetdetect/netspeed": [
+    "i",
+    "Função do firmware 1.0.394 (controlador netspeed; não testada)."
+  ],
+  "xqnetwork/wifi_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWifiStatus; não testada)."
+  ],
+  "xqnetwork/wifi_detail": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWifiInfo; não testada)."
+  ],
+  "xqnetwork/wifi_connect_devices": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWifiConDev; não testada)."
+  ],
+  "xqnetwork/wifi_txpwr_channel": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWifiChTx; não testada)."
+  ],
+  "xqnetwork/wifi_up": [
+    "i",
+    "Liga um rádio Wi-Fi sem mudar a configuração. (controlador turnOnWifi; não testada)."
+  ],
+  "xqnetwork/wifi_down": [
+    "i",
+    "Desliga um rádio Wi-Fi sem mudar a configuração. (controlador shutDownWifi; não testada)."
+  ],
+  "xqnetwork/wan_down": [
+    "i",
+    "Derruba a conexão de internet. (controlador wanDown; não testada)."
+  ],
+  "xqnetwork/wan_up": [
+    "i",
+    "Sobe a conexão de internet. (controlador wanUp; não testada)."
+  ],
+  "xqnetwork/check_wan_link": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getAutoWanLink; não testada)."
+  ],
+  "xqnetwork/wan_statistics": [
+    "i",
+    "Histórico de tráfego da internet. (controlador getWanStatistics; não testada)."
+  ],
+  "xqnetwork/devices_statistics": [
+    "i",
+    "Histórico de tráfego dos aparelhos. (controlador getDevsStatistics; não testada)."
+  ],
+  "xqnetwork/device_statistics": [
+    "i",
+    "Histórico de tráfego de um aparelho. (controlador getDevStatistics; não testada)."
+  ],
+  "xqnetwork/set_wan_new": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setWanNew; não testada)."
+  ],
+  "xqnetwork/avaliable_channels": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getChannels; não testada)."
+  ],
+  "xqnetwork/savebind": [
+    "i",
+    "Função do firmware 1.0.394 (controlador saveBind; não testada)."
+  ],
+  "xqnetwork/unbindall": [
+    "i",
+    "Função do firmware 1.0.394 (controlador unbindAll; não testada)."
+  ],
+  "xqnetwork/qos_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getQosInfo; não testada)."
+  ],
+  "xqnetwork/qos_switch": [
+    "i",
+    "Função do firmware 1.0.394 (controlador qosSwitch; não testada)."
+  ],
+  "xqnetwork/qos_mode": [
+    "i",
+    "Função do firmware 1.0.394 (controlador qosMode; não testada)."
+  ],
+  "xqnetwork/qos_limit": [
+    "i",
+    "Função do firmware 1.0.394 (controlador qosLimit; não testada)."
+  ],
+  "xqnetwork/qos_limits": [
+    "i",
+    "Função do firmware 1.0.394 (controlador qosLimits; não testada)."
+  ],
+  "xqnetwork/qos_offlimit": [
+    "i",
+    "Função do firmware 1.0.394 (controlador qosOffLimit; não testada)."
+  ],
+  "xqnetwork/set_band": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setBand; não testada)."
+  ],
+  "xqnetwork/app_set_wifi_ap": [
+    "i",
+    "Função do firmware 1.0.394 (controlador appSetWifiApMode; não testada)."
+  ],
+  "xqnetwork/wifiap_restart": [
+    "i",
+    "Função do firmware 1.0.394 (controlador serviceRestart; não testada)."
+  ],
+  "xqnetwork/app_wifiap_restart": [
+    "i",
+    "Função do firmware 1.0.394 (controlador wifiAPserviceRestart; não testada)."
+  ],
+  "xqnetwork/get_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getModeStatus; não testada)."
+  ],
+  "xqnetwork/channel_scan_start": [
+    "i",
+    "Função do firmware 1.0.394 (controlador channelScanStart; não testada)."
+  ],
+  "xqnetwork/channel_scan_result": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getScanResult; não testada)."
+  ],
+  "xqnetwork/set_channel": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setChannel; não testada)."
+  ],
+  "xqnetwork/wan_speed": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWanSpeed; não testada)."
+  ],
+  "xqnetwork/wifi_diag_detail_all": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDiagAllWifiInfo; não testada)."
+  ],
+  "xqnetwork/diagdevicelist": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDiagDeviceList; não testada)."
+  ],
+  "xqnetwork/diagudiskstatus": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDiagUdiskStatus; não testada)."
+  ],
+  "xqnetwork/diagdiskstatus": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDiagDiskStatus; não testada)."
+  ],
+  "xqnetwork/diag_wifi_test": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diagWifiTest; não testada)."
+  ],
+  "xqnetwork/diag_usb_test": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diagUsbTest; não testada)."
+  ],
+  "xqnetwork/diag_hdd_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diagHddStatus; não testada)."
+  ],
+  "xqnetwork/diag_disk_test": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diagDiskTest; não testada)."
+  ],
+  "xqnetwork/diag_get_paras": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDiagParas; não testada)."
+  ],
+  "xqnetwork/diag_set_paras": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setDiagParas; não testada)."
+  ],
+  "xqnetwork/diag_get_log": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDiagLog; não testada)."
+  ],
+  "xqnetwork/set_wifi_weak": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setWifiWeakInfo; não testada)."
+  ],
+  "xqnetwork/get_wifi_weak": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getWifiWeakInfo; não testada)."
+  ],
+  "xqnetwork/get_netmode": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getNetMode; não testada)."
+  ],
+  "xqpassport/login": [
+    "i",
+    "Função do firmware 1.0.394 (controlador passportLogin; não testada)."
+  ],
+  "xqpassport/rigister": [
+    "i",
+    "Função do firmware 1.0.394 (controlador routerRegister; não testada)."
+  ],
+  "xqpassport/binded": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getBindInfo; não testada)."
+  ],
+  "xqpassport/plugin_list": [
+    "i",
+    "Função do firmware 1.0.394 (controlador pluginList; não testada)."
+  ],
+  "xqpassport/plugin_enable": [
+    "i",
+    "Função do firmware 1.0.394 (controlador pluginEnable; não testada)."
+  ],
+  "xqpassport/plugin_disable": [
+    "i",
+    "Função do firmware 1.0.394 (controlador pluginDisable; não testada)."
+  ],
+  "xqpassport/plugin_detail": [
+    "i",
+    "Função do firmware 1.0.394 (controlador pluginDetail; não testada)."
+  ],
+  "xqpassport/unbound": [
+    "i",
+    "Função do firmware 1.0.394 (controlador unboundRouter; não testada)."
+  ],
+  "xqsmarthome/request": [
+    "i",
+    "Função do firmware 1.0.394 (controlador tunnelSmartHomeRequest; não testada)."
+  ],
+  "xqsmarthome/request_mitv": [
+    "i",
+    "Função do firmware 1.0.394 (controlador requestMitv; não testada)."
+  ],
+  "xqsmarthome/request_camera": [
+    "i",
+    "Função do firmware 1.0.394 (controlador requestCamera; não testada)."
+  ],
+  "xqsmarthome/request_miiolist": [
+    "i",
+    "Função do firmware 1.0.394 (controlador requestMiioList; não testada)."
+  ],
+  "xqsystem/maccel": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setMobileAccel; não testada)."
+  ],
+  "xqsystem/ma_check": [
+    "i",
+    "Função do firmware 1.0.394 (controlador checkMobileAccel; não testada)."
+  ],
+  "xqsystem/fac_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getFacInfo; não testada)."
+  ],
+  "xqsystem/bdata": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getBdataInfo; não testada)."
+  ],
+  "xqsystem/farewell": [
+    "i",
+    "Função do firmware 1.0.394 (controlador farewell; não testada)."
+  ],
+  "xqsystem/set_inited": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setInited; não testada)."
+  ],
+  "xqsystem/lan_wan": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getLanWanSta; não testada)."
+  ],
+  "xqsystem/new_router_bind_ok": [
+    "i",
+    "Função do firmware 1.0.394 (controlador newrouterBindOk; não testada)."
+  ],
+  "xqsystem/flash_rom": [
+    "i",
+    "Função do firmware 1.0.394 (controlador flashRom; não testada)."
+  ],
+  "xqsystem/set_router_name": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setRouterName; não testada)."
+  ],
+  "xqsystem/router_name": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getRouterName; não testada)."
+  ],
+  "xqsystem/device_list": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDeviceList; não testada)."
+  ],
+  "xqsystem/set_device_nickname": [
+    "i",
+    "Renomeia um aparelho na lista do roteador. (controlador setDeviceNickName; não testada)."
+  ],
+  "xqsystem/internet_connect": [
+    "i",
+    "Função do firmware 1.0.394 (controlador isInternetConnect; não testada)."
+  ],
+  "xqsystem/get_main_language": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getMainLang; não testada)."
+  ],
+  "xqsystem/router_init": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setRouter; não testada)."
+  ],
+  "xqsystem/information": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getAllInfo; não testada)."
+  ],
+  "xqsystem/status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getStatusInfo; não testada)."
+  ],
+  "xqsystem/count": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getConDevCount; não testada)."
+  ],
+  "xqsystem/passport_bind_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getPassportBindInfo; não testada)."
+  ],
+  "xqsystem/set_passport_bound": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setPassportBound; não testada)."
+  ],
+  "xqsystem/get_sys_avg_load": [
+    "i",
+    "Carga média do sistema. (controlador getSysAvgLoad; não testada)."
+  ],
+  "xqsystem/get_ip": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getIp; não testada)."
+  ],
+  "xqsystem/remove_passport_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador removePassportBindInfo; não testada)."
+  ],
+  "xqsystem/stop_nginx": [
+    "i",
+    "Função do firmware 1.0.394 (controlador stopNginx; não testada)."
+  ],
+  "xqsystem/check_router_name_pending": [
+    "i",
+    "Função do firmware 1.0.394 (controlador checkRouterNamePending; não testada)."
+  ],
+  "xqsystem/clear_router_name_pending": [
+    "i",
+    "Função do firmware 1.0.394 (controlador clearRouterNamePending; não testada)."
+  ],
+  "xqsystem/web_url": [
+    "i",
+    "Função do firmware 1.0.394 (controlador redirectUrl; não testada)."
+  ],
+  "xqsystem/start_nginx": [
+    "i",
+    "Função do firmware 1.0.394 (controlador startNginx; não testada)."
+  ],
+  "xqsystem/nginx": [
+    "i",
+    "Função do firmware 1.0.394 (controlador nginxCacheStatus; não testada)."
+  ],
+  "xqsystem/flash_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador flashStatus; não testada)."
+  ],
+  "xqsystem/create_sandbox": [
+    "i",
+    "Função do firmware 1.0.394 (controlador createSandbox; não testada)."
+  ],
+  "xqsystem/is_sandbox_created": [
+    "i",
+    "Função do firmware 1.0.394 (controlador isSandboxCreated; não testada)."
+  ],
+  "xqsystem/mount_things": [
+    "i",
+    "Função do firmware 1.0.394 (controlador mountThings; não testada)."
+  ],
+  "xqsystem/umount_things": [
+    "i",
+    "Função do firmware 1.0.394 (controlador umountThings; não testada)."
+  ],
+  "xqsystem/are_things_mounted": [
+    "i",
+    "Função do firmware 1.0.394 (controlador areThingsMounted; não testada)."
+  ],
+  "xqsystem/start_dropbear": [
+    "i",
+    "Liga o servidor SSH (dropbear) do roteador. (controlador startDropbear; não testada)."
+  ],
+  "xqsystem/stop_dropbear": [
+    "i",
+    "Desliga o servidor SSH do roteador. (controlador stopDropbear; não testada)."
+  ],
+  "xqsystem/is_dropbear_started": [
+    "i",
+    "Diz se o servidor SSH está ligado. (controlador isDropbearStarted; não testada)."
+  ],
+  "xqsystem/main_status_for_app": [
+    "i",
+    "Função do firmware 1.0.394 (controlador mainStatusForApp; não testada)."
+  ],
+  "xqsystem/mode": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getMacfilterMode; não testada)."
+  ],
+  "xqsystem/set_mode": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setMacfilterMode; não testada)."
+  ],
+  "xqsystem/cancel": [
+    "i",
+    "Função do firmware 1.0.394 (controlador cancelUpgrade; não testada)."
+  ],
+  "xqsystem/app_limit": [
+    "i",
+    "Limite por aplicativo. (controlador appLimit; não testada)."
+  ],
+  "xqsystem/xunlei_api": [
+    "i",
+    "Função do firmware 1.0.394 (controlador xunlei_api; não testada)."
+  ],
+  "xqsystem/app_limit_switch": [
+    "i",
+    "Função do firmware 1.0.394 (controlador appLimitSwitch; não testada)."
+  ],
+  "xqsystem/set_app_limit": [
+    "i",
+    "Define limite por aplicativo. (controlador setAppLimit; não testada)."
+  ],
+  "xqsystem/detection_ts": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDetectionTimestamp; não testada)."
+  ],
+  "xqsystem/wifi_log": [
+    "i",
+    "Registro do Wi-Fi (conexões e desconexões). (controlador getWifiLog; não testada)."
+  ],
+  "xqsystem/sys_recovery": [
+    "i",
+    "Função do firmware 1.0.394 (controlador sysRecovery; não testada)."
+  ],
+  "xqsystem/smart_shutdown": [
+    "i",
+    "Desligamento inteligente/agendado. (controlador smartShutdown; não testada)."
+  ],
+  "xqsystem/noflushd": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getNofStatus; não testada)."
+  ],
+  "xqsystem/nof_switch": [
+    "i",
+    "Função do firmware 1.0.394 (controlador nofSwitch; não testada)."
+  ],
+  "xqsystem/pred_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador predownloadInfo; não testada)."
+  ],
+  "xqsystem/pred_switch": [
+    "i",
+    "Função do firmware 1.0.394 (controlador predownloadSwitch; não testada)."
+  ],
+  "xqsystem/set_privacy_new": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setPrivacy_new; não testada)."
+  ],
+  "xqsystem/disk_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getDiskInfo; não testada)."
+  ],
+  "xqsystem/io_data": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getIOData; não testada)."
+  ],
+  "xqsystem/disk_scan": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskScan; não testada)."
+  ],
+  "xqsystem/disk_check": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskCheck; não testada)."
+  ],
+  "xqsystem/disk_check_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador diskCheckStatus; não testada)."
+  ],
+  "xqsystem/dev_notify": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setDevNotify; não testada)."
+  ],
+  "xqsystem/ota": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getOTAInfo; não testada)."
+  ],
+  "xqsystem/set_ota": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setOTAInfo; não testada)."
+  ],
+  "xqsystem/sdev": [
+    "i",
+    "Função do firmware 1.0.394 (controlador specialDevCount; não testada)."
+  ],
+  "xqsystem/devicelist": [
+    "i",
+    "Função do firmware 1.0.394 (controlador devicelistForMAgent; não testada)."
+  ],
+  "xqsystem/userdisk_data": [
+    "i",
+    "Função do firmware 1.0.394 (controlador getUserdiskDataInfo; não testada)."
+  ],
+  "xqsystem/backup_data": [
+    "i",
+    "Função do firmware 1.0.394 (controlador backupData; não testada)."
+  ],
+  "xqsystem/backup_status": [
+    "i",
+    "Função do firmware 1.0.394 (controlador backupStatus; não testada)."
+  ],
+  "xqsystem/backup_cancel": [
+    "i",
+    "Função do firmware 1.0.394 (controlador backupCancel; não testada)."
+  ],
+  "xqsystem/set_payment_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador setPaymentInfo; não testada)."
+  ],
+  "xqsystem/sign_order": [
+    "i",
+    "Função do firmware 1.0.394 (controlador signOrder; não testada)."
+  ],
+  "xqsystem/extendwifi_request_remote_api": [
+    "i",
+    "Função do firmware 1.0.394 (controlador ExtendWifiRequestRemoteAPI; não testada)."
+  ],
+  "xqsystem/extendwifi_get_root_dir_info": [
+    "i",
+    "Função do firmware 1.0.394 (controlador ExtendWifiGetRootDirInfo; não testada)."
+  ],
+  "xqsystem/extendwifi_get_root_dir_useage": [
+    "i",
+    "Função do firmware 1.0.394 (controlador ExtendWifiGetRootDirUseage; não testada)."
+  ],
+  "xqsystem/extendwifi_connect_inited_router": [
+    "i",
+    "Função do firmware 1.0.394 (controlador ExtendWifiConnectInitedRouter; não testada)."
+  ],
+  "xqsystem/extendwifi_sign_for_auto_band": [
+    "i",
+    "Função do firmware 1.0.394 (controlador ExtendWifiSignForAutoBand; não testada)."
+  ],
+  "xqsystem/net_diagnose_start": [
+    "i",
+    "Função do firmware 1.0.394 (controlador netDiagnoseStart; não testada)."
+  ],
+  "xqsystem/net_diagnose_result": [
+    "i",
+    "Função do firmware 1.0.394 (controlador netDiagnoseResult; não testada)."
+  ],
+  "xqtunnel/request": [
+    "i",
+    "Função do firmware 1.0.394 (controlador tunnelRequest; não testada)."
   ]
 }
