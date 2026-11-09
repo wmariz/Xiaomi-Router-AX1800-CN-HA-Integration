@@ -133,3 +133,12 @@ The pages `web/prosetting/{ddns,nat,vpn,upnp}` are only linked from the QoS page
 - **VPN (PPTP/L2TP client):** `xqsystem/vpn`, `vpn_status` (0 connected … 4 not enabled), `set_vpn` (POST, empty `id` = new), `del_vpn`, `vpn_switch` (`conn` 1/0, `id`), `set_vpnauto`; smart split `misystem/smartvpn_info|smartvpn_switch|smartvpn_url|smartvpn_mac` (`opt` 0 add / 1 remove); `mi_vpn` / `mi_vpn_info`.
 - **UPnP ("other"):** `xqsystem/upnp`, `upnp_switch` (`switch` 1/0).
 - These pages also reference `xqnetwork/scan_mesh_node`, `get_addnode_status`, `add_mesh_node` (adding Mesh nodes from the web UI) — not explored yet.
+
+## 10. Remaining official features (tested 2026-11-09)
+- **Wi-Fi power without restart:** `xqnetwork/set_wifi_txpwr?txpwr=max|mid|min` changes **both bands at once** in ~5 s; the radios stay up (`wifi_diag_detail_all` status 1 throughout). The firmware still has the JS for it but the form was removed from the page.
+- **Backup restore:** `misystem/c_upload` is a multipart POST with the file in the field `image`; it only parses the file and returns `des.keys` (e.g. `mi_basic_info`, `mi_network_info`, `mi_wifi_info`, `mi_lan_info`, with Chinese labels). Nothing changes until `misystem/c_restore?keys=a,b` — and that needs a restart. Upload tested with a fresh backup (no restore).
+- **Adding a Mesh node:** `scan_mesh_node` → `add_mesh_node` (POST `mac`, `locate` = Chinese room name) → poll `get_addnode_status?mac=` (0 done, 1 connecting, 2 syncing, 3 expanding, 4 failed). Not exercised (no spare node).
+- **Diagnostics:** `xqnetdetect/nettb` (`error` 0 = ok, ~1.5 s); `xqnetwork/check_wan_type` (1 PPPoE, 2 DHCP, 3 static, 99 no cable; returns 0 while PPPoE is connected).
+- **Notices:** `misystem/messages` returns `messages[]` (not `list`): type 1 new firmware, 3 5 GHz failed, 4 IP conflict with `data.ip`, fixed by `misystem/r_ip_conflict` (POST).
+- **QoS:** per-device limits `misystem/qos_limits` (KB/s, 0 = none; list only has devices while QoS is on); the router's own limit is `qos_xq`, read back as `qos_info.local`.
+- Slow endpoints (scans, diagnosis, uploads) get a 60 s timeout in the integration and both standalone servers.

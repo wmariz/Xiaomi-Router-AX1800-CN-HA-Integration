@@ -84,10 +84,30 @@ sessoes: dict[str, str] = {}  # roteador -> token
 cache_endpoints: dict[str, list] = {}
 
 
-def _http(url, dados=None, timeout=15):
+def multipart(campos: dict, arquivo: dict) -> tuple[bytes, str]:
+    """Corpo multipart/form-data com o arquivo no campo 'image' (como a página oficial envia)."""
+    import base64
+    import uuid
+    limite = "----miwifi" + uuid.uuid4().hex
+    partes = [
+        f'--{limite}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n{v}\r\n'.encode()
+        for k, v in (campos or {}).items()
+    ]
+    nome = str(arquivo.get("nome") or "arquivo.bin").replace('"', "")
+    partes.append(
+        f'--{limite}\r\nContent-Disposition: form-data; name="image"; filename="{nome}"\r\n'
+        "Content-Type: application/octet-stream\r\n\r\n".encode()
+        + base64.b64decode(arquivo.get("b64") or "")
+        + b"\r\n"
+    )
+    partes.append(f"--{limite}--\r\n".encode())
+    return b"".join(partes), f"multipart/form-data; boundary={limite}"
+
+
+def _http(url, dados=None, timeout=15, tipo="application/x-www-form-urlencoded"):
     req = urllib.request.Request(url, data=dados, method="POST" if dados else "GET")
     if dados:
-        req.add_header("Content-Type", "application/x-www-form-urlencoded")
+        req.add_header("Content-Type", tipo)
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.status, r.read().decode("utf-8", "replace")
 
@@ -127,7 +147,7 @@ def mascarar(obj, mostrar=False):
     return obj
 
 
-def chamar(nome, endpoint, metodo="GET", params=None, mostrar=False):
+def chamar(nome, endpoint, metodo="GET", params=None, mostrar=False, arquivo=None):
     if nome not in sessoes:
         return {"ok": False, "erro": "Faça login neste roteador primeiro."}
     ip, token = ROTEADORES[nome], sessoes[nome]
@@ -141,8 +161,12 @@ def chamar(nome, endpoint, metodo="GET", params=None, mostrar=False):
         url += "?" + urllib.parse.urlencode(params)
     elif metodo == "POST":
         dados = urllib.parse.urlencode(params).encode() or b" "
+    tipo = "application/x-www-form-urlencoded"
+    if arquivo:
+        dados, tipo = multipart(params, arquivo)
     try:
-        status, txt = _http(url, dados)
+        lento = arquivo or endpoint.rsplit("/", 1)[-1] in {"scan_mesh_node", "wifi_list", "nettb", "c_upload", "check_wan_type", "add_mesh_node"}
+        status, txt = _http(url, dados, 60 if lento else 15, tipo)
     except urllib.error.HTTPError as e:
         status, txt = e.code, e.read().decode("utf-8", "replace")
     except Exception as e:  # rede
@@ -294,11 +318,12 @@ class Handler(BaseHTTPRequestHandler):
             return self._json({"ok": True})
         if self.path == "/api/chamar":
             ep = corpo.get("endpoint", "")
-            escrita = bool(ESCRITA.search(ep.split("/")[-1])) or corpo.get("metodo") == "POST"
+            arquivo = corpo.get("arquivo") if isinstance(corpo.get("arquivo"), dict) else None
+            escrita = bool(ESCRITA.search(ep.split("/")[-1])) or corpo.get("metodo") == "POST" or bool(arquivo)
             if escrita and not corpo.get("confirmado"):
                 return self._json({"ok": False, "erro": "Este endpoint altera o roteador: confirme antes."})
             return self._json(
-                chamar(nome, ep, corpo.get("metodo", "GET"), corpo.get("params"), corpo.get("mostrar", False))
+                chamar(nome, ep, corpo.get("metodo", "GET"), corpo.get("params"), corpo.get("mostrar", False), arquivo)
             )
         self._json({"erro": "não encontrado"}, 404)
 

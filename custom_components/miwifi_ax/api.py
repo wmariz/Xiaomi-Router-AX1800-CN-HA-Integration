@@ -13,6 +13,8 @@ from urllib.parse import urlencode, urlsplit
 import aiohttp
 
 DEFAULT_KEY = "a2ffa5c9be07488bbb04a3a47d3c5f6a"
+# endpoints that take long to answer (scans, diagnosis, uploads)
+SLOW = {"scan_mesh_node", "wifi_list", "nettb", "c_upload", "check_wan_type", "add_mesh_node"}
 
 
 def _dechunk(b: bytes) -> bytes:
@@ -32,6 +34,26 @@ def _dechunk(b: bytes) -> bytes:
     return out
 
 
+def multipart(campos: dict, arquivo: dict) -> tuple[bytes, str]:
+    """Corpo multipart/form-data com o arquivo no campo 'image' (como a página oficial envia)."""
+    import base64
+    import uuid
+    limite = "----miwifi" + uuid.uuid4().hex
+    partes = [
+        f'--{limite}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n{v}\r\n'.encode()
+        for k, v in (campos or {}).items()
+    ]
+    nome = str(arquivo.get("nome") or "arquivo.bin").replace('"', "")
+    partes.append(
+        f'--{limite}\r\nContent-Disposition: form-data; name="image"; filename="{nome}"\r\n'
+        "Content-Type: application/octet-stream\r\n\r\n".encode()
+        + base64.b64decode(arquivo.get("b64") or "")
+        + b"\r\n"
+    )
+    partes.append(f"--{limite}--\r\n".encode())
+    return b"".join(partes), f"multipart/form-data; boundary={limite}"
+
+
 class MiWiFiAuthError(Exception):
     """Senha recusada."""
 
@@ -48,7 +70,7 @@ class MiWiFiApi:
         self._token: str | None = None
         self._lock = asyncio.Lock()
 
-    async def _text(self, url: str, data: dict | None = None) -> str:
+    async def _text(self, url: str, data: dict | None = None, bruto: tuple[bytes, str] | None = None, limite: int = 12) -> str:
         """HTTP/1.0 simples e tolerante.
 
         Alguns endpoints do firmware (ex.: misystem/led?on=1 no repetidor) respondem
@@ -57,7 +79,10 @@ class MiWiFiApi:
         """
         u = urlsplit(url)
         path = u.path + (f"?{u.query}" if u.query else "")
-        corpo = urlencode(data).encode() if data is not None else b""
+        corpo = bruto[0] if bruto else (urlencode(data).encode() if data is not None else b"")
+        tipo = bruto[1] if bruto else "application/x-www-form-urlencoded"
+        if bruto:
+            data = {}
         linhas = [
             f"{'POST' if data is not None else 'GET'} {path} HTTP/1.0",
             f"Host: {u.hostname}",
@@ -65,11 +90,11 @@ class MiWiFiApi:
             "User-Agent: miwifi_ax",
         ]
         if data is not None:
-            linhas += ["Content-Type: application/x-www-form-urlencoded", f"Content-Length: {len(corpo)}"]
+            linhas += [f"Content-Type: {tipo}", f"Content-Length: {len(corpo)}"]
         req = ("\r\n".join(linhas) + "\r\n\r\n").encode() + corpo
         writer = None
         try:
-            async with asyncio.timeout(12):
+            async with asyncio.timeout(limite):
                 reader, writer = await asyncio.open_connection(u.hostname, u.port or 80)
                 writer.write(req)
                 await writer.drain()
@@ -114,18 +139,21 @@ class MiWiFiApi:
             raise MiWiFiAuthError(f"code {j.get('code')}")
         self._token = j["token"]
 
-    async def call(self, ep: str, params: dict | None = None, post: bool = False) -> dict[str, Any]:
+    async def call(self, ep: str, params: dict | None = None, post: bool = False, arquivo: dict | None = None) -> dict[str, Any]:
         async with self._lock:
             for tentativa in range(2):
                 if not self._token:
                     await self.login()
                 url = f"http://{self.host}/cgi-bin/luci/;stok={self._token}/api/{ep}"
-                if post:
-                    txt = await self._text(url, params or {})
+                lim = 60 if ep.rsplit("/", 1)[-1] in SLOW else 12
+                if arquivo:
+                    txt = await self._text(url, bruto=multipart(params or {}, arquivo), limite=lim)
+                elif post:
+                    txt = await self._text(url, params or {}, limite=lim)
                 else:
                     if params:
                         url += "?" + urlencode(params)
-                    txt = await self._text(url)
+                    txt = await self._text(url, limite=lim)
                 try:
                     j = json.loads(txt)
                 except ValueError:

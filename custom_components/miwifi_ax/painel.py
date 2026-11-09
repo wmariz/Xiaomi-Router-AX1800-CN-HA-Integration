@@ -118,11 +118,12 @@ class ChamarView(_Base):
         ep = str(corpo.get("endpoint", "")).lstrip("/")
         ep = ep[4:] if ep.startswith("api/") else ep
         metodo = corpo.get("metodo", "GET")
-        escrita = bool(ESCRITA.search(ep.split("/")[-1])) or metodo == "POST"
+        arquivo = corpo.get("arquivo") if isinstance(corpo.get("arquivo"), dict) else None
+        escrita = bool(ESCRITA.search(ep.split("/")[-1])) or metodo == "POST" or bool(arquivo)
         if escrita and not corpo.get("confirmado"):
             return self.json({"ok": False, "erro": "Este endpoint altera o roteador: confirme antes."})
         try:
-            j = await c.api.call(ep, corpo.get("params") or None, post=(metodo == "POST"))
+            j = await c.api.call(ep, corpo.get("params") or None, post=(metodo == "POST"), arquivo=arquivo)
         except Exception as err:  # noqa: BLE001
             return self.json({"ok": False, "erro": str(err)})
         if escrita:

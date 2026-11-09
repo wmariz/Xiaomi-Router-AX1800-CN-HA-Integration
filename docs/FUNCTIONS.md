@@ -16,8 +16,8 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/arn_switch` | **⚠ INFERRED** — Turns anti-intrusion on/off and sets the level (parameters unconfirmed). |  |
 | `misystem/bandwidth_test` | ✓ Measures internet download speed (QoS test). |  |
 | `misystem/c_backup` | ✓ Creates a configuration backup file (keys = parts to include). | `GET {"keys": "mi_basic_info,mi_network_info,mi_wifi_info,mi_lan_info,mi_arn_info"}` |
-| `misystem/c_restore` | ✓ Restores an uploaded backup (keys). |  |
-| `misystem/c_upload` | ✓ Uploads the backup file to restore. |  |
+| `misystem/c_restore` | ✓ Restores the chosen items of the uploaded backup (comma-separated keys); a restart is needed afterwards. | `GET {"keys": "mi_wifi_info,mi_lan_info"}` |
+| `misystem/c_upload` | ✓ Uploads a backup (multipart, file in the image field). Only reads the file: returns des.keys {key: description} to choose in c_restore. |  |
 | `misystem/channel_scan_result` | ✓ Channel optimization result (current/suggested channel and score). |  |
 | `misystem/channel_scan_start` | **⚠ INFERRED** — Starts the Wi-Fi optimization channel scan. |  |
 | `misystem/check_status` | ✓ Quick router check used by the app. |  |
@@ -33,7 +33,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/http_switch` | **⚠ INFERRED** — Turns HTTP interception on/off. |  |
 | `misystem/iperf` | **⚠ INFERRED** — iperf server to measure local network speed. |  |
 | `misystem/led` | ✓ LED status; with on=0/1 turns the device lights off/on. | `GET {"on": 1}` |
-| `misystem/messages` | ✓ Router notices (update available, 5 GHz failure, IP conflict). |  |
+| `misystem/messages` | ✓ Bell notices: messages[{type 1 new version {version} / 3 5 GHz failure / 4 IP conflict {ip}, timestamp}], count. | `GET {}` |
 | `misystem/mi_vpn` | ✓ Turns "Xiaomi services via VPN" on/off (the official page disconnects the VPN first). | `GET {"open": 1}` |
 | `misystem/mi_vpn_info` | ✓ "Xiaomi services via VPN": status 1/0. | `GET {}` |
 | `misystem/minet_get_state` | ✓ MiNet status (quick setup of Xiaomi devices); returns an error on this device. |  |
@@ -54,13 +54,13 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/qos_guest` | ✓ Guest network speed limit (percent, percent_up of the bandwidth). | `GET {"percent": 0.5, "percent_up": 0.5}` |
 | `misystem/qos_info` | ✓ QoS settings: on/off, mode, bandwidth, guest network limit and per-device limits. |  |
 | `misystem/qos_info_new` | ✓ Newer QoS summary used by the app (bandwidth, limits per MAC). |  |
-| `misystem/qos_limits` | ✓ Writes per-device speed limits (data as JSON). |  |
+| `misystem/qos_limits` | ✓ Per-device limits in KB/s (0 = no limit): data = JSON [{mac, maxup, maxdown}]. The official page calls qos_mode with the current mode afterwards. | `POST {"data": "[{\"mac\": \"AA:BB:CC:DD:EE:FF\", \"maxup\": 500, \"maxdown\": 2000}]"}` |
 | `misystem/qos_mode` | ✓ QoS mode (mode): auto/gaming/browsing/video/manual. | `GET {"mode": 0}` |
 | `misystem/qos_offlimit` | ✓ Removes a device's speed limit (mac). | `GET {"mac": "AA:BB:CC:DD:EE:FF"}` |
 | `misystem/qos_set_dev_info` | **⚠ INFERRED** — Writes a device's QoS limit (used by the app). |  |
 | `misystem/qos_switch` | ✓ Turns QoS on/off (on). | `GET {"on": 0}` |
-| `misystem/qos_xq` | ✓ Local network speed limit (percent, percent_up). |  |
-| `misystem/r_ip_conflict` | ✓ Resolves an IP conflict with the upstream router by changing the LAN range. |  |
+| `misystem/qos_xq` | ✓ Limit for the router's own traffic, as a fraction of the bandwidth (percent, percent_up); read in qos_info.local. | `GET {"percent": 0.9, "percent_up": 0.9}` |
+| `misystem/r_ip_conflict` | ✓ Avoids the IP conflict with the upstream router by moving the LAN to the IP suggested in messages (type 4). Restarts the Wi-Fi. | `POST {}` |
 | `misystem/repair_status` | ✓ Status of the diagnosis' automatic network repair. |  |
 | `misystem/router_common_status` | ✓ Summary for the app: devices, WAN speed and USB. |  |
 | `misystem/router_name` | ✓ Router name and location. |  |
@@ -89,13 +89,13 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/web_access_opt` | ✓ Turns access control on/off and adds/removes allowed MACs. | `POST {"open": 1}` |
 | `xqdatacenter/identify_device` | **⚠ INFERRED** — Identifies a device's type/manufacturer. |  |
 | `xqdatacenter/request` | ✓ Generic numbered-command channel ('api' in the payload) used by the UI and the cloud. |  |
-| `xqnetdetect/nettb` | ✓ Quick diagnosis: device → router → internet. |  |
+| `xqnetdetect/nettb` | ✓ Quick device → router → internet test: error 0 = ok. | `GET {}` |
 | `xqnetdetect/netupspeed` | ✓ Measures internet upload speed. |  |
-| `xqnetwork/add_mesh_node` | ✓ Adds a discovered Mesh node (mac, locate). |  |
+| `xqnetwork/add_mesh_node` | ✓ Adds a node to the Mesh. locate = room name in Chinese (客厅, 主卧, 次卧, 书房, 厨房, 办公室, 地下室, 卫生间, 阁楼, 阳台, 餐厅). | `POST {"mac": "AA:BB:CC:DD:EE:FF", "locate": "客厅"}` |
 | `xqnetwork/add_range_redirect` | ✓ Adds a port range rule. Takes effect after redirect_apply. | `POST {"name": "Jogo", "proto": 3, "fport": 3000, "tport": 3010, "ip": "192.168.0.50"}` |
 | `xqnetwork/add_redirect` | ✓ Adds a port rule (force=1 replaces the rule for the same external port). Takes effect after redirect_apply. | `POST {"name": "Servidor", "proto": 1, "sport": 8443, "ip": "192.168.0.50", "dport": 443}` |
 | `xqnetwork/add_server` | ✓ Adds a DDNS service. Provider id: 1 No-IP, 2 Oray, 3 3322.org, 4 Dyn. | `GET {"id": 1, "username": "usuario", "password": "senha", "domain": "myhome.ddns.net", "checkinterval": 10, "forceinterval": 24, "enable": 1}` |
-| `xqnetwork/check_wan_type` | ✓ Detects the recommended internet connection type. |  |
+| `xqnetwork/check_wan_type` | ✓ Detects the connection type on the WAN port: 1 PPPoE, 2 DHCP, 3 static IP, 99 no cable, other = unknown (returns 0 with PPPoE connected). | `GET {}` |
 | `xqnetwork/ddns` | ✓ DDNS services: on (service on), list[{id, servicename, domain, enabled, status 0 error/1 ok/2 connecting, lastupdate, wanip, error}]. | `GET {}` |
 | `xqnetwork/ddns_edit` | ✓ Edits a DDNS service (same parameters as add_server). |  |
 | `xqnetwork/ddns_reload` | ✓ Forces a DDNS update now. | `GET {}` |
@@ -108,7 +108,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/dmz_off` | ✓ Turns DMZ off (the official page calls dmz_reload afterwards). | `GET {}` |
 | `xqnetwork/dmz_reload` | ✓ Reloads the DMZ configuration. | `GET {}` |
 | `xqnetwork/edit_device` | ✓ Adds (option=0) or removes (option=1) a MAC from the filter list. | `GET {"mac": "AA:BB:CC:DD:EE:FF", "model": 0, "option": 0}` |
-| `xqnetwork/get_addnode_status` | ✓ Progress of adding a Mesh node. |  |
+| `xqnetwork/get_addnode_status` | ✓ Node add progress: 0 done, 1 connecting, 2 syncing, 3 expanding (1–2 min), 4 failed. | `GET {"mac": "AA:BB:CC:DD:EE:FF"}` |
 | `xqnetwork/get_miotrelay_switch` | ✓ Quick connect (畅快连) status for Mi Home devices. |  |
 | `xqnetwork/get_miscan_switch` | ✓ AIoT antenna scan status. |  |
 | `xqnetwork/get_server` | ✓ One DDNS service's data (username, password, domain, checkinterval, forceinterval, enabled). | `GET {"id": 1}` |
@@ -130,9 +130,9 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/pppoe_status` | ✓ PPPoE dial-up status (dialing, connected, error). |  |
 | `xqnetwork/pppoe_stop` | ✓ Disconnects PPPoE. | `GET {}` |
 | `xqnetwork/redirect_apply` | ✓ Applies the forwarding rules (the official page's "保存并生效" button). | `GET {}` |
-| `xqnetwork/scan_mesh_node` | ✓ Looks for Mesh nodes available to add. |  |
+| `xqnetwork/scan_mesh_node` | ✓ Scans for available Mesh nodes: list[{ssid, mac, rssi}] (rssi < -60 = too far). Takes a few seconds. | `GET {}` |
 | `xqnetwork/server_switch` | ✓ Enables/disables a DDNS service (only one active at a time). | `GET {"id": 1, "on": 1}` |
-| `xqnetwork/set_all_wifi` | ✓ Changes both bands at once (unified Wi-Fi; restarts Wi-Fi ~30 s). The guest fields on3/ssid3/pwd3 are accepted but ignored on the RM1800. | `POST {"bsd": 0, "on1": 1, "ssid1": "Rede24", "pwd1": "senha-exemplo", "encryption1": "psk2", "channel1": 0, "bandwidth1": 0, "hidden1": 0, "txpwr1": "max", "on2": 1, "ssid2": "Rede5", "pwd2": "senha-exemplo", "encryption2": "psk2", "channel2": 0, "bandwidth2": 0, "hidden2": 0, "txpwr2": "max"}` |
+| `xqnetwork/set_all_wifi` | ✓ Unified Wi-Fi: bsd 1 (only on1/ssid1/pwd1/encryption1/channel1/bandwidth1/hidden1/txpwr1) or bsd 0 (also the …2 fields). Restarts the Wi-Fi. |  |
 | `xqnetwork/set_dmz` | ✓ Turns DMZ on for an IP. | `POST {"ip": "192.168.0.50"}` |
 | `xqnetwork/set_lan_ap` | ✓ Switches to wired repeater (access point; WAN connected to another router). Returns the new ip. | `POST {"ssid": "", "password": ""}` |
 | `xqnetwork/set_lan_dhcp` | ✓ Changes or turns off the DHCP server. | `GET {"ignore": 0, "start": 100, "end": 200, "leasetime": "720m", "dns1": "", "dns2": "", "router": "192.168.0.1"}` |
@@ -147,7 +147,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/set_wifi_ax` | ✓ Wi-Fi 6 on (ax=1) or Wi-Fi 5 compatibility mode (ax=0). | `POST {"ax": 1}` |
 | `xqnetwork/set_wifi_macfilter` | ✓ Turns the MAC filter on/off and sets its mode (model, enable). | `POST {"model": 0, "enable": 1}` |
 | `xqnetwork/set_wifi_txbf` | ✓ Turns MU-MIMO on/off (txbf). | `POST {"txbf": 1}` |
-| `xqnetwork/set_wifi_txpwr` | ✓ Signal power (txpwr: max/mid/min). |  |
+| `xqnetwork/set_wifi_txpwr` | ✓ Changes the power of BOTH bands at once (txpwr max/mid/min) in ~5 s without restarting the Wi-Fi (tested 2026-11-09). The screen that used it was removed from the firmware. | `GET {"txpwr": "max"}` |
 | `xqnetwork/set_wifi_without_restart` | ✓ Changes only the given fields without restarting Wi-Fi. wifiIndex=3 + on=1/0 turns the guest network on/off; wifiIndex=1/2 + hidden=1/0 hides/shows the SSID (not mirrored to the Mesh node). | `GET {"wifiIndex": 3, "on": 1}` |
 | `xqnetwork/wan_info` | ✓ Internet: type (PPPoE/DHCP/static), IP, gateway, DNS, MTU, connected time, IPv6 and MAC in use. |  |
 | `xqnetwork/wan_link` | ✓ WAN cable connected (link 1/0). |  |

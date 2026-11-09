@@ -98,7 +98,25 @@ public class Servidor {
     // ---------- cliente HTTP/1.0 tolerante (o repetidor manda cabeçalhos malformados) ----------
     static final class Resp { int status; String corpo; }
 
-    static Resp http(String url, byte[] dados) throws Exception {
+    static Resp http(String url, byte[] dados) throws Exception { return http(url, dados, "application/x-www-form-urlencoded"); }
+
+    /** Corpo multipart/form-data com o arquivo no campo 'image' (como a página oficial envia). */
+    static Object[] multipart(JSONObject campos, JSONObject arquivo) throws Exception {
+        String limite = "----miwifi" + Long.toHexString(System.nanoTime());
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        if (campos != null) {
+            java.util.Iterator<String> it = campos.keys();
+            while (it.hasNext()) { String k = it.next();
+                b.write(("--" + limite + "\r\nContent-Disposition: form-data; name=\"" + k + "\"\r\n\r\n" + campos.opt(k) + "\r\n").getBytes(StandardCharsets.UTF_8)); }
+        }
+        String nome = arquivo.optString("nome", "arquivo.bin").replace("\"", "");
+        b.write(("--" + limite + "\r\nContent-Disposition: form-data; name=\"image\"; filename=\"" + nome + "\"\r\nContent-Type: application/octet-stream\r\n\r\n").getBytes(StandardCharsets.UTF_8));
+        b.write(android.util.Base64.decode(arquivo.optString("b64", ""), android.util.Base64.DEFAULT));
+        b.write(("\r\n--" + limite + "--\r\n").getBytes(StandardCharsets.UTF_8));
+        return new Object[]{ b.toByteArray(), "multipart/form-data; boundary=" + limite };
+    }
+
+    static Resp http(String url, byte[] dados, String tipo) throws Exception {
         String resto = url.substring(url.indexOf("://") + 3);
         int barra = resto.indexOf('/');
         String hostPorta = barra < 0 ? resto : resto.substring(0, barra);
@@ -108,13 +126,13 @@ public class Servidor {
         if (dp >= 0) { host = hostPorta.substring(0, dp); porta = Integer.parseInt(hostPorta.substring(dp + 1)); }
         try (Socket s = new Socket()) {
             s.connect(new InetSocketAddress(host, porta), 8000);
-            s.setSoTimeout(15000);
+            s.setSoTimeout(url.matches(".*/(scan_mesh_node|wifi_list|nettb|c_upload|check_wan_type|add_mesh_node)(\\?.*)?$") || tipo.startsWith("multipart") ? 60000 : 15000);
             StringBuilder req = new StringBuilder();
             req.append(dados != null ? "POST " : "GET ").append(caminho).append(" HTTP/1.0\r\n");
             req.append("Host: ").append(host).append("\r\n");
             req.append("User-Agent: MiWiFiPainel-Android\r\nAccept: */*\r\nConnection: close\r\n");
             if (dados != null) {
-                req.append("Content-Type: application/x-www-form-urlencoded\r\n");
+                req.append("Content-Type: ").append(tipo).append("\r\n");
                 req.append("Content-Length: ").append(dados.length).append("\r\n");
             }
             req.append("\r\n");
@@ -236,7 +254,9 @@ public class Servidor {
         return o;
     }
 
-    private JSONObject chamar(String nome, String endpoint, String metodo, JSONObject params, boolean mostrar) throws Exception {
+    private JSONObject chamar(String nome, String endpoint, String metodo, JSONObject params, boolean mostrar) throws Exception { return chamar(nome, endpoint, metodo, params, mostrar, null); }
+
+    private JSONObject chamar(String nome, String endpoint, String metodo, JSONObject params, boolean mostrar, JSONObject arquivo) throws Exception {
         JSONObject r = new JSONObject();
         String token = sessoes.get(nome);
         if (token == null) return r.put("ok", false).put("erro", "Faça login neste roteador primeiro.");
@@ -247,8 +267,10 @@ public class Servidor {
         String f = formulario(params);
         if ("POST".equals(metodo)) dados = (f.isEmpty() ? " " : f).getBytes(StandardCharsets.UTF_8);
         else if (!f.isEmpty()) url += "?" + f;
+        String tipo = "application/x-www-form-urlencoded";
+        if (arquivo != null) { Object[] m = multipart(params, arquivo); dados = (byte[]) m[0]; tipo = (String) m[1]; }
         Resp resp;
-        try { resp = http(url, dados); } catch (Exception e) { return r.put("ok", false).put("erro", String.valueOf(e.getMessage())); }
+        try { resp = http(url, dados, tipo); } catch (Exception e) { return r.put("ok", false).put("erro", String.valueOf(e.getMessage())); }
         String txt = resp.corpo.trim();
         try {
             Object corpo = txt.startsWith("[") ? new JSONArray(txt) : new JSONObject(txt);
@@ -462,11 +484,12 @@ public class Servidor {
                 String ep = corpo.optString("endpoint", "");
                 String ult = ep.contains("/") ? ep.substring(ep.lastIndexOf('/') + 1) : ep;
                 String metodo = corpo.optString("metodo", "GET");
-                boolean escrita = ESCRITA.matcher(ult).find() || "POST".equals(metodo);
+                JSONObject arquivo = corpo.optJSONObject("arquivo");
+                boolean escrita = ESCRITA.matcher(ult).find() || "POST".equals(metodo) || arquivo != null;
                 if (escrita && !corpo.optBoolean("confirmado", false)) {
                     json(out, 200, new JSONObject().put("ok", false).put("erro", "Este endpoint altera o roteador: confirme antes.")); return;
                 }
-                json(out, 200, chamar(nome, ep, metodo, corpo.optJSONObject("params"), corpo.optBoolean("mostrar", false)));
+                json(out, 200, chamar(nome, ep, metodo, corpo.optJSONObject("params"), corpo.optBoolean("mostrar", false), arquivo));
                 return;
             }
             default:

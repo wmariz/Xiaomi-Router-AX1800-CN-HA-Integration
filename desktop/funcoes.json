@@ -56,11 +56,17 @@
   ],
   "misystem/c_restore": [
     "c",
-    "Restaura um backup enviado (keys)."
+    "Restaura os itens escolhidos do backup enviado (keys separadas por vírgula); depois é preciso reiniciar.",
+    {
+      "m": "GET",
+      "p": {
+        "keys": "mi_wifi_info,mi_lan_info"
+      }
+    }
   ],
   "misystem/c_upload": [
     "c",
-    "Envia o arquivo de backup para restaurar."
+    "Envia um backup (multipart, arquivo no campo image). Só lê o arquivo: devolve des.keys {chave: descrição} para escolher em c_restore."
   ],
   "misystem/channel_scan_result": [
     "c",
@@ -136,7 +142,11 @@
   ],
   "misystem/messages": [
     "c",
-    "Avisos do roteador (atualização disponível, falha no 5 GHz, conflito de IP)."
+    "Avisos do sino: messages[{type 1 nova versão {version} / 3 falha do 5 GHz / 4 conflito de IP {ip}, timestamp}], count.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "misystem/minet_get_state": [
     "c",
@@ -219,7 +229,13 @@
   ],
   "misystem/qos_limits": [
     "c",
-    "Grava limites de velocidade por aparelho (data em JSON)."
+    "Limites por aparelho em KB/s (0 = sem limite): data = JSON [{mac, maxup, maxdown}]. A página oficial chama qos_mode com o modo atual depois.",
+    {
+      "m": "POST",
+      "p": {
+        "data": "[{\"mac\": \"AA:BB:CC:DD:EE:FF\", \"maxup\": 500, \"maxdown\": 2000}]"
+      }
+    }
   ],
   "misystem/qos_mode": [
     "c",
@@ -257,11 +273,22 @@
   ],
   "misystem/qos_xq": [
     "c",
-    "Limite de velocidade da rede local (percent, percent_up)."
+    "Limite do tráfego do próprio roteador, em fração da banda (percent, percent_up); lido em qos_info.local.",
+    {
+      "m": "GET",
+      "p": {
+        "percent": 0.9,
+        "percent_up": 0.9
+      }
+    }
   ],
   "misystem/r_ip_conflict": [
     "c",
-    "Resolve conflito de IP com o roteador acima, mudando a faixa da rede local."
+    "Evita o conflito de IP com o roteador acima mudando a rede local para o IP sugerido em messages (type 4). Reinicia o Wi-Fi.",
+    {
+      "m": "POST",
+      "p": {}
+    }
   ],
   "misystem/repair_status": [
     "c",
@@ -430,7 +457,11 @@
   ],
   "xqnetdetect/nettb": [
     "c",
-    "Diagnóstico rápido: aparelho → roteador → internet."
+    "Teste rápido aparelho → roteador → internet: error 0 = ok.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetdetect/netupspeed": [
     "c",
@@ -438,11 +469,22 @@
   ],
   "xqnetwork/add_mesh_node": [
     "c",
-    "Adiciona um nó Mesh encontrado (mac, locate)."
+    "Adiciona um nó à Mesh. locate = nome do cômodo em chinês (客厅, 主卧, 次卧, 书房, 厨房, 办公室, 地下室, 卫生间, 阁楼, 阳台, 餐厅).",
+    {
+      "m": "POST",
+      "p": {
+        "mac": "AA:BB:CC:DD:EE:FF",
+        "locate": "客厅"
+      }
+    }
   ],
   "xqnetwork/check_wan_type": [
     "c",
-    "Detecta o tipo de conexão de internet recomendado."
+    "Detecta o tipo de conexão na porta WAN: 1 PPPoE, 2 DHCP, 3 IP fixo, 99 sem cabo, outro = não identificado (com PPPoE conectado devolve 0).",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/ddns": [
     "c",
@@ -500,7 +542,13 @@
   ],
   "xqnetwork/get_addnode_status": [
     "c",
-    "Andamento da inclusão de um nó Mesh."
+    "Andamento da adição do nó: 0 pronto, 1 conectando, 2 sincronizando, 3 expandindo (1–2 min), 4 falhou.",
+    {
+      "m": "GET",
+      "p": {
+        "mac": "AA:BB:CC:DD:EE:FF"
+      }
+    }
   ],
   "xqnetwork/get_miotrelay_switch": [
     "c",
@@ -628,33 +676,15 @@
   ],
   "xqnetwork/scan_mesh_node": [
     "c",
-    "Procura nós Mesh disponíveis para adicionar."
+    "Procura nós Mesh disponíveis: list[{ssid, mac, rssi}] (rssi < -60 = longe demais). Demora alguns segundos.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/set_all_wifi": [
     "c",
-    "Altera as duas bandas de uma vez (Wi-Fi unificado; reinicia o Wi-Fi ~30 s). Os campos on3/ssid3/pwd3 da rede de visitante são aceitos mas ignorados no RM1800.",
-    {
-      "m": "POST",
-      "p": {
-        "bsd": 0,
-        "on1": 1,
-        "ssid1": "Rede24",
-        "pwd1": "senha-exemplo",
-        "encryption1": "psk2",
-        "channel1": 0,
-        "bandwidth1": 0,
-        "hidden1": 0,
-        "txpwr1": "max",
-        "on2": 1,
-        "ssid2": "Rede5",
-        "pwd2": "senha-exemplo",
-        "encryption2": "psk2",
-        "channel2": 0,
-        "bandwidth2": 0,
-        "hidden2": 0,
-        "txpwr2": "max"
-      }
-    }
+    "Wi-Fi unificado: bsd 1 (só on1/ssid1/pwd1/encryption1/channel1/bandwidth1/hidden1/txpwr1) ou bsd 0 (também os campos …2). Reinicia o Wi-Fi."
   ],
   "xqnetwork/set_lan_ap": [
     "c",
@@ -815,7 +845,13 @@
   ],
   "xqnetwork/set_wifi_txpwr": [
     "c",
-    "Potência do sinal (txpwr: max/mid/min)."
+    "Muda a potência das DUAS bandas de uma vez (txpwr max/mid/min) em ~5 s sem reiniciar o Wi-Fi (testado 2026-11-09). A tela que usava isto foi removida do firmware.",
+    {
+      "m": "GET",
+      "p": {
+        "txpwr": "max"
+      }
+    }
   ],
   "xqnetwork/set_wifi_without_restart": [
     "c",
