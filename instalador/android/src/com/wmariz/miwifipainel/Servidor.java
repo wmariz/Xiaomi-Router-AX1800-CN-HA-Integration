@@ -33,9 +33,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Servidor local (127.0.0.1) equivalente ao desktop/painel.py: serve a página do painel
- * e repassa as chamadas à API interna (LuCI /api/...) dos roteadores.
- * A senha é usada só no login (hash SHA1 com nonce) e não é guardada.
+ * Local server (127.0.0.1) equivalent to desktop/painel.py: serves the panel page
+ * and relays calls to the routers' internal API (LuCI /api/...).
+ * The password is used only to log in (SHA1 hash with nonce) and is not stored.
  */
 public class Servidor {
     public static final int PORTA = 8099;
@@ -75,7 +75,7 @@ public class Servidor {
         carregarCfg();
     }
 
-    // ---------- configuração (endereços dos roteadores) ----------
+    // ---------- configuration (router addresses) ----------
     private SharedPreferences prefs() { return ctx.getSharedPreferences("miwifi", Context.MODE_PRIVATE); }
 
     private void carregarCfg() {
@@ -95,12 +95,12 @@ public class Servidor {
         prefs().edit().putString("roteadores", new JSONObject(new LinkedHashMap<>(roteadores)).toString()).apply();
     }
 
-    // ---------- cliente HTTP/1.0 tolerante (o repetidor manda cabeçalhos malformados) ----------
+    // ---------- tolerant HTTP/1.0 client (the repeater sends malformed headers) ----------
     static final class Resp { int status; String corpo; }
 
     static Resp http(String url, byte[] dados) throws Exception { return http(url, dados, "application/x-www-form-urlencoded"); }
 
-    /** Corpo multipart/form-data com o arquivo no campo 'image' (como a página oficial envia). */
+    /** multipart/form-data body with the file in the 'image' field (as the official page sends it). */
     static Object[] multipart(JSONObject campos, JSONObject arquivo) throws Exception {
         String limite = "----miwifi" + Long.toHexString(System.nanoTime());
         ByteArrayOutputStream b = new ByteArrayOutputStream();
@@ -212,7 +212,7 @@ public class Servidor {
         return m.find() ? m.group(1) : null;
     }
 
-    // ---------- funções do painel ----------
+    // ---------- panel functions ----------
     private JSONObject login(String nome, String senha) throws Exception {
         String ip = roteadores.get(nome);
         String pagina = http("http://" + ip + "/cgi-bin/luci/web", null).corpo;
@@ -335,7 +335,7 @@ public class Servidor {
             String home = http("http://" + ip + "/cgi-bin/luci/;stok=" + token + "/web/home", null).corpo.replace(token, "");
             Matcher m = Pattern.compile("/(web/[a-z_/]+)").matcher(home);
             while (m.find()) paginas.add(m.group(1));
-            paginas.remove("web/logout"); paginas.remove("web/login");  // buscar 'logout' encerra a sessão
+            paginas.remove("web/logout"); paginas.remove("web/login");  // fetching 'logout' ends the session
         } catch (Exception ignored) { }
         JSONArray salvos = new JSONArray();
         for (String p : paginas) {
@@ -350,7 +350,7 @@ public class Servidor {
         return r.put("ok", true).put("paginas", salvos).put("pasta", pasta.getAbsolutePath());
     }
 
-    // ---------- servidor HTTP local ----------
+    // ---------- local HTTP server ----------
     public synchronized void iniciar() throws Exception {
         if (servidor != null) return;
         servidor = new ServerSocket();
@@ -464,7 +464,7 @@ public class Servidor {
                 novos.put(n, ip);
             }
             if (novos.isEmpty()) { json(out, 400, new JSONObject().put("ok", false).put("erro", "Informe pelo menos um roteador.")); return; }
-            for (String n : new ArrayList<>(sessoes.keySet())) if (!java.util.Objects.equals(novos.get(n), roteadores.get(n))) sessoes.remove(n);  // IP mudou: sessão antiga não vale
+            for (String n : new ArrayList<>(sessoes.keySet())) if (!java.util.Objects.equals(novos.get(n), roteadores.get(n))) sessoes.remove(n);  // IP changed: the old session is no longer valid
             roteadores.clear(); roteadores.putAll(novos); cacheEndpoints.clear(); salvarCfg();
             json(out, 200, new JSONObject().put("ok", true).put("roteadores", new JSONObject(novos)));
             return;

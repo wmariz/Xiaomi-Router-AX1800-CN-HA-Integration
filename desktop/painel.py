@@ -1,13 +1,13 @@
-"""Painel local para os roteadores Xiaomi AX1800 (RM1800).
+"""Local panel for Xiaomi AX1800 (RM1800) routers.
 
-Expõe a API interna (LuCI /api/...) do roteador principal e do repetidor,
-inclusive funções que não aparecem na interface web.
+Exposes the internal API (LuCI /api/...) of the main router and the repeater,
+including functions that do not appear in the web interface.
 
-Uso:  python painel.py      → abre http://127.0.0.1:8099 no navegador
-(no instalador do Windows ele vira MiWiFiPainel.exe; abrir de novo só reabre a página)
-Só escuta em 127.0.0.1. A senha é digitada na página, vai direto ao roteador
-(hash SHA1 com nonce, como a interface oficial) e NÃO é guardada.
-Só a sessão (token) fica na memória deste processo.
+Usage:  python painel.py      → opens http://127.0.0.1:8099 in the browser
+(the Windows installer turns it into MiWiFiPainel.exe; opening it again just reopens the page)
+Listens on 127.0.0.1 only. The password is typed into the page, goes straight to the router
+(SHA1 hash with nonce, like the official interface) and is NOT stored.
+Only the session (token) is kept in this process's memory.
 """
 import hashlib
 import json
@@ -28,7 +28,7 @@ import webbrowser
 
 PASTA_CFG = Path(os.environ.get("APPDATA", Path.home())) / "MiWiFiPainel"
 ARQ_CFG = PASTA_CFG / "config.json"
-# dentro do .exe (PyInstaller) os arquivos ficam em sys._MEIPASS
+# inside the .exe (PyInstaller) the files live in sys._MEIPASS
 BASE = Path(getattr(sys, "_MEIPASS", Path(__file__).parent))
 PADRAO = {"principal": "192.168.0.1", "repetidor": "192.168.0.2"}
 IP_RE = re.compile(r"^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$")
@@ -52,14 +52,14 @@ ROTEADORES = carregar_cfg()
 PORTA = 8099
 CHAVE_PADRAO = "a2ffa5c9be07488bbb04a3a47d3c5f6a"
 
-# Páginas da interface web varridas para descobrir endpoints
+# Web interface pages scanned to discover endpoints
 PAGINAS = [
     "web/home", "web/setting/wifi", "web/setting/wan", "web/setting/lannetset",
     "web/setting/safe", "web/setting/upgrade", "web/apsetting/wifi",
     "web/store", "web/prosetting/qos",
     "web/prosetting/ddns", "web/prosetting/nat", "web/prosetting/vpn", "web/prosetting/upnp",
 ]
-# Endpoints de leitura conhecidos que não aparecem nas páginas
+# Known read endpoints that do not appear in the pages
 EXTRAS = [
     "api/misns/wifi_share_info", "api/misystem/status", "api/misystem/sys_time",
     "api/xqnetwork/wan_info", "api/xqnetwork/wifi_detail_all",
@@ -68,7 +68,7 @@ EXTRAS = [
     "api/xqnetwork/get_miscan_switch", "api/xqnetwork/get_miotrelay_switch",
     "api/xqsystem/country_code",
 ]
-# Palavras que indicam que o endpoint ALTERA algo (exige confirmação)
+# Words that mean the endpoint CHANGES something (confirmation required)
 ESCRITA = re.compile(
     r"(^|/)(set_|add_|del|remove|reboot|reset|shutdown|upgrade|flash|login|logout|"
     r"c_restore|c_upload|c_backup|bandwidth_test|scan_|qos_mode|qos_limit|qos_offlimit|qos_guest|"
@@ -80,12 +80,12 @@ ESCRITA = re.compile(
 )
 SENSIVEIS = re.compile(r"(pass|pwd|psk|key|token|stok|secret|sswd|senha)", re.I)
 
-sessoes: dict[str, str] = {}  # roteador -> token
+sessoes: dict[str, str] = {}  # router -> token
 cache_endpoints: dict[str, list] = {}
 
 
 def multipart(campos: dict, arquivo: dict) -> tuple[bytes, str]:
-    """Corpo multipart/form-data com o arquivo no campo 'image' (como a página oficial envia)."""
+    """multipart/form-data body with the file in the 'image' field (as the official page sends it)."""
     import base64
     import uuid
     limite = "----miwifi" + uuid.uuid4().hex
@@ -169,7 +169,7 @@ def chamar(nome, endpoint, metodo="GET", params=None, mostrar=False, arquivo=Non
         status, txt = _http(url, dados, 60 if lento else 15, tipo)
     except urllib.error.HTTPError as e:
         status, txt = e.code, e.read().decode("utf-8", "replace")
-    except Exception as e:  # rede
+    except Exception as e:  # network
         return {"ok": False, "erro": str(e)}
     try:
         corpo = json.loads(txt)
@@ -213,7 +213,7 @@ def descobrir(nome):
 
 
 def despejar(nome):
-    """Salva as páginas originais + JS (sem o token) para análise offline."""
+    """Saves the original pages + JS (without the token) for offline analysis."""
     if nome not in sessoes:
         return {"ok": False, "erro": "Faça login primeiro."}
     ip, token = ROTEADORES[nome], sessoes[nome]
@@ -221,11 +221,11 @@ def despejar(nome):
     pasta.mkdir(parents=True, exist_ok=True)
     salvos = []
     paginas = set(PAGINAS)
-    # descobre outras páginas linkadas a partir da home
+    # finds other pages linked from the home page
     try:
         _, home = _http(f"http://{ip}/cgi-bin/luci/;stok={token}/web/home")
         paginas.update(re.findall(r"/(web/[a-z_/]+)", home.replace(token, "")))
-        paginas -= {"web/logout", "web/login"}  # buscar 'logout' encerra a sessão
+        paginas -= {"web/logout", "web/login"}  # fetching 'logout' ends the session
     except Exception:
         pass
     for p in sorted(paginas):
@@ -297,7 +297,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json({"ok": False, "erro": "Informe pelo menos um roteador."}, 400)
             for n in list(sessoes):
                 if novos.get(n) != ROTEADORES.get(n):
-                    sessoes.pop(n, None)  # IP mudou: sessão antiga não vale
+                    sessoes.pop(n, None)  # IP changed: the old session is no longer valid
             ROTEADORES.clear()
             ROTEADORES.update(novos)
             cache_endpoints.clear()
@@ -339,7 +339,7 @@ def _ja_rodando() -> bool:
 
 if __name__ == "__main__":
     url = f"http://127.0.0.1:{PORTA}"
-    if _ja_rodando():  # já aberto: só mostra a página
+    if _ja_rodando():  # already running: just show the page
         webbrowser.open(url)
         sys.exit(0)
     SERVIDOR = ThreadingHTTPServer(("127.0.0.1", PORTA), Handler)

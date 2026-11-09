@@ -1,5 +1,5 @@
-# Gera o MiWiFiPainel.exe (PyInstaller) e o instalador (Inno Setup 6).
-# Uso (na raiz do repositório):  powershell -File instalador\windows\build.ps1
+# Builds MiWiFiPainel.exe (PyInstaller) and the installer (Inno Setup 6).
+# Usage (from the repository root):  powershell -File instalador\windows\build.ps1
 $ErrorActionPreference = "Stop"
 $raiz = Resolve-Path "$PSScriptRoot\..\.."
 Push-Location $PSScriptRoot

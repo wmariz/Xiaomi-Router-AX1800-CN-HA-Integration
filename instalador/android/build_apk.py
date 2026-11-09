@@ -1,10 +1,10 @@
-"""Compila o app Android (MiWiFi Painel) sem Gradle, só com o SDK do Android.
+"""Builds the Android app (MiWiFi Painel) without Gradle, with the Android SDK only.
 
 Uso:  uv run --with pillow python instalador/android/build_apk.py
-Requer: JDK (JAVA_HOME ou D:\\Android\\jdk) e Android SDK com build-tools 34 e platforms;android-34
-(ANDROID_HOME ou D:\\Android\\sdk). Gera saida/MiWiFiPainel-<versão>.apk assinado.
-A chave de assinatura fica em assinatura/ (fora do git); guarde-a: sem ela, uma versão nova
-não instala por cima da antiga (seria preciso desinstalar antes).
+Requires: JDK (JAVA_HOME or D:\\Android\\jdk) and the Android SDK with build-tools 34 and platforms;android-34
+(ANDROID_HOME or D:\\Android\\sdk). Produces a signed saida/MiWiFiPainel-<version>.apk.
+The signing key lives in assinatura/ (outside git); keep it safe: without it a new version
+will not install over the old one (it would have to be uninstalled first).
 """
 import os
 import re
@@ -47,7 +47,7 @@ def main():
     (OBRA / "assets").mkdir()
     SAIDA.mkdir(exist_ok=True)
 
-    # recursos: nome e ícone (foto do AX1800, a mesma da integração)
+    # resources: name and icon (AX1800 photo, the same as the integration's)
     (OBRA / "res" / "values" / "strings.xml").write_text(
         '<?xml version="1.0" encoding="utf-8"?>\n<resources><string name="app_name">MiWiFi Painel</string></resources>\n',
         encoding="utf-8")
@@ -64,10 +64,10 @@ def main():
         d.mkdir()
         fundo.save(d / "ic_launcher.png")
 
-    # a mesma página do painel do PC
+    # the same page as the PC panel
     shutil.copy(RAIZ / "desktop" / "painel.html", OBRA / "assets" / "painel.html")
 
-    # recursos → apk base
+    # resources → base apk
     rodar(BT / f"aapt2{EXE}", "compile", "--dir", OBRA / "res", "-o", OBRA / "res.zip")
     (OBRA / "gen").mkdir()
     rodar(BT / f"aapt2{EXE}", "link", "-o", OBRA / "base.apk", "-I", ANDROID_JAR,
@@ -87,7 +87,7 @@ def main():
         z.write(OBRA / "dex" / "classes.dex", "classes.dex")
     rodar(BT / f"zipalign{EXE}", "-p", "-f", "4", OBRA / "base.apk", OBRA / "alinhado.apk")
 
-    # assinatura (chave própria, guardada fora do git)
+    # signing (own key, kept outside git)
     ASSIN.mkdir(exist_ok=True)
     ks, arq_senha = ASSIN / "miwifi.jks", ASSIN / "senha.txt"
     if not ks.exists():

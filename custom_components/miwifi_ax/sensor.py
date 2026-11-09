@@ -16,7 +16,7 @@ DIAG = EntityCategory.DIAGNOSTIC
 @dataclass(frozen=True, kw_only=True)
 class Desc(SensorEntityDescription):
     so_principal: bool = False
-    atributo: str | None = None  # chave de self.coordinator.data com lista para atributos
+    atributo: str | None = None  # key in self.coordinator.data holding a list for the attributes
 
 
 SENSORES: tuple[Desc, ...] = (

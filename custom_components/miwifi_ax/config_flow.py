@@ -1,4 +1,4 @@
-"""Configuração pela interface: IP + senha; opções: aparelhos rastreados."""
+"""UI configuration: IP + password; options: tracked devices."""
 from __future__ import annotations
 
 from ipaddress import ip_address
@@ -25,11 +25,11 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
     def __init__(self) -> None:
         self._host: str | None = None
         self._nome: str | None = None
-        self._principal: str | None = None  # entry_id do principal (descoberta pela Mesh)
-        self._pedir_senha = False  # a senha do principal foi recusada: pedir a senha deste
+        self._principal: str | None = None  # entry_id of the main router (Mesh discovery)
+        self._pedir_senha = False  # the main router's password was rejected: ask for this one's
 
     def _esquecer_remocao(self, principal: ConfigEntry) -> None:
-        """O usuário readicionou um nó que tinha apagado: volta a ser adicionado sozinho no futuro."""
+        """The user re-added a node they had deleted: it will be added automatically again in the future."""
         nos = principal.data.get(CONF_NOS_REMOVIDOS, [])
         if self._host in nos:
             self.hass.config_entries.async_update_entry(
@@ -67,14 +67,14 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
         schema = vol.Schema({vol.Required(CONF_HOST, default=self._host or "192.168.0.1"): str, vol.Required(CONF_PASSWORD): str})
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
-    # ---- descoberta na rede (o principal se anuncia por UPnP/SSDP) ----
+    # ---- network discovery (the main router announces itself via UPnP/SSDP) ----
     async def async_step_ssdp(self, discovery_info) -> ConfigFlowResult:
         host = urlparse(discovery_info.ssdp_location or "").hostname
         if not host:
             return self.async_abort(reason="cannot_connect")
         try:
             if ip_address(host).version != 4:
-                # o roteador também se anuncia por IPv6; o anúncio IPv4 basta (evita "descoberta" duplicada)
+                # the router also announces itself over IPv6; the IPv4 announcement is enough (avoids a duplicate discovery)
                 return self.async_abort(reason="not_ipv4")
         except ValueError:
             pass
@@ -87,7 +87,7 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
         self.context["title_placeholders"] = {"nome": self._nome, "host": host}
         return await self.async_step_discovery_confirm()
 
-    # ---- descoberta pela Mesh (nós listados na topologia do principal) ----
+    # ---- Mesh discovery (nodes listed in the main router's topology) ----
     async def async_step_integration_discovery(self, discovery_info: dict[str, Any]) -> ConfigFlowResult:
         host = discovery_info[CONF_HOST]
         if self._host_configurado(host):
@@ -99,8 +99,8 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
         self._principal = discovery_info.get("principal")
         self.context["title_placeholders"] = {"nome": self._nome, "host": host}
         principal = self.hass.config_entries.async_get_entry(self._principal) if self._principal else None
-        # Nó da Mesh: adiciona sozinho com a senha do principal (a Mesh a copia para os nós),
-        # a menos que o usuário já tenha apagado este nó antes — aí só oferece o cartão.
+        # Mesh node: added automatically with the main router's password (the Mesh copies it to the nodes),
+        # unless the user deleted this node before — then only the discovery card is offered.
         if principal and host not in principal.data.get(CONF_NOS_REMOVIDOS, []):
             res, erro = await self._criar(host, principal.data[CONF_PASSWORD], True)
             if res:
@@ -112,12 +112,12 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_discovery_confirm(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         errors: dict[str, str] = {}
         principal = self.hass.config_entries.async_get_entry(self._principal) if self._principal else None
-        if principal is None:  # sem principal: qualquer roteador já configurado serve de sugestão de senha
+        if principal is None:  # no main router: any configured router serves as a password suggestion
             principal = next(iter(self._async_current_entries(include_ignore=False)), None)
         if user_input is not None:
             if principal and not self._pedir_senha:
-                # 1º passo: só confirmar. Testa a senha do principal (a Mesh a copia para os nós);
-                # a senha só é pedida se ela não funcionar.
+                # step 1: just confirm. Tries the main router's password (the Mesh copies it to the nodes);
+                # the password is only asked for if that fails.
                 res, erro = await self._criar(self._host, principal.data[CONF_PASSWORD], True)
                 if res:
                     self._esquecer_remocao(principal)
@@ -126,7 +126,7 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
                     self._pedir_senha = True
                     errors["base"] = "senha_principal_recusada"
                 else:
-                    errors["base"] = erro  # ex.: sem conexão — confirmar de novo tenta outra vez
+                    errors["base"] = erro  # e.g. no connection — confirming again retries
             else:
                 senha = user_input.get(CONF_PASSWORD) or ""
                 if not senha:
@@ -152,8 +152,8 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
         return await self.async_step_reauth_confirm()
 
     async def async_step_reauth_confirm(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        # Um nó com "usar a senha do principal" já tentou a senha do principal sozinho (coordinator);
-        # chegar aqui significa que ela também não serviu.
+        # A node with "use the main router's password" already tried that password on its own (coordinator);
+        # getting here means it did not work either.
         errors: dict[str, str] = {}
         entry = self._get_reauth_entry()
         if user_input is not None:
@@ -166,7 +166,7 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
             except MiWiFiConnError:
                 errors["base"] = "cannot_connect"
             else:
-                # nós que seguem a senha do principal e falharam: tentam de novo com a senha nova
+                # nodes that follow the main router's password and failed: retry with the new password
                 for e in self._async_current_entries(include_ignore=False):
                     if e.entry_id != entry.entry_id and e.data.get(CONF_MESMA_SENHA) and e.state is ConfigEntryState.SETUP_ERROR:
                         self.hass.config_entries.async_schedule_reload(e.entry_id)
@@ -177,7 +177,7 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        """Trocar o IP (ex.: roteador mudou de endereço)."""
+        """Change the IP (e.g. the router moved to another address)."""
         entry = self._get_reconfigure_entry()
         errors: dict[str, str] = {}
         if user_input is not None:

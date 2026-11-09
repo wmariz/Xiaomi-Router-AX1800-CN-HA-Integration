@@ -1,4 +1,4 @@
-"""Integração local dos roteadores Xiaomi AX1800 (RM1800)."""
+"""Local integration for Xiaomi AX1800 (RM1800) routers."""
 from __future__ import annotations
 
 from datetime import timedelta
@@ -35,7 +35,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     if coord.role == ROLE_MAIN:
         async def _procurar_nos(_now=None) -> None:
-            """Oferece para configurar cada nó da Mesh ainda não cadastrado."""
+            """Offers to set up every Mesh node not configured yet."""
             topo = (await coord.api.safe("misystem/topo_graph")).get("graph") or {}
             ja = {e.data.get(CONF_HOST) for e in hass.config_entries.async_entries(DOMAIN)}
             for no in topo.get("leafs") or []:
@@ -67,12 +67,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_remove_config_entry_device(hass: HomeAssistant, entry: ConfigEntry, device) -> bool:
-    """Permite desvincular aparelhos rastreados (não os próprios roteadores)."""
+    """Allows removing tracked devices (not the routers themselves)."""
     return not any(i[0] == DOMAIN for i in device.identifiers)
 
 
 async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Nó Mesh apagado pelo usuário: o principal lembra, para não readicioná-lo sozinho."""
+    """Mesh node deleted by the user: the main router remembers it so it is not re-added automatically."""
     if not entry.data.get(CONF_MESMA_SENHA):
         return
     host = entry.data.get(CONF_HOST)

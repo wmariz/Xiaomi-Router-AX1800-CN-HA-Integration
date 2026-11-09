@@ -1,4 +1,4 @@
-"""Sensores binários."""
+"""Binary sensors."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -17,7 +17,7 @@ class Desc(BinarySensorEntityDescription):
     so_principal: bool = False
 
 
-# No nó Mesh (repetidor) a configuração de Wi-Fi é cópia da do principal: só o principal expõe.
+# On a Mesh node (repeater) the Wi-Fi config mirrors the main router's: only the main router exposes it.
 BINARIOS: tuple[Desc, ...] = (
     Desc(key="internet", device_class=BinarySensorDeviceClass.CONNECTIVITY, so_principal=True),
     Desc(key="wan_cabo", device_class=BinarySensorDeviceClass.PLUG, so_principal=True),

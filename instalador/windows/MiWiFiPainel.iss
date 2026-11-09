@@ -1,5 +1,5 @@
-﻿; Instalador do painel local dos roteadores Xiaomi AX1800 (RM1800)
-; Compilar:  ISCC.exe MiWiFiPainel.iss   (depois de gerar dist\MiWiFiPainel.exe com o PyInstaller — ver build.ps1)
+﻿; Installer for the local panel of Xiaomi AX1800 (RM1800) routers
+; Build:  ISCC.exe MiWiFiPainel.iss   (after creating dist\MiWiFiPainel.exe with PyInstaller — see build.ps1)
 
 #define Nome "MiWiFi Painel"
 #define Versao "1.1.0"
@@ -27,7 +27,7 @@ ShowLanguageDialog=auto
 LanguageDetectionMethod=uilanguage
 
 [Languages]
-; inglês primeiro = padrão quando o Windows não está em português
+; English first = default when Windows is not in Portuguese
 Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "ptbr"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
 
@@ -67,6 +67,6 @@ Filename: "{app}\{#Exe}"; Description: "{cm:AbrirAgora}"; Flags: nowait postinst
 Filename: "{sys}\taskkill.exe"; Parameters: "/f /im {#Exe}"; Flags: runhidden; RunOnceId: "EncerrarPainel"
 
 [UninstallDelete]
-; a configuração (endereços dos roteadores) fica em %APPDATA%\MiWiFiPainel e é mantida
+; the configuration (router addresses) lives in %APPDATA%\MiWiFiPainel and is kept
 Type: filesandordirs; Name: "{app}"
 

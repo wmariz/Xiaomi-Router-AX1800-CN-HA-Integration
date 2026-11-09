@@ -1,7 +1,7 @@
-"""Painel 'Roteadores' na barra lateral do HA + API usada por ele.
+"""'Routers' panel in the HA sidebar + the API it uses.
 
-A interface é a mesma do painel do PC (desktop/painel.html), empacotada em
-frontend/miwifi-panel.js pelo script tools/build_ha_panel.py.
+The interface is the same as the PC panel (desktop/painel.html), packaged into
+frontend/miwifi-panel.js by tools/build_ha_panel.py.
 """
 from __future__ import annotations
 
@@ -63,8 +63,8 @@ def _mascarar(obj: Any, mostrar: bool) -> Any:
 
 
 def _coords(hass: HomeAssistant) -> dict[str, Any]:
-    """{chave: coordenador}. Um principal = 'principal'; um nó = 'repetidor';
-    com vários nós, 'repetidor (<local ou nome>)'. Chaves sempre únicas."""
+    """{key: coordinator}. The main router = 'principal'; one node = 'repetidor';
+    with several nodes, 'repetidor (<location or name>)'. Keys are always unique."""
     cs = [c for c in hass.data.get(DOMAIN, {}).values() if c.role]
     out: dict[str, Any] = {}
     for papel in ("principal", "repetidor"):
@@ -183,7 +183,7 @@ class EndpointsView(_Base):
 
 
 async def async_registrar(hass: HomeAssistant) -> None:
-    """Registra API, arquivos e o painel (uma vez)."""
+    """Registers the API, files and the panel (once)."""
     if hass.data.get(f"{DOMAIN}_painel"):
         return
     hass.data[f"{DOMAIN}_painel"] = True

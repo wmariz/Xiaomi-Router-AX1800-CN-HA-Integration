@@ -10,9 +10,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-/** Tela única: mostra o painel (o mesmo HTML do painel do PC) servido pelo Servidor local. */
+/** Single screen: shows the panel (the same HTML as the PC panel) served by the local Servidor. */
 public class MainActivity extends Activity {
-    private static Servidor servidor;  // um por processo: sobrevive à rotação da tela
+    private static Servidor servidor;  // one per process: survives screen rotation
     private WebView web;
 
     @Override
@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
         s.setLoadWithOverviewMode(true);
         s.setBuiltInZoomControls(true);
         s.setDisplayZoomControls(false);
-        web.setWebChromeClient(new WebChromeClient());  // necessário para confirm()/alert() do painel
+        web.setWebChromeClient(new WebChromeClient());  // needed for the panel's confirm()/alert()
         web.setWebViewClient(new WebViewClient());
         try {
             if (servidor == null) {

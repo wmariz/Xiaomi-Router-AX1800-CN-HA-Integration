@@ -24,9 +24,9 @@ class Desc(SwitchEntityDescription):
 
 
 def _visitante(on: bool, d: dict) -> dict:
-    """Rede de visitante: xqnetwork/set_wifi_without_restart com wifiIndex=3 e só "on" —
-    mantém nome/senha e não reinicia o Wi-Fi. (set_wifi wifiIndex=3 e o on3 do
-    set_all_wifi são aceitos mas ignorados; mandar ssid/pwd juntos dá código 1615.)"""
+    """Guest network: xqnetwork/set_wifi_without_restart with wifiIndex=3 and only "on" —
+    keeps name/password and does not restart the Wi-Fi. (set_wifi wifiIndex=3 and set_all_wifi's
+    on3 are accepted but ignored; sending ssid/pwd along returns code 1615.)"""
     return {"wifiIndex": 3, "on": int(on)}
 
 

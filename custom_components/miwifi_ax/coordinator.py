@@ -1,4 +1,4 @@
-"""Coordenador: consulta o roteador a cada ciclo — só o que as entidades ATIVADAS usam."""
+"""Coordinator: polls the router every cycle — only what ENABLED entities use."""
 from __future__ import annotations
 
 import logging
@@ -16,9 +16,9 @@ from .api import MiWiFiApi, MiWiFiAuthError, MiWiFiConnError
 from .const import CONF_MESMA_SENHA, CONN_TYPE, DOMAIN, ROLE_MAIN, ROLE_NODE, SCAN_INTERVAL_S
 
 _LOGGER = logging.getLogger(__name__)
-FIRMWARE_INTERVALO_S = 6 * 3600  # check_rom_update consulta os servidores da Xiaomi
+FIRMWARE_INTERVALO_S = 6 * 3600  # check_rom_update queries Xiaomi's servers
 
-# chave da entidade -> grupo de consulta (endpoint). Chaves ausentes vêm do misystem/status (sempre lido).
+# entity key -> query group (endpoint). Keys not listed come from misystem/status (always read).
 GRUPO = {
     "led": "led", "avisos": "msg",
     "canal_24": "wifi", "canal_5": "wifi", "largura_24": "wifi", "largura_5": "wifi",
@@ -62,7 +62,7 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._upd_t = 0.0
 
     def _grupos(self) -> set[str] | None:
-        """Grupos necessários pelas entidades ativadas. None = tudo (primeira leitura)."""
+        """Groups needed by the enabled entities. None = everything (first read)."""
         if self._primeira or not self.entry_id:
             return None
         reg = er.async_get(self.hass)
@@ -98,8 +98,8 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             raise UpdateFailed(f"router unreachable: {err}") from err
 
     async def _senha_do_principal(self) -> bool:
-        """Nó Mesh com "usar a senha do principal": a Mesh copia a senha de administração,
-        então, se a salva foi recusada, tenta a senha atual do principal (e a salva se der certo)."""
+        """Mesh node with "use the main router's password": the Mesh copies the admin password,
+        so if the saved one is rejected, try the main router's current password (and save it if it works)."""
         entry = self.hass.config_entries.async_get_entry(self.entry_id) if self.entry_id else None
         if not entry or not entry.data.get(CONF_MESMA_SENHA):
             return False
@@ -179,7 +179,7 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     d["sinal_ate_principal"] = sig.get("signal")
             return d
 
-        # ---- só no principal ----
+        # ---- main router only ----
         cnt = st.get("count") or {}
         wan = st.get("wan") or {}
         d.update({
@@ -254,7 +254,7 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             d["redirecionamentos"] = len(pf)
         if quer("dmz"):
             dz = await a.safe("xqnetwork/dmz")
-            d["dmz"] = dz.get("status") == 1  # inferência: 1 = ligada, 2 = desligada
+            d["dmz"] = dz.get("status") == 1  # inferred: 1 = on, 2 = off
             d["dmz_destino"] = dz.get("lanip")
         if quer("upd"):
             if time.time() - self._upd_t > FIRMWARE_INTERVALO_S:
@@ -297,7 +297,7 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return d
 
     async def async_devices(self) -> dict[str, dict[str, Any]]:
-        """Lista de aparelhos sob demanda (tela de opções), mesmo com as entidades desativadas."""
+        """Device list on demand (options screen), even with the entities disabled."""
         if not self.devices:
             for x in (await self.api.safe("misystem/devicelist")).get("list") or []:
                 mac = (x.get("mac") or "").upper()

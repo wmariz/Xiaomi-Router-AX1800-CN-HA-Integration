@@ -1,4 +1,4 @@
-"""Cliente da API local (LuCI) dos roteadores Xiaomi AX1800."""
+"""Client for the local (LuCI) API of Xiaomi AX1800 routers."""
 from __future__ import annotations
 
 import asyncio
@@ -35,7 +35,7 @@ def _dechunk(b: bytes) -> bytes:
 
 
 def multipart(campos: dict, arquivo: dict) -> tuple[bytes, str]:
-    """Corpo multipart/form-data com o arquivo no campo 'image' (como a página oficial envia)."""
+    """multipart/form-data body with the file in the 'image' field (as the official page sends it)."""
     import base64
     import uuid
     limite = "----miwifi" + uuid.uuid4().hex
@@ -55,11 +55,11 @@ def multipart(campos: dict, arquivo: dict) -> tuple[bytes, str]:
 
 
 class MiWiFiAuthError(Exception):
-    """Senha recusada."""
+    """Password rejected."""
 
 
 class MiWiFiConnError(Exception):
-    """Roteador inacessível."""
+    """Router unreachable."""
 
 
 class MiWiFiApi:
@@ -71,11 +71,11 @@ class MiWiFiApi:
         self._lock = asyncio.Lock()
 
     async def _text(self, url: str, data: dict | None = None, bruto: tuple[bytes, str] | None = None, limite: int = 12) -> str:
-        """HTTP/1.0 simples e tolerante.
+        """Simple, tolerant HTTP/1.0.
 
-        Alguns endpoints do firmware (ex.: misystem/led?on=1 no repetidor) respondem
-        com cabeçalhos malformados, que o parser do aiohttp rejeita. Aqui o corpo é
-        extraído sem validar cabeçalhos.
+        Some firmware endpoints (e.g. misystem/led?on=1 on the repeater) answer
+        with malformed headers, which aiohttp's parser rejects. Here the body is
+        extracted without validating the headers.
         """
         u = urlsplit(url)
         path = u.path + (f"?{u.query}" if u.query else "")
@@ -128,7 +128,7 @@ class MiWiFiApi:
                 j = json.loads(txt)
             except ValueError as err:
                 raise MiWiFiConnError("invalid login response") from err
-            # 1582: login logo após outro (nonce com o mesmo segundo/recusado) — não é senha errada.
+            # 1582: login right after another one (nonce in the same second / refused) — not a wrong password.
             if j.get("code") == 1582 and tentativa < 3:
                 await asyncio.sleep(2)
                 continue
@@ -165,7 +165,7 @@ class MiWiFiApi:
             return j
 
     async def page(self, path: str) -> str:
-        """Página da interface web (para descobrir funções). Nunca 'logout'."""
+        """Page of the web interface (to discover functions). Never 'logout'."""
         if "logout" in path or "login" in path:
             return ""
         async with self._lock:
@@ -179,5 +179,5 @@ class MiWiFiApi:
             return j if isinstance(j, dict) else {}
         except MiWiFiConnError:
             raise
-        except Exception:  # noqa: BLE001 - endpoint opcional
+        except Exception:  # noqa: BLE001 - optional endpoint
             return {}

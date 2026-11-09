@@ -1,4 +1,4 @@
-"""Rastreamento de aparelhos escolhidos nas opções (presença na rede)."""
+"""Tracking of the devices chosen in the options (network presence)."""
 from __future__ import annotations
 
 from homeassistant.components.device_tracker import ScannerEntity, SourceType
@@ -17,19 +17,19 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 class Aparelho(CoordinatorEntity, ScannerEntity):
-    # O HA (2026.x) cria rastreadores de roteador desativados por padrão; aqui o
-    # aparelho foi escolhido de propósito nas opções, então já nasce ativo.
+    # HA (2026.x) creates router trackers disabled by default; here the
+    # device was chosen on purpose in the options, so it starts enabled.
     _attr_entity_registry_enabled_default = True
     _attr_source_type = SourceType.ROUTER
 
     def __init__(self, coord, mac: str, nome: str | None) -> None:
         super().__init__(coord)
         self._mac = mac.upper()
-        # unique_id = MAC (definido pelo ScannerEntity do HA)
+        # unique_id = MAC (set by HA's ScannerEntity)
         self._attr_mac_address = self._mac.lower()
-        self._attr_name = None  # usa o nome do dispositivo
-        # Dispositivo do aparelho rastreado (exigido pelo HA a partir de 2027.11);
-        # se já existir um dispositivo com esse MAC (ex.: HASS.Agent), o rastreador se junta a ele.
+        self._attr_name = None  # uses the device name
+        # Device for the tracked client (required by HA from 2027.11);
+        # if a device with this MAC already exists (e.g. HASS.Agent), the tracker joins it.
         self._attr_device_info = DeviceInfo(connections={(CONNECTION_NETWORK_MAC, self._mac.lower())}, name=nome or self._mac)
 
     @property

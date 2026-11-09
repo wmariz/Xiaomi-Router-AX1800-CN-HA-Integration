@@ -1,4 +1,4 @@
-"""Entidade base: liga tudo ao dispositivo do roteador."""
+"""Base entity: attaches everything to the router device."""
 from __future__ import annotations
 
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo
@@ -9,16 +9,16 @@ from .coordinator import MiWiFiCoordinator
 
 
 def _url(coord: MiWiFiCoordinator) -> str:
-    """Botão 'Visitar': painel local (com o roteador pré-selecionado) ou a interface do roteador."""
+    """'Visit' button: local panel (with the router preselected) or the router's own interface."""
     p = (getattr(coord, "painel_url", "") or "").strip()
     if not p:
         return f"http://{coord.api.host}"
-    # identifica o roteador pelo IP (estável mesmo com vários repetidores)
+    # identifies the router by IP (stable even with several repeaters)
     return f"{p}{'&' if '?' in p else '?'}rot={coord.api.host}"
 
 
-# Ativadas por padrão; o resto nasce DESATIVADO (ative só o que usar — a integração
-# só consulta no roteador o que alguma entidade ativada precisa).
+# Enabled by default; everything else starts DISABLED (enable only what you use — the integration
+# only queries what some enabled entity needs).
 VISIVEIS = {"internet", "reiniciar"}
 
 
