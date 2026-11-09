@@ -93,8 +93,8 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/check_wan_type` | ✓ Detects the recommended internet connection type. |  |
 | `xqnetwork/ddns` | ✓ DDNS status: on, flag, list[] of configured providers. |  |
 | `xqnetwork/ddns_switch` | ✓ Turns DDNS on/off (on=1/0). Tested 2026-11-08 (on=0 → xqnetwork/ddns on=0). | `GET {"on": 0}` |
-| `xqnetwork/disable_ap` | ✓ Leaves wireless repeater mode (back to router). |  |
-| `xqnetwork/disable_lan_ap` | ✓ Leaves access-point mode (back to router). |  |
+| `xqnetwork/disable_ap` | ✓ Leaves wireless repeater mode and goes back to router (restores previous settings). Returns lanip and ssid. | `GET {}` |
+| `xqnetwork/disable_lan_ap` | ✓ Leaves wired repeater mode and goes back to router. Returns ip. | `GET {}` |
 | `xqnetwork/dmz` | **⚠ INFERRED** — DMZ: status and target IP. Status meaning (1 = on, 2 = off) inferred — only 2 confirmed, with the DMZ off. |  |
 | `xqnetwork/edit_device` | ✓ Adds (option=0) or removes (option=1) a MAC from the filter list. | `GET {"mac": "AA:BB:CC:DD:EE:FF", "model": 0, "option": 0}` |
 | `xqnetwork/get_addnode_status` | ✓ Progress of adding a Mesh node. |  |
@@ -111,7 +111,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/manually_add` | ✓ Manually adds a device (name + MAC) to the filter list. |  |
 | `xqnetwork/miotrelay_switch` | ✓ Turns quick connect on/off (on). | `POST {"on": 1}` |
 | `xqnetwork/miscan_switch` | ✓ Turns the AIoT scan on/off (on). | `POST {"on": 0}` |
-| `xqnetwork/mode` | ✓ Network operating mode. |  |
+| `xqnetwork/mode` | ✓ Work mode: 0 = router, 1 = wireless repeater, 2 = wired repeater. | `GET {}` |
 | `xqnetwork/portforward` | ✓ Port forwards: name, protocol (1 TCP, 2 UDP, 3 both), external port and target IP:port. |  |
 | `xqnetwork/pppoe_catch` | **⚠ INFERRED** — Captures the PPPoE user/password from an old router connected to the WAN. |  |
 | `xqnetwork/pppoe_start` | ✓ Reconnects PPPoE. | `GET {}` |
@@ -119,7 +119,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/pppoe_stop` | ✓ Disconnects PPPoE. | `GET {}` |
 | `xqnetwork/scan_mesh_node` | ✓ Looks for Mesh nodes available to add. |  |
 | `xqnetwork/set_all_wifi` | ✓ Changes both bands at once (unified Wi-Fi; restarts Wi-Fi ~30 s). The guest fields on3/ssid3/pwd3 are accepted but ignored on the RM1800. | `POST {"bsd": 0, "on1": 1, "ssid1": "Rede24", "pwd1": "senha-exemplo", "encryption1": "psk2", "channel1": 0, "bandwidth1": 0, "hidden1": 0, "txpwr1": "max", "on2": 1, "ssid2": "Rede5", "pwd2": "senha-exemplo", "encryption2": "psk2", "channel2": 0, "bandwidth2": 0, "hidden2": 0, "txpwr2": "max"}` |
-| `xqnetwork/set_lan_ap` | ✓ Switches to wired access-point mode. |  |
+| `xqnetwork/set_lan_ap` | ✓ Switches to wired repeater (access point; WAN connected to another router). Returns the new ip. | `POST {"ssid": "", "password": ""}` |
 | `xqnetwork/set_lan_dhcp` | ✓ Changes or turns off the DHCP server. | `GET {"ignore": 0, "start": 100, "end": 200, "leasetime": "720m", "dns1": "", "dns2": "", "router": "192.168.0.1"}` |
 | `xqnetwork/set_lan_ip` | ✓ Changes the router IP (restarts). | `GET {"ip": "192.168.0.1"}` |
 | `xqnetwork/set_peer_wifi_auto_ap_mode` | **⚠ INFERRED** — Automatic access-point setup between Mesh nodes. |  |
@@ -128,7 +128,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/set_wan6` | ✓ IPv6 mode (POST): wanType=native (passes the ISP prefix through, which changes on every reconnection), nat (NAT6: home network with fixed prefix fd00:6868:6868::/64) or static; autosetipv6=0/1 (automatic/manual DNS), dns1, dns2. | `POST {"wanType": "nat", "autosetipv6": 1, "dns1": "2001:4860:4860::8888", "dns2": "2606:4700:4700::1111"}` |
 | `xqnetwork/set_wan_speed` | ✓ WAN port speed (speed 0 auto/100/1000). | `POST {"speed": 0}` |
 | `xqnetwork/set_wifi` | ✓ Changes a Wi-Fi network (wifiIndex 1=2.4 GHz, 2=5 GHz, 3=guest): name, password, security, channel, width, hidden, power; and weak-signal roaming. | `POST {"wifiIndex": 1, "on": 1, "ssid": "MinhaRede", "pwd": "senha-exemplo", "encryption": "psk2", "channel": 0, "bandwidth": 0, "hidden": 0, "txpwr": "max"}` |
-| `xqnetwork/set_wifi_ap` | ✓ Switches to wireless repeater mode. |  |
+| `xqnetwork/set_wifi_ap` | ✓ Switches to wireless repeater of the given network (usage seen on the official page). Optional: nssid/nencryption/npassword for its own Wi-Fi. Returns ip and ssid. | `POST {"ssid": "MinhaRede", "password": "senha", "encryption": "WPA2PSK", "enctype": "AES", "channel": "6", "bandwidth": "20", "band": "2g"}` |
 | `xqnetwork/set_wifi_ax` | ✓ Wi-Fi 6 on (ax=1) or Wi-Fi 5 compatibility mode (ax=0). | `POST {"ax": 1}` |
 | `xqnetwork/set_wifi_macfilter` | ✓ Turns the MAC filter on/off and sets its mode (model, enable). | `POST {"model": 0, "enable": 1}` |
 | `xqnetwork/set_wifi_txbf` | ✓ Turns MU-MIMO on/off (txbf). | `POST {"txbf": 1}` |
@@ -137,7 +137,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/wan_info` | ✓ Internet: type (PPPoE/DHCP/static), IP, gateway, DNS, MTU, connected time, IPv6 and MAC in use. |  |
 | `xqnetwork/wan_link` | ✓ WAN cable connected (link 1/0). |  |
 | `xqnetwork/wifi_detail_all` | ✓ Full Wi-Fi settings per band (name, password, security, channel, width, power, hidden, Wi-Fi 6, MU-MIMO, roaming) and unified Wi-Fi. |  |
-| `xqnetwork/wifi_list` | ✓ Nearby Wi-Fi networks (for wireless repeater mode). |  |
+| `xqnetwork/wifi_list` | ✓ Scans nearby Wi-Fi networks (for wireless repeater mode): ssid, band, channel, signal, encryption, enctype, bandwidth. | `GET {}` |
 | `xqnetwork/wifi_macfilter_info` | ✓ Wi-Fi MAC filter: on/off, mode (blocklist/allowlist) and list. |  |
 | `xqnetwork/wifiap_signal` | ✓ Signal quality to the upstream router (node/repeater). |  |
 | `xqsmarthome/request_miio` | **⚠ INFERRED** — Bridge to Mi Home (miIO) devices. |  |

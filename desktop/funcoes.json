@@ -435,11 +435,19 @@
   ],
   "xqnetwork/disable_ap": [
     "c",
-    "Sai do modo repetidor sem fio (volta a roteador)."
+    "Sai do modo repetidor sem fio e volta a roteador (restaura as configurações anteriores). Devolve lanip e ssid.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/disable_lan_ap": [
     "c",
-    "Sai do modo ponto de acesso (volta a roteador)."
+    "Sai do modo repetidor com cabo e volta a roteador. Devolve ip.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/dmz": [
     "i",
@@ -545,7 +553,11 @@
   ],
   "xqnetwork/mode": [
     "c",
-    "Modo de operação da rede."
+    "Modo de trabalho: 0 = roteador, 1 = repetidor sem fio, 2 = repetidor com cabo.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/portforward": [
     "c",
@@ -607,7 +619,14 @@
   ],
   "xqnetwork/set_lan_ap": [
     "c",
-    "Muda para modo ponto de acesso por cabo."
+    "Passa a repetidor com cabo (ponto de acesso; WAN ligada em outro roteador). Devolve o novo ip.",
+    {
+      "m": "POST",
+      "p": {
+        "ssid": "",
+        "password": ""
+      }
+    }
   ],
   "xqnetwork/set_lan_dhcp": [
     "c",
@@ -710,7 +729,19 @@
   ],
   "xqnetwork/set_wifi_ap": [
     "c",
-    "Muda para modo repetidor sem fio."
+    "Passa a repetidor sem fio da rede indicada (uso visto na página oficial). Opcional: nssid/nencryption/npassword para um Wi-Fi próprio. Devolve ip e ssid.",
+    {
+      "m": "POST",
+      "p": {
+        "ssid": "MinhaRede",
+        "password": "senha",
+        "encryption": "WPA2PSK",
+        "enctype": "AES",
+        "channel": "6",
+        "bandwidth": "20",
+        "band": "2g"
+      }
+    }
   ],
   "xqnetwork/set_wifi_ax": [
     "c",
@@ -772,7 +803,11 @@
   ],
   "xqnetwork/wifi_list": [
     "c",
-    "Redes Wi-Fi próximas (para o modo repetidor sem fio)."
+    "Procura redes Wi-Fi próximas (para o modo repetidor sem fio): ssid, band, channel, signal, encryption, enctype, bandwidth.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/wifi_macfilter_info": [
     "c",
