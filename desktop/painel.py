@@ -57,6 +57,7 @@ PAGINAS = [
     "web/home", "web/setting/wifi", "web/setting/wan", "web/setting/lannetset",
     "web/setting/safe", "web/setting/upgrade", "web/apsetting/wifi",
     "web/store", "web/prosetting/qos",
+    "web/prosetting/ddns", "web/prosetting/nat", "web/prosetting/vpn", "web/prosetting/upnp",
 ]
 # Endpoints de leitura conhecidos que não aparecem nas páginas
 EXTRAS = [

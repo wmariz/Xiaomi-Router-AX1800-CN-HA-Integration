@@ -323,19 +323,44 @@
   ],
   "misystem/smartvpn_info": [
     "c",
-    "Estado da 'VPN inteligente' (roteamento seletivo por domínio/MAC)."
+    "Divisão inteligente da VPN: switch, mode (1 por endereço, 2 por aparelho), ulist, mlist, name{mac: nome}.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "misystem/smartvpn_mac": [
-    "i",
-    "Lista de aparelhos que passam pela VPN inteligente."
+    "c",
+    "Adiciona (opt 0) ou remove (opt 1) aparelhos da divisão inteligente.",
+    {
+      "m": "POST",
+      "p": {
+        "macs": "AA:BB:CC:DD:EE:FF",
+        "opt": 0
+      }
+    }
   ],
   "misystem/smartvpn_switch": [
-    "i",
-    "Liga/desliga a VPN inteligente."
+    "c",
+    "Liga/desliga a divisão inteligente e escolhe o modo.",
+    {
+      "m": "GET",
+      "p": {
+        "enable": 1,
+        "mode": 1
+      }
+    }
   ],
   "misystem/smartvpn_url": [
-    "i",
-    "Lista de domínios que passam pela VPN inteligente."
+    "c",
+    "Adiciona (opt 0) ou remove (opt 1) um endereço da divisão inteligente.",
+    {
+      "m": "POST",
+      "p": {
+        "url": "example.com",
+        "opt": 0
+      }
+    }
   ],
   "misystem/speed_test": [
     "i",
@@ -421,11 +446,15 @@
   ],
   "xqnetwork/ddns": [
     "c",
-    "Estado do DDNS: on (ligado), flag, list[] de provedores configurados."
+    "Lista de serviços DDNS: on (serviço ligado), list[{id, servicename, domain, enabled, status 0 erro/1 ok/2 conectando, lastupdate, wanip, error}].",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/ddns_switch": [
     "c",
-    "Liga/desliga o DDNS (on=1/0). Testado 2026-11-08 (on=0 → xqnetwork/ddns on=0).",
+    "Liga/desliga o serviço DDNS do roteador.",
     {
       "m": "GET",
       "p": {
@@ -450,8 +479,12 @@
     }
   ],
   "xqnetwork/dmz": [
-    "i",
-    "DMZ: estado e IP de destino. Significado do status (1 = ligada, 2 = desligada) deduzido — confirmado só o 2 com a DMZ desligada."
+    "c",
+    "DMZ: status (1 = ligada; 0/2 = desligada), ip do aparelho, lanip do roteador.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/edit_device": [
     "c",
@@ -561,7 +594,13 @@
   ],
   "xqnetwork/portforward": [
     "c",
-    "Redirecionamentos de porta: nome, protocolo (1 TCP, 2 UDP, 3 ambos), porta externa e destino IP:porta."
+    "Regras de encaminhamento: ftype 1 = portas (srcport, destip, destport), 2 = faixas (srcport {f, t}, destip). proto 1 TCP, 2 UDP, 3 ambos.",
+    {
+      "m": "GET",
+      "p": {
+        "ftype": 1
+      }
+    }
   ],
   "xqnetwork/pppoe_catch": [
     "i",
@@ -838,8 +877,14 @@
     "Região do Wi-Fi atual e opções (China, Hong Kong, Taiwan, Coreia, Europa)."
   ],
   "xqsystem/del_vpn": [
-    "i",
-    "Apaga uma configuração de VPN."
+    "c",
+    "Remove um servidor VPN.",
+    {
+      "m": "GET",
+      "p": {
+        "id": "1"
+      }
+    }
   ],
   "xqsystem/device_list_zigbee": [
     "i",
@@ -949,8 +994,19 @@
     "Grava o consentimento de privacidade."
   ],
   "xqsystem/set_vpn": [
-    "i",
-    "Grava a configuração do cliente VPN."
+    "c",
+    "Adiciona (id vazio) ou edita um servidor VPN.",
+    {
+      "m": "POST",
+      "p": {
+        "id": "",
+        "oname": "Trabalho",
+        "proto": "l2tp",
+        "server": "vpn.example.com",
+        "username": "usuario",
+        "password": "senha"
+      }
+    }
   ],
   "xqsystem/shutdown": [
     "c",
@@ -990,7 +1046,11 @@
   ],
   "xqsystem/upnp": [
     "c",
-    "UPnP: ligado (status 1) e lista de mapeamentos de porta criados automaticamente pelos aparelhos."
+    "UPnP: status 1/0 e list[{protocol, name, ip, cport, rport}] das portas abertas.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqsystem/usbmode": [
     "c",
@@ -1002,15 +1062,30 @@
   ],
   "xqsystem/vpn": [
     "c",
-    "Configuração do cliente VPN (PPTP/L2TP): servidor, usuário, protocolo."
+    "Servidores VPN: list[{id, oname, proto pptp/l2tp, server, username, password}], current{id, auto, …}.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqsystem/vpn_status": [
     "c",
-    "Estado do cliente VPN (4 = desligado)."
+    "Estado da VPN: 0 conectada, 1 conectando, 2 falhou, 3 desconectada, 4 não ativada; uptime; errcode/errmsg.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqsystem/vpn_switch": [
-    "i",
-    "Liga/desliga o cliente VPN."
+    "c",
+    "Conecta (conn 1) ou desconecta (conn 0) a VPN.",
+    {
+      "m": "GET",
+      "p": {
+        "conn": 1,
+        "id": "1"
+      }
+    }
   ],
   "xqsystem/wps": [
     "i",
@@ -1023,5 +1098,175 @@
   "xqsystem/wps_status": [
     "c",
     "Estado do WPS (pareamento por botão)."
+  ],
+  "xqnetwork/add_server": [
+    "c",
+    "Adiciona um serviço DDNS. id do provedor: 1 No-IP, 2 Oray, 3 3322.org, 4 Dyn.",
+    {
+      "m": "GET",
+      "p": {
+        "id": 1,
+        "username": "usuario",
+        "password": "senha",
+        "domain": "myhome.ddns.net",
+        "checkinterval": 10,
+        "forceinterval": 24,
+        "enable": 1
+      }
+    }
+  ],
+  "xqnetwork/ddns_edit": [
+    "c",
+    "Edita um serviço DDNS (mesmos parâmetros de add_server)."
+  ],
+  "xqnetwork/get_server": [
+    "c",
+    "Dados de um serviço DDNS (username, password, domain, checkinterval, forceinterval, enabled).",
+    {
+      "m": "GET",
+      "p": {
+        "id": 1
+      }
+    }
+  ],
+  "xqnetwork/del_server": [
+    "c",
+    "Remove um serviço DDNS.",
+    {
+      "m": "GET",
+      "p": {
+        "id": 1
+      }
+    }
+  ],
+  "xqnetwork/server_switch": [
+    "c",
+    "Ativa/desativa um serviço DDNS (só um ativo por vez).",
+    {
+      "m": "GET",
+      "p": {
+        "id": 1,
+        "on": 1
+      }
+    }
+  ],
+  "xqnetwork/ddns_reload": [
+    "c",
+    "Força a atualização do DDNS agora.",
+    {
+      "m": "GET",
+      "p": {}
+    }
+  ],
+  "xqnetwork/add_redirect": [
+    "c",
+    "Adiciona regra de porta (force=1 substitui a regra da mesma porta externa). Só vale depois de redirect_apply.",
+    {
+      "m": "POST",
+      "p": {
+        "name": "Servidor",
+        "proto": 1,
+        "sport": 8443,
+        "ip": "192.168.0.50",
+        "dport": 443
+      }
+    }
+  ],
+  "xqnetwork/add_range_redirect": [
+    "c",
+    "Adiciona regra de faixa de portas. Só vale depois de redirect_apply.",
+    {
+      "m": "POST",
+      "p": {
+        "name": "Jogo",
+        "proto": 3,
+        "fport": 3000,
+        "tport": 3010,
+        "ip": "192.168.0.50"
+      }
+    }
+  ],
+  "xqnetwork/delete_redirect": [
+    "c",
+    "Remove regra de porta ou faixa (port = porta externa ou porta inicial da faixa).",
+    {
+      "m": "POST",
+      "p": {
+        "port": 8443,
+        "proto": 1
+      }
+    }
+  ],
+  "xqnetwork/redirect_apply": [
+    "c",
+    "Aplica as regras de encaminhamento (botão \"保存并生效\" da página oficial).",
+    {
+      "m": "GET",
+      "p": {}
+    }
+  ],
+  "xqnetwork/set_dmz": [
+    "c",
+    "Liga a DMZ para um IP.",
+    {
+      "m": "POST",
+      "p": {
+        "ip": "192.168.0.50"
+      }
+    }
+  ],
+  "xqnetwork/dmz_off": [
+    "c",
+    "Desliga a DMZ (a página oficial chama dmz_reload em seguida).",
+    {
+      "m": "GET",
+      "p": {}
+    }
+  ],
+  "xqnetwork/dmz_reload": [
+    "c",
+    "Recarrega a configuração da DMZ.",
+    {
+      "m": "GET",
+      "p": {}
+    }
+  ],
+  "xqsystem/set_vpnauto": [
+    "c",
+    "Conectar a VPN ao ligar o roteador (auto 1/0).",
+    {
+      "m": "GET",
+      "p": {
+        "auto": 1
+      }
+    }
+  ],
+  "misystem/mi_vpn_info": [
+    "c",
+    "\"Serviços Xiaomi pela VPN\": status 1/0.",
+    {
+      "m": "GET",
+      "p": {}
+    }
+  ],
+  "misystem/mi_vpn": [
+    "c",
+    "Liga/desliga \"Serviços Xiaomi pela VPN\" (a página oficial desconecta a VPN antes).",
+    {
+      "m": "GET",
+      "p": {
+        "open": 1
+      }
+    }
+  ],
+  "xqsystem/upnp_switch": [
+    "c",
+    "Liga/desliga o UPnP.",
+    {
+      "m": "GET",
+      "p": {
+        "switch": 1
+      }
+    }
   ]
 }

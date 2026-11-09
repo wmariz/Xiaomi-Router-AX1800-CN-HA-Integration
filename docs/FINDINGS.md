@@ -124,3 +124,12 @@ Comparing the main router's and the node's responses:
 - **Mirror of the main router:** Wi-Fi configuration (channel, width, power, names, state) and notices — identical on both.
 - **Specific to each unit:** uptime, CPU, memory, **connected clients per band** (e.g. main 10, node 4), firmware, clock (which can diverge — the node's once ran 11 h ahead), LED and restart.
 The integration only creates the node-specific entities on the node.
+
+## 9. Advanced pages (DDNS, port forwarding/DMZ, VPN, UPnP)
+The pages `web/prosetting/{ddns,nat,vpn,upnp}` are only linked from the QoS page. Endpoints and parameters (all in [`FUNCTIONS.md`](FUNCTIONS.md)):
+- **DDNS:** `xqnetwork/ddns` (list), `add_server` / `ddns_edit` (GET: `id` provider 1 No-IP · 2 Oray · 3 3322.org · 4 Dyn, `username, password, domain, checkinterval` min, `forceinterval` h, `enable`), `get_server`, `del_server`, `server_switch` (`id, on`; only one active), `ddns_reload`, plus the global `ddns_switch`.
+- **Port forwarding:** `xqnetwork/portforward?ftype=1|2`; `add_redirect` (POST `name, proto` 1 TCP/2 UDP/3 both, `sport, ip, dport`; `force=1` replaces the rule for that external port), `add_range_redirect` (`fport, tport`), `delete_redirect` (`port, proto`). Rules only take effect after `redirect_apply`.
+- **DMZ:** `xqnetwork/dmz` (`status` 1 = on), `set_dmz` (POST `ip`), `dmz_off` + `dmz_reload`.
+- **VPN (PPTP/L2TP client):** `xqsystem/vpn`, `vpn_status` (0 connected … 4 not enabled), `set_vpn` (POST, empty `id` = new), `del_vpn`, `vpn_switch` (`conn` 1/0, `id`), `set_vpnauto`; smart split `misystem/smartvpn_info|smartvpn_switch|smartvpn_url|smartvpn_mac` (`opt` 0 add / 1 remove); `mi_vpn` / `mi_vpn_info`.
+- **UPnP ("other"):** `xqsystem/upnp`, `upnp_switch` (`switch` 1/0).
+- These pages also reference `xqnetwork/scan_mesh_node`, `get_addnode_status`, `add_mesh_node` (adding Mesh nodes from the web UI) — not explored yet.

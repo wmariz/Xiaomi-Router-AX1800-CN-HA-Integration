@@ -35,6 +35,7 @@ SENSIVEIS = re.compile(r"(pass|pwd|psk|key|token|stok|secret|sswd|senha)", re.I)
 PAGINAS = [
     "web/home", "web/setting/wifi", "web/setting/wan", "web/setting/lannetset",
     "web/setting/safe", "web/setting/upgrade", "web/apsetting/wifi", "web/store", "web/prosetting/qos",
+    "web/prosetting/ddns", "web/prosetting/nat", "web/prosetting/vpn", "web/prosetting/upnp",
 ]
 EXTRAS = [
     "api/misns/wifi_share_info", "api/misystem/status", "api/misystem/sys_time", "api/misystem/led",
@@ -129,6 +130,32 @@ class ChamarView(_Base):
         return self.json({"ok": True, "status": 200, "json": _mascarar(j, bool(corpo.get("mostrar")))})
 
 
+class PaginaView(_Base):
+    """Page of the router's original web UI (read-only, admins only), with the session token removed.
+
+    Used to study the official pages (e.g. web/prosetting/ddns). Never logout/login.
+    """
+
+    url = "/api/miwifi_ax/pagina"
+    name = "api:miwifi_ax:pagina"
+
+    async def get(self, request: web.Request) -> web.Response:
+        if not self._admin(request):
+            return self.json_message("Somente administradores", HTTPStatus.FORBIDDEN)
+        c = _coords(request.app["hass"]).get(request.query.get("roteador", ""))
+        pag = request.query.get("p", "")
+        if not c or not re.fullmatch(r"web/[a-z_/]+", pag) or re.search(r"log(out|in)", pag):
+            return self.json({"ok": False, "erro": "invalid page"})
+        try:
+            html = await c.api.page(pag)
+        except Exception as err:  # noqa: BLE001
+            return self.json({"ok": False, "erro": str(err)})
+        tok = getattr(c.api, "_token", None)
+        if tok:
+            html = html.replace(tok, "TOKEN")
+        return self.json({"ok": True, "html": html})
+
+
 class EndpointsView(_Base):
     url = "/api/miwifi_ax/endpoints"
     name = "api:miwifi_ax:endpoints"
@@ -162,6 +189,7 @@ async def async_registrar(hass: HomeAssistant) -> None:
     hass.http.register_view(EstadoView())
     hass.http.register_view(ChamarView())
     hass.http.register_view(EndpointsView())
+    hass.http.register_view(PaginaView())
     pasta = Path(__file__).parent / "frontend"
     await hass.http.async_register_static_paths([StaticPathConfig(URL_BASE, str(pasta), False)])
     versao = int((pasta / "miwifi-panel.js").stat().st_mtime)

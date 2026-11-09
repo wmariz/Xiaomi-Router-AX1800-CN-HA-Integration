@@ -34,6 +34,8 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/iperf` | **⚠ INFERRED** — iperf server to measure local network speed. |  |
 | `misystem/led` | ✓ LED status; with on=0/1 turns the device lights off/on. | `GET {"on": 1}` |
 | `misystem/messages` | ✓ Router notices (update available, 5 GHz failure, IP conflict). |  |
+| `misystem/mi_vpn` | ✓ Turns "Xiaomi services via VPN" on/off (the official page disconnects the VPN first). | `GET {"open": 1}` |
+| `misystem/mi_vpn_info` | ✓ "Xiaomi services via VPN": status 1/0. | `GET {}` |
 | `misystem/minet_get_state` | ✓ MiNet status (quick setup of Xiaomi devices); returns an error on this device. |  |
 | `misystem/net_diagnose_result` | ✓ Network diagnosis result. |  |
 | `misystem/net_diagnose_start` | **⚠ INFERRED** — Starts the app's network diagnosis. |  |
@@ -68,10 +70,10 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/set_ota` | **⚠ INFERRED** — Configures automatic firmware updates. |  |
 | `misystem/set_router_name` | ✓ Changes name and location (name, locale). | `GET {"name": "WMON-AX1800", "locale": "Escritório"}` |
 | `misystem/set_sys_time` | ✓ Sets the time zone (timezone, index) or the time (time 'YYYY-MM-DD hh:mm:ss'). | `POST {"timezone": "<valor da lista de fusos>", "index": 3}` |
-| `misystem/smartvpn_info` | ✓ 'Smart VPN' status (selective routing by domain/MAC). |  |
-| `misystem/smartvpn_mac` | **⚠ INFERRED** — Devices routed through the smart VPN. |  |
-| `misystem/smartvpn_switch` | **⚠ INFERRED** — Turns the smart VPN on/off. |  |
-| `misystem/smartvpn_url` | **⚠ INFERRED** — Domains routed through the smart VPN. |  |
+| `misystem/smartvpn_info` | ✓ VPN smart split: switch, mode (1 by address, 2 by device), ulist, mlist, name{mac: name}. | `GET {}` |
+| `misystem/smartvpn_mac` | ✓ Adds (opt 0) or removes (opt 1) devices from smart split. | `POST {"macs": "AA:BB:CC:DD:EE:FF", "opt": 0}` |
+| `misystem/smartvpn_switch` | ✓ Turns smart split on/off and chooses the mode. | `GET {"enable": 1, "mode": 1}` |
+| `misystem/smartvpn_url` | ✓ Adds (opt 0) or removes (opt 1) an address from smart split. | `POST {"url": "example.com", "opt": 0}` |
 | `misystem/speed_test` | **⚠ INFERRED** — Starts the app's speed test. |  |
 | `misystem/speed_test_result` | ✓ Result of the app's speed test. |  |
 | `misystem/start_portscan` | **⚠ INFERRED** — Starts a scan of exposed ports. |  |
@@ -90,16 +92,26 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetdetect/nettb` | ✓ Quick diagnosis: device → router → internet. |  |
 | `xqnetdetect/netupspeed` | ✓ Measures internet upload speed. |  |
 | `xqnetwork/add_mesh_node` | ✓ Adds a discovered Mesh node (mac, locate). |  |
+| `xqnetwork/add_range_redirect` | ✓ Adds a port range rule. Takes effect after redirect_apply. | `POST {"name": "Jogo", "proto": 3, "fport": 3000, "tport": 3010, "ip": "192.168.0.50"}` |
+| `xqnetwork/add_redirect` | ✓ Adds a port rule (force=1 replaces the rule for the same external port). Takes effect after redirect_apply. | `POST {"name": "Servidor", "proto": 1, "sport": 8443, "ip": "192.168.0.50", "dport": 443}` |
+| `xqnetwork/add_server` | ✓ Adds a DDNS service. Provider id: 1 No-IP, 2 Oray, 3 3322.org, 4 Dyn. | `GET {"id": 1, "username": "usuario", "password": "senha", "domain": "myhome.ddns.net", "checkinterval": 10, "forceinterval": 24, "enable": 1}` |
 | `xqnetwork/check_wan_type` | ✓ Detects the recommended internet connection type. |  |
-| `xqnetwork/ddns` | ✓ DDNS status: on, flag, list[] of configured providers. |  |
-| `xqnetwork/ddns_switch` | ✓ Turns DDNS on/off (on=1/0). Tested 2026-11-08 (on=0 → xqnetwork/ddns on=0). | `GET {"on": 0}` |
+| `xqnetwork/ddns` | ✓ DDNS services: on (service on), list[{id, servicename, domain, enabled, status 0 error/1 ok/2 connecting, lastupdate, wanip, error}]. | `GET {}` |
+| `xqnetwork/ddns_edit` | ✓ Edits a DDNS service (same parameters as add_server). |  |
+| `xqnetwork/ddns_reload` | ✓ Forces a DDNS update now. | `GET {}` |
+| `xqnetwork/ddns_switch` | ✓ Turns the router's DDNS service on/off. | `GET {"on": 0}` |
+| `xqnetwork/del_server` | ✓ Removes a DDNS service. | `GET {"id": 1}` |
+| `xqnetwork/delete_redirect` | ✓ Removes a port or range rule (port = external port or the range's start port). | `POST {"port": 8443, "proto": 1}` |
 | `xqnetwork/disable_ap` | ✓ Leaves wireless repeater mode and goes back to router (restores previous settings). Returns lanip and ssid. | `GET {}` |
 | `xqnetwork/disable_lan_ap` | ✓ Leaves wired repeater mode and goes back to router. Returns ip. | `GET {}` |
-| `xqnetwork/dmz` | **⚠ INFERRED** — DMZ: status and target IP. Status meaning (1 = on, 2 = off) inferred — only 2 confirmed, with the DMZ off. |  |
+| `xqnetwork/dmz` | ✓ DMZ: status (1 = on; 0/2 = off), device ip, router lanip. | `GET {}` |
+| `xqnetwork/dmz_off` | ✓ Turns DMZ off (the official page calls dmz_reload afterwards). | `GET {}` |
+| `xqnetwork/dmz_reload` | ✓ Reloads the DMZ configuration. | `GET {}` |
 | `xqnetwork/edit_device` | ✓ Adds (option=0) or removes (option=1) a MAC from the filter list. | `GET {"mac": "AA:BB:CC:DD:EE:FF", "model": 0, "option": 0}` |
 | `xqnetwork/get_addnode_status` | ✓ Progress of adding a Mesh node. |  |
 | `xqnetwork/get_miotrelay_switch` | ✓ Quick connect (畅快连) status for Mi Home devices. |  |
 | `xqnetwork/get_miscan_switch` | ✓ AIoT antenna scan status. |  |
+| `xqnetwork/get_server` | ✓ One DDNS service's data (username, password, domain, checkinterval, forceinterval, enabled). | `GET {"id": 1}` |
 | `xqnetwork/get_son_backhaul_mode` | ✓ 'Priority for many devices' (多终端接入优先) status. |  |
 | `xqnetwork/ipv6_status` | ✓ IPv6 status. |  |
 | `xqnetwork/lan_dhcp` | ✓ DHCP server settings (range, lease, DNS, gateway). |  |
@@ -112,13 +124,16 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/miotrelay_switch` | ✓ Turns quick connect on/off (on). | `POST {"on": 1}` |
 | `xqnetwork/miscan_switch` | ✓ Turns the AIoT scan on/off (on). | `POST {"on": 0}` |
 | `xqnetwork/mode` | ✓ Work mode: 0 = router, 1 = wireless repeater, 2 = wired repeater. | `GET {}` |
-| `xqnetwork/portforward` | ✓ Port forwards: name, protocol (1 TCP, 2 UDP, 3 both), external port and target IP:port. |  |
+| `xqnetwork/portforward` | ✓ Forwarding rules: ftype 1 = ports (srcport, destip, destport), 2 = ranges (srcport {f, t}, destip). proto 1 TCP, 2 UDP, 3 both. | `GET {"ftype": 1}` |
 | `xqnetwork/pppoe_catch` | **⚠ INFERRED** — Captures the PPPoE user/password from an old router connected to the WAN. |  |
 | `xqnetwork/pppoe_start` | ✓ Reconnects PPPoE. | `GET {}` |
 | `xqnetwork/pppoe_status` | ✓ PPPoE dial-up status (dialing, connected, error). |  |
 | `xqnetwork/pppoe_stop` | ✓ Disconnects PPPoE. | `GET {}` |
+| `xqnetwork/redirect_apply` | ✓ Applies the forwarding rules (the official page's "保存并生效" button). | `GET {}` |
 | `xqnetwork/scan_mesh_node` | ✓ Looks for Mesh nodes available to add. |  |
+| `xqnetwork/server_switch` | ✓ Enables/disables a DDNS service (only one active at a time). | `GET {"id": 1, "on": 1}` |
 | `xqnetwork/set_all_wifi` | ✓ Changes both bands at once (unified Wi-Fi; restarts Wi-Fi ~30 s). The guest fields on3/ssid3/pwd3 are accepted but ignored on the RM1800. | `POST {"bsd": 0, "on1": 1, "ssid1": "Rede24", "pwd1": "senha-exemplo", "encryption1": "psk2", "channel1": 0, "bandwidth1": 0, "hidden1": 0, "txpwr1": "max", "on2": 1, "ssid2": "Rede5", "pwd2": "senha-exemplo", "encryption2": "psk2", "channel2": 0, "bandwidth2": 0, "hidden2": 0, "txpwr2": "max"}` |
+| `xqnetwork/set_dmz` | ✓ Turns DMZ on for an IP. | `POST {"ip": "192.168.0.50"}` |
 | `xqnetwork/set_lan_ap` | ✓ Switches to wired repeater (access point; WAN connected to another router). Returns the new ip. | `POST {"ssid": "", "password": ""}` |
 | `xqnetwork/set_lan_dhcp` | ✓ Changes or turns off the DHCP server. | `GET {"ignore": 0, "start": 100, "end": 200, "leasetime": "720m", "dns1": "", "dns2": "", "router": "192.168.0.1"}` |
 | `xqnetwork/set_lan_ip` | ✓ Changes the router IP (restarts). | `GET {"ip": "192.168.0.1"}` |
@@ -145,7 +160,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsmarthome/request_yeelink` | **⚠ INFERRED** — Bridge to Yeelight lamps. |  |
 | `xqsystem/check_rom_update` | ✓ Checks Xiaomi's servers for a firmware update. |  |
 | `xqsystem/country_code` | ✓ Current Wi-Fi region and options (China, Hong Kong, Taiwan, Korea, Europe). |  |
-| `xqsystem/del_vpn` | **⚠ INFERRED** — Deletes a VPN configuration. |  |
+| `xqsystem/del_vpn` | ✓ Removes a VPN server. | `GET {"id": "1"}` |
 | `xqsystem/device_list_zigbee` | **⚠ INFERRED** — Zigbee devices of routers with a built-in gateway (not applicable to the AX1800). |  |
 | `xqsystem/device_mac` | ✓ MAC of the requesting client. |  |
 | `xqsystem/flash_permission` | **⚠ INFERRED** — Checks whether firmware flashing is allowed. |  |
@@ -165,7 +180,8 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsystem/set_mac_filter` | ✓ Blocks (wan=0) or allows (wan=1) a device's internet access. | `POST {"mac": "AA:BB:CC:DD:EE:FF", "wan": 0}` |
 | `xqsystem/set_name_password` | ✓ Changes the admin password (proprietary AES encryption). |  |
 | `xqsystem/set_privacy` | **⚠ INFERRED** — Stores the privacy consent. |  |
-| `xqsystem/set_vpn` | **⚠ INFERRED** — Stores the VPN client configuration. |  |
+| `xqsystem/set_vpn` | ✓ Adds (empty id) or edits a VPN server. | `POST {"id": "", "oname": "Trabalho", "proto": "l2tp", "server": "vpn.example.com", "username": "usuario", "password": "senha"}` |
+| `xqsystem/set_vpnauto` | ✓ Connect the VPN when the router starts (auto 1/0). | `GET {"auto": 1}` |
 | `xqsystem/shutdown` | ✓ Powers the router off. | `GET {}` |
 | `xqsystem/system_info` | ✓ Model, version, firmware channel, uptime and name. |  |
 | `xqsystem/token` | **⚠ INFERRED** — Session token for the app. |  |
@@ -174,12 +190,13 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsystem/upload_log` | ✓ Uploads the system logs to Xiaomi. |  |
 | `xqsystem/upload_plug` | ✓ Installs a plug-in (requires Xiaomi's signature). |  |
 | `xqsystem/upload_rom` | ✓ Uploads a firmware file for a manual update. |  |
-| `xqsystem/upnp` | ✓ UPnP: on (status 1) and list of port mappings created automatically by devices. |  |
+| `xqsystem/upnp` | ✓ UPnP: status 1/0 and list[{protocol, name, ip, cport, rport}] of open ports. | `GET {}` |
+| `xqsystem/upnp_switch` | ✓ Turns UPnP on/off. | `GET {"switch": 1}` |
 | `xqsystem/usbmode` | ✓ Prepares USB for an update (no effect on the AX1800). |  |
 | `xqsystem/usbservice` | ✓ Turns USB services on/off during an update. |  |
-| `xqsystem/vpn` | ✓ VPN client configuration (PPTP/L2TP): server, user, protocol. |  |
-| `xqsystem/vpn_status` | ✓ VPN client status (4 = off). |  |
-| `xqsystem/vpn_switch` | **⚠ INFERRED** — Turns the VPN client on/off. |  |
+| `xqsystem/vpn` | ✓ VPN servers: list[{id, oname, proto pptp/l2tp, server, username, password}], current{id, auto, …}. | `GET {}` |
+| `xqsystem/vpn_status` | ✓ VPN state: 0 connected, 1 connecting, 2 failed, 3 disconnected, 4 not enabled; uptime; errcode/errmsg. | `GET {}` |
+| `xqsystem/vpn_switch` | ✓ Connects (conn 1) or disconnects (conn 0) the VPN. | `GET {"conn": 1, "id": "1"}` |
 | `xqsystem/wps` | **⚠ INFERRED** — Starts WPS pairing. |  |
 | `xqsystem/wps_cancel` | **⚠ INFERRED** — Cancels WPS pairing. |  |
 | `xqsystem/wps_status` | ✓ WPS status (push-button pairing). |  |
