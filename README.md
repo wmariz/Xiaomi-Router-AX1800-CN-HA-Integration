@@ -1,78 +1,86 @@
 # Xiaomi Router AX1800
 
-Controle local completo dos roteadores **Xiaomi Mi Router AX1800 (RM1800)**, inclusive em rede **Mesh** (principal + repetidor), sem depender da nuvem nem do app chinês.
+Full local control of **Xiaomi Mi Router AX1800 (RM1800)** routers, including **Mesh** setups (main router + repeater), with no dependency on the cloud or the Chinese app.
 
-O projeto tem duas partes, que usam a mesma API local (LuCI) do roteador:
+The project has two parts, both using the router's own local (LuCI) API:
 
-| Parte | Pasta | O que é |
+| Part | Folder | What it is |
 |---|---|---|
-| Integração do Home Assistant | `custom_components/miwifi_ax` | Cria um **dispositivo** por roteador com sensores, interruptores, botões e rastreamento de presença, e o painel **Roteadores** na barra lateral |
-| Painel do PC | `desktop/` | A mesma interface do painel do HA, rodando sozinha no PC — útil quando o HA ou a rede estão com problema |
+| Home Assistant integration | `custom_components/miwifi_ax` | Creates one **device** per router with sensors, switches, buttons and presence tracking, plus the **Routers** panel in the sidebar |
+| PC panel | `desktop/` | The same interface as the HA panel, running standalone on the PC — handy when HA or the network is in trouble |
 
-A interface (em português, no estilo da original, com **todas** as funções — inclusive as que o firmware esconde) é uma só: `desktop/painel.html`. O painel do HA é gerado a partir dela por `python tools/build_ha_panel.py`.
+There is a single interface (styled after the original, exposing **all** functions — including the ones the firmware hides): `desktop/painel.html`. The HA panel is generated from it by `python tools/build_ha_panel.py`.
 
-## Integração do Home Assistant
+**Languages:** the whole project is bilingual — **English** and **Brazilian Portuguese**.
+- In Home Assistant, the panel, entity names, device names and messages follow the system language (English by default, Portuguese when HA is set to Portuguese).
+- In the PC panel and the Android app, use the **PT · EN** links next to the router selector (initial choice follows the system language, English by default).
 
-### Instalação
-1. Copie `custom_components/miwifi_ax` para `/config/custom_components/` (ou adicione este repositório no HACS como *repositório personalizado*, tipo *Integração*).
-2. Reinicie o Home Assistant.
-3. **Configurações → Dispositivos e serviços → Adicionar integração → "Xiaomi Router AX1800"**.
-4. Informe o IP e a senha de administrador. Repita para cada roteador da Mesh — o papel (principal/repetidor) é detectado sozinho.
-5. Em **Configurar** (no principal): escolha os aparelhos a rastrear (presença) e o endereço do painel usado pelo botão *Visitar*.
+## Home Assistant integration
 
-### Entidades
-- **Sensores:** ligado há, processador, memória, clientes por banda, canais, largura, potência, firmware, hora do roteador e diferença do relógio, aparelhos online/conhecidos, aparelhos por conexão (cabo / 2,4 GHz / 5 GHz / visitante — com a lista nos atributos), reservas de IP (lista nos atributos), filtro de MAC, intrusões bloqueadas, IP público, IPv6, gateway, DNS, internet conectada há, download/upload agora, picos e totais.
-- **Sensores binários:** internet, cabo da operadora, repetidor na Mesh, atualização de firmware, Wi-Fi 2,4/5 GHz, Wi-Fi unificado, anti-intrusos, firewalls, WPS.
-- **Interruptores:** LED (principal e repetidor), QoS, rede de visitante, MU-MIMO, modo de compatibilidade Wi-Fi 5, conexão rápida, varredura AIoT, prioridade para muitos aparelhos, filtro de MAC.
-- **Botões:** reiniciar, atualizar dados.
-- **Rastreamento:** aparelhos escolhidos (online/offline, IP, conexão, velocidade).
-- **Serviço** `miwifi_ax.definir_internet` (`mac`, `liberar`): bloqueia/libera a internet de um aparelho.
+### Installation
+1. Copy `custom_components/miwifi_ax` to `/config/custom_components/` (or add this repository to HACS as a *custom repository* of type *Integration*).
+2. Restart Home Assistant.
+3. **Settings → Devices & services → Add integration → "Xiaomi Router AX1800"**.
+4. Enter the IP address and admin password of the main router. Mesh nodes are discovered from the main router's topology and **added automatically** using the main router's password; the role (main/repeater) is detected on its own.
+5. In **Configure** (on the main router): choose which devices to track (presence) and the panel address used by the *Visit* button.
 
-Por padrão só ficam **ativadas** *Internet* (principal) e *Reiniciar* (cada roteador); as demais vêm **desativadas** — ative só o que for usar. A integração consulta no roteador apenas o que alguma entidade ativada precisa (menos tráfego e menos gravações no banco). A verificação de firmware, que consulta os servidores da Xiaomi, roda no máximo a cada 6 h.
+### Entities
+- **Sensors:** uptime, CPU, memory, clients per band, channels, width, power, firmware, router time and clock offset, devices online/known, devices per connection (wired / 2.4 GHz / 5 GHz / guest — list in the attributes), IP reservations (list in the attributes), MAC filter, blocked intrusions, public IP, IPv6, gateway, DNS, internet connected for, download/upload now, peaks and totals.
+- **Binary sensors:** internet, ISP cable, repeater in Mesh, firmware update, Wi-Fi 2.4/5 GHz, unified Wi-Fi, anti-intrusion, firewalls, WPS.
+- **Switches:** LED (main and repeater), QoS, guest network, MU-MIMO, Wi-Fi 5 compatibility mode, quick connect, AIoT scan, priority for many devices, MAC filter.
+- **Buttons:** restart, refresh data.
+- **Tracking:** chosen devices (online/offline, IP, connection, speed).
+- **Service** `miwifi_ax.definir_internet` (`mac`, `liberar`): blocks/allows a device's internet access.
 
-### Painel "Roteadores" (barra lateral)
-Aparece para administradores. Usa o login já guardado pela integração (não pede senha), funciona no app do HA e fora de casa. O botão **Visitar** da página do dispositivo abre o painel já no roteador certo (configurável nas opções — pode apontar para o painel do PC).
+By default only *Internet* (main router) and *Restart* (each router) are **enabled**; everything else comes **disabled** — enable only what you use. The integration only queries what some enabled entity needs (less traffic and fewer database writes). The firmware check, which contacts Xiaomi's servers, runs at most every 6 h.
 
-## Painel do PC
+When the admin password changes, HA asks for re-authentication of the main router only; Mesh nodes pick up the main router's new password by themselves.
+
+### "Routers" panel (sidebar)
+Visible to administrators. It uses the login already stored by the integration (no password prompt), and works in the HA app and away from home. The device page's **Visit** button opens the panel on the right router (configurable in the options — it can point to the PC panel instead).
+
+## PC panel
 
 ```bash
 python desktop/painel.py
 ```
 
-Abre em `http://127.0.0.1:8099` (só escuta neste computador). A senha de administrador é digitada na própria página, vai direto ao roteador (mesmo método da interface oficial) e **não é gravada**. Os endereços dos roteadores são configuráveis pelo botão **⚙ Roteadores** (salvos em `%APPDATA%\MiWiFiPainel`). Toda alteração pede confirmação.
+Opens at `http://127.0.0.1:8099` (listens on this computer only). The admin password is typed into the page itself, goes straight to the router (same method as the official interface) and is **not stored**. Router addresses are set with the **⚙ Routers** button (saved in `%APPDATA%\MiWiFiPainel`). Every change asks for confirmation.
 
-Funções ocultas expostas: rede de visitante, desconexão de aparelhos com sinal fraco, varredura AIoT, prioridade para muitos aparelhos, região do Wi-Fi, fuso sem horário de verão, bloqueio de internet por aparelho e chamada direta a todas as funções internas.
+Hidden functions exposed: guest network, disconnecting weak-signal devices, AIoT scan, priority for many devices, Wi-Fi region, time zone without daylight saving, per-device internet blocking, and direct calls to every internal function (catalog with descriptions and example calls in [`docs/FUNCTIONS.md`](docs/FUNCTIONS.md)).
 
-## Notas técnicas
+## Panel outside Home Assistant
 
-O registro completo das descobertas (API, funções ocultas, app oficial, armadilhas) está em [`docs/DESCOBERTAS.md`](docs/DESCOBERTAS.md).
+### Windows — `MiWiFiPainel-Setup-<version>.exe`
+Installs the local panel (the same as `desktop/`) as a program: Start menu shortcut,
+desktop shortcut (optional) and start with Windows (optional, unchecked).
+When opened, the panel starts at `http://127.0.0.1:8099` and the browser opens by itself; opening it again
+just reopens the page; the **Exit** button shuts it down. The password is typed into the page and is not stored;
+router addresses are kept in `%APPDATA%\MiWiFiPainel`.
 
-- Login: `nonce = 0_<deviceId>_<timestamp>_<aleatório>`, senha enviada como `sha1(nonce + sha1(senha + chave))`, `POST /cgi-bin/luci/api/xqsystem/login` → `stok`.
-- Rede de visitante: `xqnetwork/set_wifi` com `wifiIndex=3` (bloco comentado na interface do firmware).
+Build: `powershell -File instalador\windows\build.ps1` (requires `uv` and Inno Setup 6).
+
+### Android — `MiWiFiPainel-<version>.apk`
+Standalone app: talks directly to the routers over the home network (no Home
+Assistant needed) and shows the same panel. A built-in Java server (`instalador/android/src`)
+plays the role of `painel.py`: login with SHA1+nonce hashing, a tolerant HTTP/1.0 client (the repeater
+sends malformed headers), confirmation before any change, and masked passwords.
+
+Build: `uv run --with pillow python instalador/android/build_apk.py` — no Gradle, just the
+JDK and the Android SDK (build-tools 34, platforms;android-34). The signing key is created in
+`instalador/android/assinatura/` (outside git): without it, a new version won't install over the old one.
+
+Ready-made builds are on the [Releases](../../releases) page.
+
+## Technical notes
+
+The full record of findings (API, hidden functions, official app, pitfalls) is in [`docs/FINDINGS.md`](docs/FINDINGS.md).
+
+- Login: `nonce = 0_<deviceId>_<timestamp>_<random>`, password sent as `sha1(nonce + sha1(password + key))`, `POST /cgi-bin/luci/api/xqsystem/login` → `stok`.
+- Guest network: `xqnetwork/set_wifi_without_restart` with `wifiIndex=3` and `on=0|1` (applies in seconds without restarting the Wi-Fi).
 - LED: `misystem/led?on=0|1`.
-- O fuso "(UTC−3) Brasília" do firmware aplica o horário de verão antigo; use "(UTC−3) Fortaleza".
-- Reinício agendado e configuração da rede de visitante pelo app oficial passam pela nuvem da Xiaomi.
+- The firmware's "(UTC−3) Brasília" time zone applies the old daylight saving rule; use "(UTC−3) Fortaleza".
+- IPv6: in *Native* mode the prefix changes on every reconnection; *NAT6* (`xqnetwork/set_wan6`, `wanType=nat`) gives the LAN a fixed prefix.
+- Scheduled restart and guest network setup in the official app go through Xiaomi's cloud.
 
-Testado com firmware 1.0.399 (versão chinesa). Projeto não oficial, sem relação com a Xiaomi. Use por sua conta e risco.
-
-
-## Painel fora do Home Assistant
-
-### Windows — `MiWiFiPainel-Setup-<versão>.exe`
-Instala o painel local (o mesmo de `desktop/`) como programa: atalho no menu Iniciar,
-atalho na área de trabalho (opcional) e início com o Windows (opcional, desmarcado).
-Ao abrir, o painel sobe em `http://127.0.0.1:8099` e o navegador abre sozinho; abrir de novo
-só reabre a página; o botão **Sair** encerra. A senha é digitada na página e não é guardada;
-os endereços dos roteadores ficam em `%APPDATA%\MiWiFiPainel`.
-
-Gerar: `powershell -File instalador\windows\build.ps1` (precisa de `uv` e do Inno Setup 6).
-
-### Android — `MiWiFiPainel-<versão>.apk`
-App independente: fala direto com os roteadores pela rede de casa (não depende do Home
-Assistant) e mostra o mesmo painel. Um servidor interno em Java (`instalador/android/src`)
-faz o papel do `painel.py`: login com hash SHA1+nonce, cliente HTTP/1.0 tolerante (o repetidor
-manda cabeçalhos malformados), confirmação antes de qualquer alteração e senhas mascaradas.
-
-Gerar: `uv run --with pillow python instalador/android/build_apk.py` — sem Gradle, só com o
-JDK e o Android SDK (build-tools 34, platforms;android-34). A chave de assinatura é criada em
-`instalador/android/assinatura/` (fora do git): sem ela, uma versão nova não instala por cima.
+Tested with firmware 1.0.399 (Chinese version). Unofficial project, not affiliated with Xiaomi. Use at your own risk.

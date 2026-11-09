@@ -95,7 +95,7 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     pass
             raise ConfigEntryAuthFailed(str(err)) from err
         except MiWiFiConnError as err:
-            raise UpdateFailed(f"roteador inacessível: {err}") from err
+            raise UpdateFailed(f"router unreachable: {err}") from err
 
     async def _senha_do_principal(self) -> bool:
         """Nó Mesh com "usar a senha do principal": a Mesh copia a senha de administração,

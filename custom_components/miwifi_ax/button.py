@@ -24,7 +24,7 @@ class Reiniciar(MiWiFiEntity, ButtonEntity):
     async def async_press(self) -> None:
         j = await self.coordinator.api.call("xqsystem/reboot", {"client": "web"})
         if j.get("code") != 0:
-            raise HomeAssistantError(f"Roteador recusou: {j.get('msg') or j}")
+            raise HomeAssistantError(translation_domain=DOMAIN, translation_key="roteador_recusou", translation_placeholders={"detalhe": str(j.get("msg") or j)})
 
 
 class Atualizar(MiWiFiEntity, ButtonEntity):

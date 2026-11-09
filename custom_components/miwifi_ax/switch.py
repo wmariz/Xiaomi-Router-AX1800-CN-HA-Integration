@@ -65,7 +65,7 @@ class Chave(MiWiFiEntity, SwitchEntity):
         params = d.params(on, self.coordinator.data)
         j = await self.coordinator.api.call(d.ep, params, post=d.post)
         if j.get("code") != 0:
-            raise HomeAssistantError(f"Roteador recusou: {j.get('msg') or j}")
+            raise HomeAssistantError(translation_domain=DOMAIN, translation_key="roteador_recusou", translation_placeholders={"detalhe": str(j.get("msg") or j)})
         self.coordinator.data[d.key] = on
         self.async_write_ha_state()
         await self.coordinator.async_request_refresh()

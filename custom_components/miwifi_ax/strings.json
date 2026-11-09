@@ -45,7 +45,7 @@
       "init": {
         "data": {
           "tracked_macs": "Devices to track (presence)",
-          "painel_url": "Panel URL (Visit button)"
+          "painel_url": "Panel address (Visit button)"
         }
       }
     }
@@ -53,121 +53,121 @@
   "entity": {
     "sensor": {
       "ligado_ha": {
-        "name": "Ligado há"
+        "name": "Uptime"
       },
       "cpu": {
-        "name": "Processador"
+        "name": "CPU"
       },
       "memoria": {
-        "name": "Memória"
+        "name": "Memory"
       },
       "clientes_24": {
-        "name": "Clientes 2,4 GHz"
+        "name": "2.4 GHz clients"
       },
       "clientes_5": {
-        "name": "Clientes 5 GHz"
+        "name": "5 GHz clients"
       },
       "canal_24": {
-        "name": "Canal 2,4 GHz"
+        "name": "2.4 GHz channel"
       },
       "canal_5": {
-        "name": "Canal 5 GHz"
+        "name": "5 GHz channel"
       },
       "largura_24": {
-        "name": "Largura 2,4 GHz"
+        "name": "2.4 GHz width"
       },
       "largura_5": {
-        "name": "Largura 5 GHz"
+        "name": "5 GHz width"
       },
       "potencia_24": {
-        "name": "Potência 2,4 GHz"
+        "name": "2.4 GHz power"
       },
       "potencia_5": {
-        "name": "Potência 5 GHz"
+        "name": "5 GHz power"
       },
       "avisos": {
-        "name": "Avisos"
+        "name": "Notices"
       },
       "firmware": {
         "name": "Firmware"
       },
       "hora_roteador": {
-        "name": "Hora do roteador"
+        "name": "Router time"
       },
       "relogio_diferenca": {
-        "name": "Diferença do relógio"
+        "name": "Clock offset"
       },
       "sinal_ate_principal": {
-        "name": "Sinal até o principal"
+        "name": "Signal to main router"
       },
       "aparelhos_online": {
-        "name": "Aparelhos online"
+        "name": "Devices online"
       },
       "aparelhos_conhecidos": {
-        "name": "Aparelhos conhecidos"
+        "name": "Known devices"
       },
       "qtd_cabo": {
-        "name": "Aparelhos por cabo"
+        "name": "Wired devices"
       },
       "qtd_24": {
-        "name": "Aparelhos no 2,4 GHz"
+        "name": "Devices on 2.4 GHz"
       },
       "qtd_5": {
-        "name": "Aparelhos no 5 GHz"
+        "name": "Devices on 5 GHz"
       },
       "qtd_visitante": {
-        "name": "Aparelhos na rede de visitante"
+        "name": "Devices on guest network"
       },
       "qtd_reservas": {
-        "name": "Reservas de IP"
+        "name": "IP reservations"
       },
       "filtro_mac_qtd": {
-        "name": "Aparelhos no filtro de MAC"
+        "name": "Devices in MAC filter"
       },
       "visitante_ssid": {
-        "name": "Nome da rede de visitante"
+        "name": "Guest network name"
       },
       "intrusoes_bloqueadas": {
-        "name": "Intrusões bloqueadas"
+        "name": "Blocked intrusions"
       },
       "anti_intrusos_nivel": {
-        "name": "Nível anti-intrusos"
+        "name": "Anti-intrusion level"
       },
       "vpn_status": {
-        "name": "Estado da VPN"
+        "name": "VPN status"
       },
       "ip_publico": {
-        "name": "IP público"
+        "name": "Public IP"
       },
       "ipv6": {
         "name": "IPv6"
       },
       "gateway_wan": {
-        "name": "Gateway da operadora"
+        "name": "ISP gateway"
       },
       "dns": {
         "name": "DNS"
       },
       "internet_conectada_ha": {
-        "name": "Internet conectada há"
+        "name": "Internet connected for"
       },
       "download": {
-        "name": "Download agora"
+        "name": "Download now"
       },
       "upload": {
-        "name": "Upload agora"
+        "name": "Upload now"
       },
       "pico_download": {
-        "name": "Pico de download"
+        "name": "Peak download"
       },
       "pico_upload": {
-        "name": "Pico de upload"
+        "name": "Peak upload"
       },
       "total_baixado": {
-        "name": "Total baixado"
+        "name": "Total downloaded"
       },
       "total_enviado": {
-        "name": "Total enviado"
+        "name": "Total uploaded"
       },
       "upnp_mapeamentos": {
         "name": "UPnP port mappings"
@@ -181,34 +181,34 @@
         "name": "Internet"
       },
       "wan_cabo": {
-        "name": "Cabo da operadora"
+        "name": "ISP cable"
       },
       "repetidor_na_mesh": {
-        "name": "Repetidor na Mesh"
+        "name": "Repeater in Mesh"
       },
       "firmware_atualizacao": {
-        "name": "Atualização de firmware"
+        "name": "Firmware update"
       },
       "wifi_24": {
-        "name": "Wi-Fi 2,4 GHz"
+        "name": "Wi-Fi 2.4 GHz"
       },
       "wifi_5": {
         "name": "Wi-Fi 5 GHz"
       },
       "wifi_unificado": {
-        "name": "Wi-Fi unificado"
+        "name": "Unified Wi-Fi"
       },
       "anti_intrusos": {
-        "name": "Anti-intrusos"
+        "name": "Anti-intrusion"
       },
       "firewall_sites": {
-        "name": "Firewall de sites"
+        "name": "Website firewall"
       },
       "firewall_virus": {
-        "name": "Firewall de vírus"
+        "name": "Virus firewall"
       },
       "wps": {
-        "name": "WPS ativo"
+        "name": "WPS active"
       },
       "upnp": {
         "name": "UPnP"
@@ -225,40 +225,40 @@
         "name": "QoS"
       },
       "visitante": {
-        "name": "Rede de visitantes"
+        "name": "Guest network"
       },
       "mu_mimo": {
         "name": "MU-MIMO"
       },
       "modo_wifi5": {
-        "name": "Modo de compatibilidade Wi-Fi 5"
+        "name": "Wi-Fi 5 compatibility mode"
       },
       "conexao_rapida": {
-        "name": "Conexão rápida"
+        "name": "Quick connect"
       },
       "varredura_aiot": {
-        "name": "Varredura AIoT"
+        "name": "AIoT scan"
       },
       "prioridade_muitos_aparelhos": {
-        "name": "Prioridade para muitos aparelhos"
+        "name": "Priority for many devices"
       },
       "filtro_mac": {
-        "name": "Filtro de MAC"
+        "name": "MAC filter"
       }
     },
     "button": {
       "reiniciar": {
-        "name": "Reiniciar"
+        "name": "Restart"
       },
       "atualizar_dados": {
-        "name": "Atualizar dados"
+        "name": "Refresh data"
       }
     }
   },
   "services": {
     "definir_internet": {
       "name": "Allow or block internet",
-      "description": "Allows or blocks internet access for a device on the main router.",
+      "description": "Allows or blocks a device's internet access on the main router.",
       "fields": {
         "mac": {
           "name": "MAC",
@@ -269,6 +269,22 @@
           "description": "On = allow; off = block"
         }
       }
+    }
+  },
+  "device": {
+    "principal": {
+      "name": "Main router"
+    },
+    "repetidor": {
+      "name": "Repeater"
+    }
+  },
+  "exceptions": {
+    "roteador_recusou": {
+      "message": "The router refused: {detalhe}"
+    },
+    "sem_principal": {
+      "message": "No main router is configured"
     }
   }
 }

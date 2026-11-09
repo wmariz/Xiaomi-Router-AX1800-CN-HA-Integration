@@ -13,22 +13,30 @@ DST = BASE / "custom_components" / "miwifi_ax" / "frontend" / "miwifi-panel.js"
 
 import json
 
-# 1) catálogo de funções -> injeta em desktop/painel.html e gera docs/FUNCOES.md
+# 1) catálogo de funções e dicionário EN -> injeta em desktop/painel.html; gera docs/FUNCTIONS.md (inglês)
 cat = json.loads((BASE / "desktop" / "funcoes.json").read_text(encoding="utf-8"))
 cat.pop("_legenda", None)
+cat_en = json.loads((BASE / "desktop" / "funcoes_en.json").read_text(encoding="utf-8"))
+cat_en.pop("_legenda", None)
+i18n = {k: v for k, v in json.loads((BASE / "desktop" / "i18n_en.json").read_text(encoding="utf-8")).items() if not k.startswith("_")}
 html = SRC.read_text(encoding="utf-8")
-html = re.sub(r"/\*FUNCOES\*/.*?/\*FIM\*/", lambda m: "/*FUNCOES*/" + json.dumps(cat, ensure_ascii=False) + "/*FIM*/", html, flags=re.S)
+for marca, fim, dado in (("FUNCOES", "FIM", cat), ("I18N", "FIMI18N", i18n), ("FUNCOES_EN", "FIMFEN", cat_en)):
+    html = re.sub(r"/\*" + marca + r"\*/.*?/\*" + fim + r"\*/", lambda m, d=dado, a=marca, b=fim: f"/*{a}*/" + json.dumps(d, ensure_ascii=False) + f"/*{b}*/", html, flags=re.S)
 SRC.write_text(html, encoding="utf-8")
-linhas = ["# Funções internas do Xiaomi AX1800 (RM1800)", "",
-          "Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou uso visto no código da interface/app); "
-          "**⚠ INFERÊNCIA** = deduzido só pelo nome/contexto.", "",
-          "| Função | Descrição | Exemplo de chamada |", "|---|---|---|"]
+faltam = sorted(set(cat) - set(cat_en))
+if faltam:
+    print("AVISO: funções sem descrição em inglês:", ", ".join(faltam))
+linhas = ["# Internal functions of the Xiaomi AX1800 (RM1800)", "",
+          "Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/build_ha_panel.py`. "
+          "**✓** = confirmed (tested on the device or usage seen in the UI/app code); **⚠ INFERRED** = deduced from the name/context only.", "",
+          "| Function | Description | Example call |", "|---|---|---|"]
 for ep in sorted(cat):
-    tipo, txt = cat[ep][:2]
+    tipo = cat[ep][0]
+    txt = cat_en.get(ep) or cat[ep][1]
     ex = cat[ep][2] if len(cat[ep]) > 2 else None
     exs = f"`{ex['m']} {json.dumps(ex['p'], ensure_ascii=False)}`".replace("|", "/") if ex else ""
-    linhas.append(f"| `{ep}` | {'✓' if tipo == 'c' else '**⚠ INFERÊNCIA** —'} {txt.replace('|', '/')} | {exs} |")
-(BASE / "docs" / "FUNCOES.md").write_text("\n".join(linhas) + "\n", encoding="utf-8")
+    linhas.append(f"| `{ep}` | {'✓' if tipo == 'c' else '**⚠ INFERRED** —'} {txt.replace('|', '/')} | {exs} |")
+(BASE / "docs" / "FUNCTIONS.md").write_text("\n".join(linhas) + "\n", encoding="utf-8")
 css = re.search(r"<style>(.*?)</style>", html, re.S).group(1)
 corpo = re.search(r"<body>(.*?)<script>", html, re.S).group(1)
 script = re.search(r"<script>(.*?)</script>\s*</body>", html, re.S).group(1)
@@ -88,6 +96,8 @@ class MiwifiAxPanel extends HTMLElement {{
       slot.appendChild(this._mb);
     }}
     window.__MIWIFI_ROOT__ = root;
+    const h = this._hass || {{}};
+    window.__MIWIFI_LANG__ = (h.locale && h.locale.language) || h.language || "en";
     window.__MIWIFI_SRV__ = (path, body) => this._srv(path, body);
     runPanel();
   }}

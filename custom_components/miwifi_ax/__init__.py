@@ -57,10 +57,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 if c.role == ROLE_MAIN:
                     j = await c.api.call("xqsystem/set_mac_filter", {"mac": mac, "wan": 1 if call.data["liberar"] else 0})
                     if j.get("code") != 0:
-                        raise HomeAssistantError(f"Roteador recusou: {j}")
+                        raise HomeAssistantError(translation_domain=DOMAIN, translation_key="roteador_recusou", translation_placeholders={"detalhe": str(j)})
                     await c.async_request_refresh()
                     return
-            raise HomeAssistantError("Nenhum roteador principal configurado")
+            raise HomeAssistantError(translation_domain=DOMAIN, translation_key="sem_principal")
 
         hass.services.async_register(DOMAIN, SERVICE_INTERNET, _internet, schema=SCHEMA_INTERNET)
     return True

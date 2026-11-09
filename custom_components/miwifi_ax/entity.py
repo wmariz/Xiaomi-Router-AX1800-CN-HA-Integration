@@ -32,12 +32,14 @@ class MiWiFiEntity(CoordinatorEntity[MiWiFiCoordinator]):
         self._attr_entity_registry_enabled_default = key in VISIVEIS
         self._attr_unique_id = f"{mac}_{key}"
         self._attr_translation_key = key
+        nome = (coord.data or {}).get("nome")
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, mac)},
             connections={(CONNECTION_NETWORK_MAC, mac.lower())},
             manufacturer="Xiaomi",
             model="Mi Router AX1800 (RM1800)",
-            name=(coord.data or {}).get("nome") or ("Roteador principal" if coord.role == ROLE_MAIN else "Repetidor"),
+            name=nome or None,
+            translation_key=None if nome else ("principal" if coord.role == ROLE_MAIN else "repetidor"),
             sw_version=coord.hw.get("version"),
             serial_number=coord.hw.get("sn"),
             configuration_url=_url(coord),

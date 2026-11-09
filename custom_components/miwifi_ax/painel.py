@@ -170,7 +170,7 @@ async def async_registrar(hass: HomeAssistant) -> None:
         webcomponent_name=WEBCOMPONENT,
         frontend_url_path=PAINEL_PATH,
         module_url=f"{URL_BASE}/miwifi-panel.js?v={versao}",
-        sidebar_title="Roteadores",
+        sidebar_title="Roteadores" if (hass.config.language or "").lower().startswith("pt") else "Routers",
         sidebar_icon="mdi:router-wireless",
         require_admin=True,
         config={},

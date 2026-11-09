@@ -270,5 +270,21 @@
         }
       }
     }
+  },
+  "device": {
+    "principal": {
+      "name": "Roteador principal"
+    },
+    "repetidor": {
+      "name": "Repetidor"
+    }
+  },
+  "exceptions": {
+    "roteador_recusou": {
+      "message": "O roteador recusou: {detalhe}"
+    },
+    "sem_principal": {
+      "message": "Nenhum roteador principal configurado"
+    }
   }
 }

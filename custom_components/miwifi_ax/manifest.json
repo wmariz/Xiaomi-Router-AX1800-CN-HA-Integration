@@ -1,13 +1,13 @@
 {
   "domain": "miwifi_ax",
   "name": "Xiaomi Router AX1800 (MiWiFi local)",
-  "codeowners": [],
+  "codeowners": ["@wmariz"],
   "config_flow": true,
   "dependencies": ["http", "frontend", "panel_custom"],
-  "documentation": "https://github.com/",
+  "documentation": "https://github.com/wmariz/Xiaomi-Router-AX1800-CN-HA-Integration",
   "integration_type": "device",
   "iot_class": "local_polling",
   "requirements": [],
   "ssdp": [{"manufacturer": "Xiaomi", "modelName": "MiWiFi Router"}],
-  "version": "1.0.0"
+  "version": "1.1.0"
 }

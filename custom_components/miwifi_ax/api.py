@@ -102,14 +102,14 @@ class MiWiFiApi:
             try:
                 j = json.loads(txt)
             except ValueError as err:
-                raise MiWiFiConnError("resposta inválida no login") from err
+                raise MiWiFiConnError("invalid login response") from err
             # 1582: login logo após outro (nonce com o mesmo segundo/recusado) — não é senha errada.
             if j.get("code") == 1582 and tentativa < 3:
                 await asyncio.sleep(2)
                 continue
             break
         if j.get("code") == 1582:
-            raise MiWiFiConnError("roteador recusou logins seguidos (code 1582)")
+            raise MiWiFiConnError("router refused back-to-back logins (code 1582)")
         if j.get("code") != 0 or not j.get("token"):
             raise MiWiFiAuthError(f"code {j.get('code')}")
         self._token = j["token"]
