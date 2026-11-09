@@ -9,12 +9,12 @@ a{color:var(--azul);text-decoration:none}
 #logo{font-size:30px;font-weight:200;letter-spacing:1px}
 #rotsel{width:auto;height:auto;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:4px;padding:5px 8px;font-size:13px}
 #rotsel option{color:#333}
-#icones{max-width:1100px;margin:18px auto 0;padding:0 16px;display:flex;justify-content:center;flex-wrap:wrap;gap:10px 40px}
-.grp{display:flex;flex-direction:column;align-items:center}
-.grp .rot{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px}
+#icones{max-width:1100px;margin:18px auto 0;padding:0 16px;display:flex;justify-content:center;flex-wrap:wrap;gap:12px 16px}
+.grp{display:flex;flex-direction:column;align-items:stretch;border:1px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 10px 0}
+.grp .rot{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.7);margin:0 0 8px 2px;text-align:left}
 .grp .lin{display:flex;flex-wrap:wrap;justify-content:center;gap:2px}
 .ico{display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,.8);font-size:12px;cursor:pointer;padding-bottom:14px;position:relative;min-width:84px;text-align:center}
-@media (max-width:700px){#icones{gap:4px 18px;margin-top:12px}.ico{min-width:66px;font-size:11px}.ico .c{width:40px;height:40px;font-size:18px}.grp .rot{margin-bottom:5px}}
+@media (max-width:700px){#icones{gap:8px 8px;margin-top:12px}.grp{padding:6px 6px 0}.ico{min-width:66px;font-size:11px}.ico .c{width:40px;height:40px;font-size:18px}.grp .rot{margin-bottom:5px}}
 .ico .c{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
 .ico.act{color:#fff}
 .ico.act:after{content:"";position:absolute;bottom:0;border:10px solid transparent;border-bottom-color:var(--card)}
