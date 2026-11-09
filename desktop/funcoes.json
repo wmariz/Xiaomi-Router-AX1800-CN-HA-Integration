@@ -46,7 +46,13 @@
   ],
   "misystem/c_backup": [
     "c",
-    "Gera arquivo de backup da configuração (keys = partes a incluir)."
+    "Gera arquivo de backup da configuração (keys = partes a incluir).",
+    {
+      "m": "GET",
+      "p": {
+        "keys": "mi_basic_info,mi_network_info,mi_wifi_info,mi_lan_info,mi_arn_info"
+      }
+    }
   ],
   "misystem/c_restore": [
     "c",
@@ -70,7 +76,13 @@
   ],
   "misystem/device_detail": [
     "i",
-    "Detalhes de um aparelho (pede mac)."
+    "Detalhes de um aparelho (pede mac).",
+    {
+      "m": "GET",
+      "p": {
+        "mac": "AA:BB:CC:DD:EE:FF"
+      }
+    }
   ],
   "misystem/devicelist": [
     "c",
@@ -114,7 +126,13 @@
   ],
   "misystem/led": [
     "c",
-    "Estado do LED; com on=0/1 apaga/acende as luzes do aparelho."
+    "Estado do LED; com on=0/1 apaga/acende as luzes do aparelho.",
+    {
+      "m": "GET",
+      "p": {
+        "on": 1
+      }
+    }
   ],
   "misystem/messages": [
     "c",
@@ -182,7 +200,14 @@
   ],
   "misystem/qos_guest": [
     "c",
-    "Limite de velocidade da rede de visitante (percent, percent_up da banda)."
+    "Limite de velocidade da rede de visitante (percent, percent_up da banda).",
+    {
+      "m": "GET",
+      "p": {
+        "percent": 0.5,
+        "percent_up": 0.5
+      }
+    }
   ],
   "misystem/qos_info": [
     "c",
@@ -198,11 +223,23 @@
   ],
   "misystem/qos_mode": [
     "c",
-    "Modo do QoS (mode): automático/jogos/navegação/vídeo/manual."
+    "Modo do QoS (mode): automático/jogos/navegação/vídeo/manual.",
+    {
+      "m": "GET",
+      "p": {
+        "mode": 0
+      }
+    }
   ],
   "misystem/qos_offlimit": [
     "c",
-    "Remove o limite de velocidade de um aparelho (mac)."
+    "Remove o limite de velocidade de um aparelho (mac).",
+    {
+      "m": "GET",
+      "p": {
+        "mac": "AA:BB:CC:DD:EE:FF"
+      }
+    }
   ],
   "misystem/qos_set_dev_info": [
     "i",
@@ -210,7 +247,13 @@
   ],
   "misystem/qos_switch": [
     "c",
-    "Liga/desliga o QoS (on)."
+    "Liga/desliga o QoS (on).",
+    {
+      "m": "GET",
+      "p": {
+        "on": 0
+      }
+    }
   ],
   "misystem/qos_xq": [
     "c",
@@ -234,7 +277,15 @@
   ],
   "misystem/set_band": [
     "c",
-    "Informa a banda contratada (upload/download em Mbps) usada pelo QoS."
+    "Informa a banda contratada (upload/download em Mbps) usada pelo QoS.",
+    {
+      "m": "POST",
+      "p": {
+        "manual": 1,
+        "upload": 250,
+        "download": 500
+      }
+    }
   ],
   "misystem/set_channel": [
     "i",
@@ -250,11 +301,25 @@
   ],
   "misystem/set_router_name": [
     "c",
-    "Altera nome e local (name, locale)."
+    "Altera nome e local (name, locale).",
+    {
+      "m": "GET",
+      "p": {
+        "name": "WMON-AX1800",
+        "locale": "Escritório"
+      }
+    }
   ],
   "misystem/set_sys_time": [
     "c",
-    "Define o fuso (timezone, index) ou a hora (time 'AAAA-MM-DD hh:mm:ss')."
+    "Define o fuso (timezone, index) ou a hora (time 'AAAA-MM-DD hh:mm:ss').",
+    {
+      "m": "POST",
+      "p": {
+        "timezone": "<valor da lista de fusos>",
+        "index": 3
+      }
+    }
   ],
   "misystem/smartvpn_info": [
     "c",
@@ -322,7 +387,13 @@
   ],
   "misystem/web_access_opt": [
     "c",
-    "Liga/desliga o controle de acesso e adiciona/remove MACs autorizados."
+    "Liga/desliga o controle de acesso e adiciona/remove MACs autorizados.",
+    {
+      "m": "POST",
+      "p": {
+        "open": 1
+      }
+    }
   ],
   "xqdatacenter/identify_device": [
     "i",
@@ -354,7 +425,13 @@
   ],
   "xqnetwork/ddns_switch": [
     "c",
-    "Liga/desliga o DDNS (on=1/0). Testado 2026-11-08 (on=0 → xqnetwork/ddns on=0)."
+    "Liga/desliga o DDNS (on=1/0). Testado 2026-11-08 (on=0 → xqnetwork/ddns on=0).",
+    {
+      "m": "GET",
+      "p": {
+        "on": 0
+      }
+    }
   ],
   "xqnetwork/disable_ap": [
     "c",
@@ -370,7 +447,15 @@
   ],
   "xqnetwork/edit_device": [
     "c",
-    "Adiciona (option=0) ou remove (option=1) um MAC da lista do filtro."
+    "Adiciona (option=0) ou remove (option=1) um MAC da lista do filtro.",
+    {
+      "m": "GET",
+      "p": {
+        "mac": "AA:BB:CC:DD:EE:FF",
+        "model": 0,
+        "option": 0
+      }
+    }
   ],
   "xqnetwork/get_addnode_status": [
     "c",
@@ -402,15 +487,33 @@
   ],
   "xqnetwork/mac_bind": [
     "c",
-    "Cria reservas de IP (data = JSON [{ip, mac, name}])."
+    "Cria reservas de IP (data = JSON [{ip, mac, name}]).",
+    {
+      "m": "POST",
+      "p": {
+        "data": "[{\"ip\": \"192.168.0.50\", \"mac\": \"AA:BB:CC:DD:EE:FF\", \"name\": \"Aparelho\"}]"
+      }
+    }
   ],
   "xqnetwork/mac_clone": [
     "c",
-    "Clona um endereço MAC na WAN."
+    "Clona um endereço MAC na WAN.",
+    {
+      "m": "GET",
+      "p": {
+        "mac": "8C:DE:F9:92:E0:94"
+      }
+    }
   ],
   "xqnetwork/mac_unbind": [
     "c",
-    "Remove uma reserva de IP (mac)."
+    "Remove uma reserva de IP (mac).",
+    {
+      "m": "POST",
+      "p": {
+        "mac": "AA:BB:CC:DD:EE:FF"
+      }
+    }
   ],
   "xqnetwork/macbind_info": [
     "c",
@@ -422,11 +525,23 @@
   ],
   "xqnetwork/miotrelay_switch": [
     "c",
-    "Liga/desliga a conexão rápida (on)."
+    "Liga/desliga a conexão rápida (on).",
+    {
+      "m": "POST",
+      "p": {
+        "on": 1
+      }
+    }
   ],
   "xqnetwork/miscan_switch": [
     "c",
-    "Liga/desliga a varredura AIoT (on)."
+    "Liga/desliga a varredura AIoT (on).",
+    {
+      "m": "POST",
+      "p": {
+        "on": 0
+      }
+    }
   ],
   "xqnetwork/mode": [
     "c",
@@ -442,7 +557,11 @@
   ],
   "xqnetwork/pppoe_start": [
     "c",
-    "Reconecta o PPPoE."
+    "Reconecta o PPPoE.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/pppoe_status": [
     "c",
@@ -450,7 +569,11 @@
   ],
   "xqnetwork/pppoe_stop": [
     "c",
-    "Desconecta o PPPoE."
+    "Desconecta o PPPoE.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqnetwork/scan_mesh_node": [
     "c",
@@ -458,7 +581,29 @@
   ],
   "xqnetwork/set_all_wifi": [
     "c",
-    "Altera as duas bandas de uma vez (Wi-Fi unificado; reinicia o Wi-Fi ~30 s). Os campos on3/ssid3/pwd3 da rede de visitante são aceitos mas ignorados no RM1800."
+    "Altera as duas bandas de uma vez (Wi-Fi unificado; reinicia o Wi-Fi ~30 s). Os campos on3/ssid3/pwd3 da rede de visitante são aceitos mas ignorados no RM1800.",
+    {
+      "m": "POST",
+      "p": {
+        "bsd": 0,
+        "on1": 1,
+        "ssid1": "Rede24",
+        "pwd1": "senha-exemplo",
+        "encryption1": "psk2",
+        "channel1": 0,
+        "bandwidth1": 0,
+        "hidden1": 0,
+        "txpwr1": "max",
+        "on2": 1,
+        "ssid2": "Rede5",
+        "pwd2": "senha-exemplo",
+        "encryption2": "psk2",
+        "channel2": 0,
+        "bandwidth2": 0,
+        "hidden2": 0,
+        "txpwr2": "max"
+      }
+    }
   ],
   "xqnetwork/set_lan_ap": [
     "c",
@@ -466,11 +611,29 @@
   ],
   "xqnetwork/set_lan_dhcp": [
     "c",
-    "Altera ou desliga o servidor DHCP."
+    "Altera ou desliga o servidor DHCP.",
+    {
+      "m": "GET",
+      "p": {
+        "ignore": 0,
+        "start": 100,
+        "end": 200,
+        "leasetime": "720m",
+        "dns1": "",
+        "dns2": "",
+        "router": "192.168.0.1"
+      }
+    }
   ],
   "xqnetwork/set_lan_ip": [
     "c",
-    "Muda o IP do roteador (reinicia)."
+    "Muda o IP do roteador (reinicia).",
+    {
+      "m": "GET",
+      "p": {
+        "ip": "192.168.0.1"
+      }
+    }
   ],
   "xqnetwork/set_peer_wifi_auto_ap_mode": [
     "i",
@@ -478,23 +641,72 @@
   ],
   "xqnetwork/set_son_backhaul_mode": [
     "c",
-    "Liga/desliga a prioridade para muitos aparelhos (mode)."
+    "Liga/desliga a prioridade para muitos aparelhos (mode).",
+    {
+      "m": "POST",
+      "p": {
+        "mode": 0
+      }
+    }
   ],
   "xqnetwork/set_wan": [
     "c",
-    "Altera a conexão de internet (PPPoE, DHCP ou IP fixo)."
+    "Altera a conexão de internet (PPPoE, DHCP ou IP fixo).",
+    {
+      "m": "POST",
+      "p": {
+        "wanType": "pppoe",
+        "pppoeName": "usuario",
+        "pppoePwd": "senha-exemplo",
+        "mtu": 1480,
+        "service": "",
+        "special": 0,
+        "dns1": "",
+        "dns2": "",
+        "autoset": 1
+      }
+    }
   ],
   "xqnetwork/set_wan6": [
     "c",
-    "Modo IPv6 (POST): wanType=native (repassa o prefixo da operadora, que muda a cada reconexão), nat (NAT6: rede de casa com prefixo fixo fd00:6868:6868::/64) ou static; autosetipv6=0/1 (DNS automático/manual), dns1, dns2."
+    "Modo IPv6 (POST): wanType=native (repassa o prefixo da operadora, que muda a cada reconexão), nat (NAT6: rede de casa com prefixo fixo fd00:6868:6868::/64) ou static; autosetipv6=0/1 (DNS automático/manual), dns1, dns2.",
+    {
+      "m": "POST",
+      "p": {
+        "wanType": "nat",
+        "autosetipv6": 1,
+        "dns1": "2001:4860:4860::8888",
+        "dns2": "2606:4700:4700::1111"
+      }
+    }
   ],
   "xqnetwork/set_wan_speed": [
     "c",
-    "Velocidade da porta WAN (speed 0 auto/100/1000)."
+    "Velocidade da porta WAN (speed 0 auto/100/1000).",
+    {
+      "m": "POST",
+      "p": {
+        "speed": 0
+      }
+    }
   ],
   "xqnetwork/set_wifi": [
     "c",
-    "Altera uma rede Wi-Fi (wifiIndex 1=2,4 GHz, 2=5 GHz, 3=visitante): nome, senha, segurança, canal, largura, oculto, potência; e o roaming por sinal fraco."
+    "Altera uma rede Wi-Fi (wifiIndex 1=2,4 GHz, 2=5 GHz, 3=visitante): nome, senha, segurança, canal, largura, oculto, potência; e o roaming por sinal fraco.",
+    {
+      "m": "POST",
+      "p": {
+        "wifiIndex": 1,
+        "on": 1,
+        "ssid": "MinhaRede",
+        "pwd": "senha-exemplo",
+        "encryption": "psk2",
+        "channel": 0,
+        "bandwidth": 0,
+        "hidden": 0,
+        "txpwr": "max"
+      }
+    }
   ],
   "xqnetwork/set_wifi_ap": [
     "c",
@@ -502,15 +714,34 @@
   ],
   "xqnetwork/set_wifi_ax": [
     "c",
-    "Wi-Fi 6 ligado (ax=1) ou modo de compatibilidade Wi-Fi 5 (ax=0)."
+    "Wi-Fi 6 ligado (ax=1) ou modo de compatibilidade Wi-Fi 5 (ax=0).",
+    {
+      "m": "POST",
+      "p": {
+        "ax": 1
+      }
+    }
   ],
   "xqnetwork/set_wifi_macfilter": [
     "c",
-    "Liga/desliga o filtro de MAC e define o modo (model, enable)."
+    "Liga/desliga o filtro de MAC e define o modo (model, enable).",
+    {
+      "m": "POST",
+      "p": {
+        "model": 0,
+        "enable": 1
+      }
+    }
   ],
   "xqnetwork/set_wifi_txbf": [
     "c",
-    "Liga/desliga o MU-MIMO (txbf)."
+    "Liga/desliga o MU-MIMO (txbf).",
+    {
+      "m": "POST",
+      "p": {
+        "txbf": 1
+      }
+    }
   ],
   "xqnetwork/set_wifi_txpwr": [
     "c",
@@ -518,7 +749,14 @@
   ],
   "xqnetwork/set_wifi_without_restart": [
     "c",
-    "Muda só os campos enviados sem reiniciar o Wi-Fi. wifiIndex=3 + on=1/0 liga/desliga a rede de visitante; wifiIndex=1/2 + hidden=1/0 oculta/mostra o SSID (não espelha no nó Mesh)."
+    "Muda só os campos enviados sem reiniciar o Wi-Fi. wifiIndex=3 + on=1/0 liga/desliga a rede de visitante; wifiIndex=1/2 + hidden=1/0 oculta/mostra o SSID (não espelha no nó Mesh).",
+    {
+      "m": "GET",
+      "p": {
+        "wifiIndex": 3,
+        "on": 1
+      }
+    }
   ],
   "xqnetwork/wan_info": [
     "c",
@@ -610,7 +848,13 @@
   ],
   "xqsystem/reboot": [
     "c",
-    "Reinicia o roteador."
+    "Reinicia o roteador.",
+    {
+      "m": "GET",
+      "p": {
+        "client": "web"
+      }
+    }
   ],
   "xqsystem/renew_token": [
     "i",
@@ -618,7 +862,13 @@
   ],
   "xqsystem/reset": [
     "c",
-    "Restaura o padrão de fábrica (format)."
+    "Restaura o padrão de fábrica (format).",
+    {
+      "m": "GET",
+      "p": {
+        "format": 0
+      }
+    }
   ],
   "xqsystem/router_bind_ok": [
     "c",
@@ -626,15 +876,34 @@
   ],
   "xqsystem/set_country_code": [
     "c",
-    "Muda a região do Wi-Fi (canais e potência)."
+    "Muda a região do Wi-Fi (canais e potência).",
+    {
+      "m": "POST",
+      "p": {
+        "country": "CN"
+      }
+    }
   ],
   "xqsystem/set_language": [
     "c",
-    "Muda o idioma da interface original."
+    "Muda o idioma da interface original.",
+    {
+      "m": "POST",
+      "p": {
+        "language": "zh_cn"
+      }
+    }
   ],
   "xqsystem/set_mac_filter": [
     "c",
-    "Bloqueia (wan=0) ou libera (wan=1) a internet de um aparelho."
+    "Bloqueia (wan=0) ou libera (wan=1) a internet de um aparelho.",
+    {
+      "m": "POST",
+      "p": {
+        "mac": "AA:BB:CC:DD:EE:FF",
+        "wan": 0
+      }
+    }
   ],
   "xqsystem/set_name_password": [
     "c",
@@ -650,7 +919,11 @@
   ],
   "xqsystem/shutdown": [
     "c",
-    "Desliga o roteador."
+    "Desliga o roteador.",
+    {
+      "m": "GET",
+      "p": {}
+    }
   ],
   "xqsystem/system_info": [
     "c",

@@ -22,10 +22,12 @@ SRC.write_text(html, encoding="utf-8")
 linhas = ["# Funções internas do Xiaomi AX1800 (RM1800)", "",
           "Gerado de `desktop/funcoes.json`. **✓** = confirmado (testado no aparelho ou uso visto no código da interface/app); "
           "**⚠ INFERÊNCIA** = deduzido só pelo nome/contexto.", "",
-          "| Função | Descrição |", "|---|---|"]
+          "| Função | Descrição | Exemplo de chamada |", "|---|---|---|"]
 for ep in sorted(cat):
-    tipo, txt = cat[ep]
-    linhas.append(f"| `{ep}` | {'✓' if tipo == 'c' else '**⚠ INFERÊNCIA** —'} {txt.replace('|', '/')} |")
+    tipo, txt = cat[ep][:2]
+    ex = cat[ep][2] if len(cat[ep]) > 2 else None
+    exs = f"`{ex['m']} {json.dumps(ex['p'], ensure_ascii=False)}`".replace("|", "/") if ex else ""
+    linhas.append(f"| `{ep}` | {'✓' if tipo == 'c' else '**⚠ INFERÊNCIA** —'} {txt.replace('|', '/')} | {exs} |")
 (BASE / "docs" / "FUNCOES.md").write_text("\n".join(linhas) + "\n", encoding="utf-8")
 css = re.search(r"<style>(.*?)</style>", html, re.S).group(1)
 corpo = re.search(r"<body>(.*?)<script>", html, re.S).group(1)
