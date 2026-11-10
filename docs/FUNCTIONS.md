@@ -97,7 +97,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/http_status` | ✓ Status of the router's HTTP interception (e.g. warning pages). |  |
 | `misystem/http_switch` | **⚠ INFERRED** — Turns HTTP interception on/off. |  |
 | `misystem/hwnat_status` | ✓ Hardware NAT acceleration: status 1 on / 0 off (0 on both routers on 10/11). |  |
-| `misystem/hwnat_switch` | **⚠ INFERRED** — Turns hardware NAT acceleration on/off (on 0/1); RESTARTS the router. |  |
+| `misystem/hwnat_switch` | ✓ Turns hardware NAT on/off (on 0/1) and RESTARTS; on this model the status stays 0 afterwards (tested 10/11). |  |
 | `misystem/io_data` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getIOData; untested). |  |
 | `misystem/iperf` | **⚠ INFERRED** — iperf server to measure local network speed. |  |
 | `misystem/led` | ✓ LED status; with on=0/1 turns the device lights off/on. | `GET {"on": 1}` |
@@ -210,7 +210,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetdetect/sys_status` | ✓ Quick check: status 0 ok, 1 CPU/memory > 90 % or temperature > 70 °C, 2 no WAN link (returns 2 on this model even with internet). |  |
 | `xqnetwork/add_mesh_node` | ✓ Adds a node to the Mesh. locate = room name in Chinese (客厅, 主卧, 次卧, 书房, 厨房, 办公室, 地下室, 卫生间, 阁楼, 阳台, 餐厅). | `POST {"mac": "AA:BB:CC:DD:EE:FF", "locate": "客厅"}` |
 | `xqnetwork/add_range_redirect` | ✓ Adds a port range rule. Takes effect after redirect_apply. | `POST {"name": "Jogo", "proto": 3, "fport": 3000, "tport": 3010, "ip": "192.168.0.50"}` |
-| `xqnetwork/add_redirect` | ✓ Adds a port rule (force=1 replaces the rule for the same external port). Takes effect after redirect_apply. | `POST {"name": "Servidor", "proto": 1, "sport": 8443, "ip": "192.168.0.50", "dport": 443}` |
+| `xqnetwork/add_redirect` | ✓ Adds a port rule (POST name, proto, sport, ip, dport). No edit on this firmware: force is ignored (code 1608) — delete and re-add. Takes effect after redirect_apply. Tested. | `POST {"name": "Servidor", "proto": 1, "sport": 8443, "ip": "192.168.0.50", "dport": 443}` |
 | `xqnetwork/add_server` | ✓ Adds a DDNS service. Provider id: 1 No-IP, 2 Oray, 3 3322.org, 4 Dyn. | `GET {"id": 1, "username": "usuario", "password": "senha", "domain": "myhome.ddns.net", "checkinterval": 10, "forceinterval": 24, "enable": 1}` |
 | `xqnetwork/app_set_wifi_ap` | **⚠ INFERRED** — Firmware 1.0.394 function (controller appSetWifiApMode; untested). |  |
 | `xqnetwork/app_wifiap_restart` | **⚠ INFERRED** — Firmware 1.0.394 function (controller wifiAPserviceRestart; untested). |  |
@@ -280,7 +280,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/set_all_wifi` | ✓ Unified Wi-Fi: bsd 1 (only on1/ssid1/pwd1/encryption1/channel1/bandwidth1/hidden1/txpwr1) or bsd 0 (also the …2 fields). Restarts the Wi-Fi. |  |
 | `xqnetwork/set_band` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setBand; untested). |  |
 | `xqnetwork/set_channel` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setChannel; untested). |  |
-| `xqnetwork/set_dmz` | ✓ Turns DMZ on for an IP. | `POST {"ip": "192.168.0.50"}` |
+| `xqnetwork/set_dmz` | ✓ Turns DMZ on for an IP (POST ip). Refused (code 1610) while any port-forwarding rule exists. Tested. | `POST {"ip": "192.168.0.50"}` |
 | `xqnetwork/set_lan_ap` | ✓ Switches to wired repeater (access point; WAN connected to another router). Returns the new ip. | `POST {"ssid": "", "password": ""}` |
 | `xqnetwork/set_lan_dhcp` | ✓ Changes or turns off the DHCP server. | `GET {"ignore": 0, "start": 100, "end": 200, "leasetime": "720m", "dns1": "", "dns2": "", "router": "192.168.0.1"}` |
 | `xqnetwork/set_lan_ip` | ✓ Changes the router IP (restarts). | `GET {"ip": "192.168.0.1"}` |
@@ -420,11 +420,11 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsystem/set_privacy` | **⚠ INFERRED** — Stores the privacy consent. |  |
 | `xqsystem/set_privacy_new` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setPrivacy_new; untested). |  |
 | `xqsystem/set_router_name` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setRouterName; untested). |  |
-| `xqsystem/set_vpn` | ✓ Adds (empty id) or edits a VPN server. | `POST {"id": "", "oname": "Trabalho", "proto": "l2tp", "server": "vpn.example.com", "username": "usuario", "password": "senha"}` |
+| `xqsystem/set_vpn` | ✓ Adds (WITHOUT the id field — any id, even empty, becomes an edit) or edits (with id) a VPN server. Editing changes the id. Tested. | `POST {"oname": "Trabalho", "proto": "l2tp", "server": "vpn.example.com", "username": "usuario", "password": "senha"}` |
 | `xqsystem/set_vpnauto` | ✓ Connect the VPN when the router starts (auto 1/0). | `GET {"auto": 1}` |
 | `xqsystem/shutdown` | ✓ Powers the router off. | `GET {}` |
 | `xqsystem/sign_order` | **⚠ INFERRED** — Firmware 1.0.394 function (controller signOrder; untested). |  |
-| `xqsystem/smart_shutdown` | **⚠ INFERRED** — Turns the router off and back on after delay1/delay2 (unit not confirmed). |  |
+| `xqsystem/smart_shutdown` | ✓ Would turn the router off and on after delay1/delay2 MINUTES (XQFunction: sleep 60·delay1; uhbn 2 delay2). No effect on this model (tested 10/11). |  |
 | `xqsystem/start_dropbear` | **⚠ INFERRED** — Starts the router's SSH server (dropbear). (controller startDropbear; untested). |  |
 | `xqsystem/start_nginx` | **⚠ INFERRED** — Firmware 1.0.394 function (controller startNginx; untested). |  |
 | `xqsystem/status` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getStatusInfo; untested). |  |

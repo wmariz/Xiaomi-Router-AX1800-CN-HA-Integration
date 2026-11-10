@@ -83,6 +83,6 @@ The full record of findings (API, hidden functions, official app, pitfalls) is i
 - IPv6: in *Native* mode the prefix changes on every reconnection; *NAT6* (`xqnetwork/set_wan6`, `wanType=nat`) gives the LAN a fixed prefix.
 - Scheduled restart and guest network setup in the official app go through Xiaomi's cloud.
 
-Features that have **not been tested on a real router yet** are listed in [`docs/FINDINGS.md`](docs/FINDINGS.md#12-not-yet-tested-on-the-device).
+Features that have **not been tested on a real router yet** are listed in [`docs/FINDINGS.md`](docs/FINDINGS.md#12-test-status).
 
 Tested with firmware 1.0.399 (Chinese version). Unofficial project, not affiliated with Xiaomi. Use at your own risk.

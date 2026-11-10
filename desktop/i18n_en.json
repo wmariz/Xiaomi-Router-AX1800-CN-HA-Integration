@@ -781,5 +781,17 @@
   "A verificação interna não viu a ligação da WAN.": "The internal check didn't see the WAN link.",
   "(neste firmware isso aparece mesmo com a internet funcionando)": "(on this firmware this shows up even with the internet working)",
   "Núcleos do processador": "Processor cores",
-  "O mesmo teste do app oficial: processador > 90 %, memória > 90 %, temperatura > 70 °C e ligação da WAN.": "The same check as the official app: processor > 90 %, memory > 90 %, temperature > 70 °C and WAN link."
+  "O mesmo teste do app oficial: processador > 90 %, memória > 90 %, temperatura > 70 °C e ligação da WAN.": "The same check as the official app: processor > 90 %, memory > 90 %, temperature > 70 °C and WAN link.",
+  "Não deu certo; a regra antiga foi mantida.": "It didn't work; the old rule was kept.",
+  "Ligar": "Turn on",
+  "Ligado; os aparelhos voltam em ~20 s.": "On; devices come back in ~20 s.",
+  "Liga ou desliga o rádio de uma banda sem mexer em nome, senha ou canal (testado: os aparelhos caem e voltam ~20 s depois de religar). O roteador não informa se o rádio está desligado, por isso são dois botões.": "Turns a band's radio off or on without touching name, password or channel (tested: devices drop and come back ~20 s after turning it on). The router doesn't report a radio as off, hence two buttons.",
+  "Expõe um aparelho inteiro à internet. Use só se souber o que está fazendo. O roteador não deixa ligar a DMZ enquanto houver regra de encaminhamento de portas (testado).": "Exposes a whole device to the internet. Use only if you know what you're doing. The router won't enable DMZ while any port-forwarding rule exists (tested).",
+  "Reconectar a internet": "Reconnect the internet",
+  "Reconectar agora": "Reconnect now",
+  "Conectar (se ficou desconectada)": "Connect (if it stayed down)",
+  "Derruba a conexão da porta WAN sem mudar a configuração. Neste roteador ela volta sozinha em cerca de 10 s (testado): serve para forçar uma nova discagem PPPoE. O IP público pode mudar.": "Drops the WAN connection without changing the configuration. On this router it comes back by itself in about 10 s (tested): use it to force a new PPPoE dial. The public IP may change.",
+  "A casa fica uns 10 s sem internet enquanto o roteador disca de novo.": "The house is offline for about 10 s while the router redials.",
+  "Faz o chip de rede encaminhar o tráfego da internet sem passar pelo processador. ⚠ Mudar REINICIA o roteador. Testado em 10/11: o roteador reinicia, mas continua informando \"desligada\" — neste modelo (chip Qualcomm) a opção parece não ter efeito.": "Makes the network chip forward internet traffic without going through the processor. ⚠ Changing it RESTARTS the router. Tested on 10/11: the router restarts but keeps reporting \"off\" — on this model (Qualcomm chip) the option seems to have no effect.",
+  "Função do firmware que desligaria o roteador depois de um tempo e o religaria depois de outro (minutos). Testado em 10/11 no repetidor: não teve efeito neste modelo (ele não desligou).": "Firmware function that would turn the router off after a while and back on after another delay (minutes). Tested on 10/11 on the repeater: no effect on this model (it didn't turn off)."
 }

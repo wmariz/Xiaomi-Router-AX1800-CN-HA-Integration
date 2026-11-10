@@ -171,39 +171,43 @@ functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md))
   Mesh link metrics (`get_mesh_metric`), traffic history (`device(s)_statistics`, `wan_statistics`), device rename
   (`set_device_nickname`), radios/WAN up/down, router-side ping, and an SSH server (`xqsystem/start_dropbear`).
 
-## 12. Not yet tested on the device
-These panel features are implemented from the official web pages, the official app and the decompiled firmware
-controllers, but **have not been exercised end-to-end on a real router yet** (as of 2026-11-09). Feedback is welcome.
+## 12. Test status
 
-| Feature | Panel page | Why not tested yet / what is known |
-|---|---|---|
-| Adding a Mesh node | Mesh | No spare node available. Endpoints and status codes come from the official page. |
-| Unified Wi-Fi (dual-band) on/off | Wi-Fi | Would rename the 5 GHz network for every device at home. Payload copied from the official page. |
-| Per-device band (unified Wi-Fi only) | Wi-Fi | Only visible with unified Wi-Fi on. The `mode` values 1 = 2.4 GHz / 2 = 5 GHz are inferred from the code. |
-| WPS pairing | Wi-Fi | Would open the network to any WPS device for 2 minutes. |
-| Guest network *Save* with name/password | Wi-Fi | On/off is tested; saving name/password through `set_wifi_without_restart` returned code 1615 when sent with on/off, but saving with the *same* name and password was not retried. |
-| Work mode switch (wireless/wired repeater, back to router) | Internet | Blocked on a Mesh main router (like the official UI); no standalone router to test on. |
-| Static IPv6 | Internet | Only NAT6 and Native were used. Field names come from the official page. |
-| Backup **restore** | System | The upload (`c_upload`) was tested; `c_restore` + reboot was not run. |
-| Per-device QoS limits / router's own limit | QoS | QoS is off on the test router (device list is empty while QoS is off). |
-| Parental control on a real device | Parental control | Schedules and site lists were tested with a dummy MAC (created, read, changed, removed). Whether the schedule means "no internet during" (as in the app) was not confirmed on a real device. |
-| Anti-intrusion on/off and level | Security | Turning it off also turns the Wi-Fi MAC filter off; the meaning of levels 1–3 is inferred. |
-| DDNS, port forwarding, DMZ, VPN, UPnP **changes** | Advanced pages | Pages render and read correctly; no rule/service/VPN was created or changed. |
-| Firmware auto-update settings | System | Read only. |
-| IP-conflict fix | Information → notices | No conflict notice on the test network. |
-| Hardware NAT on/off | System | Status reads 0 (off) on both routers; switching restarts the router. |
-| Scheduled off/on (`smart_shutdown`) | System | Delay units (`delay1`, `delay2`) not confirmed; the house loses the network in between. |
-| Radios on/off (`wifi_up` / `wifi_down`) and WAN down/up | Wi-Fi / Internet | Would drop devices or the internet. |
-| Rename a device (`set_device_nickname`) | Network & devices | Not run. |
-| Work-mode/firmware functions marked **⚠ INFERRED** in [`FUNCTIONS.md`](FUNCTIONS.md) | All functions | 250+ functions found only in the decompiled firmware; descriptions come from their names. |
+### Tested on the device
+| Feature | Result |
+|---|---|
+| Guest network on/off, hidden SSID, NAT6, quick Wi-Fi power, channel optimization, diagnostics (`nettb`, `net_diagnose`), connection-type detection, open-port / weak-password check, security center, IP reservation edit, backup upload | Work (2026-11-09) |
+| Rename a device (`set_device_nickname`) | Works (renamed and restored) |
+| Router's own QoS limit (`qos_xq`) | Works, even with QoS off (`qos_info.local` follows) |
+| Anti-intrusion level (`arn_switch level`) | Works; level alone does not touch the MAC filter |
+| Automatic update settings (`set_ota`) | Works |
+| DDNS add / get / edit / enable / disable / delete | Works (dummy No-IP service, removed) |
+| VPN add / edit / delete | Works **only if `id` is omitted when adding** — any `id`, even empty, is treated as an edit (code 1583). Editing **changes the id** (it is derived from the contents). Not connected. |
+| DMZ | **Refused while any port-forwarding rule exists** (code 1610, "port forwarding is on"). |
+| Port and range forwarding + apply | Work; `redirect_apply` takes ~4 s. `add_redirect` **ignores `force`** on this firmware: editing = delete + add (code 1608 otherwise). |
+| UPnP off/on | Works |
+| WPS start / cancel | Works (status 1 while open, 3 after cancel) |
+| Radios off/on (`wifi_down` / `wifi_up`) | Work: 5 GHz clients dropped and returned ~20 s after `wifi_up`. The router **never reports** the radio as off (`status` stays 1 everywhere). |
+| Per-device QoS limit (`qos_limits` / `qos_offlimit`) | Works with QoS on (1000/300 KB/s set and removed) |
+| Parental control on a real device | Works: during the schedule the device **loses web access** (HTTP blocked; ICMP ping still passes) — the schedule is the period WITHOUT internet. |
+| WAN down/up (`wan_down`) | The router **reconnects by itself in ~9 s**; `wan_down` is effectively "force a PPPoE redial". |
+| Scheduled off/on (`smart_shutdown`, delays in minutes per XQFunction) | **No effect on this model** (tested on the repeater: never shut down, uptime kept counting) — the hibernation tool `uhbn` is probably absent. |
+| Hardware NAT (`hwnat_switch on=1`) | Accepted and the router **restarts**, but `hwnat_status` stays 0 afterwards. The RM1800 is Qualcomm-based; Xiaomi's `hwnat` switch appears not to apply. |
+
+### Not yet tested
+| Feature | Why |
+|---|---|
+| Backup **restore** (`c_restore`) | Restarts the router; upload is tested. |
+| Unified Wi-Fi on/off | Rewrites both networks' names and passwords. |
+| Guest network *Save* with name/password | Would write the Wi-Fi password. |
+| Adding a Mesh node | No spare node. |
+| Per-device band | Only with unified Wi-Fi on; `mode` 1/2 inferred. |
+| Work-mode switch | Blocked on a Mesh main router. |
+| Static IPv6 | The ISP provides no static prefix. |
+| IP-conflict fix | No conflict on the test network. |
+| Functions marked **⚠ INFERRED** in [`FUNCTIONS.md`](FUNCTIONS.md) | 250+ functions found only in the decompiled firmware. |
 
 ### Present in the firmware but not working on this model
 `xqsystem/wifi_log` (returns no data), `misystem/get_mesh_metric` (code 127: the `whcal` tool is missing),
-`misystem/get_mesh_device_info` and `xqsystem/app_limit` (error 500), `xqsystem/start_dropbear` (SSH; script absent).
+`misystem/get_mesh_device_info` and `xqsystem/app_limit` (error 500), `xqsystem/start_dropbear` (SSH; script absent), `xqsystem/smart_shutdown` (no effect), `misystem/hwnat_switch` (status stays 0).
 `xqnetdetect/sys_status` returns status 2 ("no WAN link") even with the internet working.
-
-Tested on the device (2026-11-09): guest network on/off, hidden SSID, NAT6, quick Wi-Fi power (`set_wifi_txpwr`),
-Wi-Fi channel optimization (analysis and apply), network diagnostics (`nettb`, `net_diagnose`), connection-type detection,
-open-port and weak-password check, security-center switches, parental-control API (dummy device), IP reservation edit
-(`mac_bind` overwrite), backup upload, firmware page fetch. `xqsystem/start_dropbear` (SSH) does **not** work on this model:
-it calls a script from Xiaomi's LAMP plug-in that is absent, and port 22 stays closed.

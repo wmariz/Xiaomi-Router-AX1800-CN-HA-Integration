@@ -1121,11 +1121,10 @@
   ],
   "xqsystem/set_vpn": [
     "c",
-    "Adiciona (id vazio) ou edita um servidor VPN.",
+    "Adiciona (SEM o campo id — qualquer id, mesmo vazio, vira edição) ou edita (com id) um servidor VPN. Editar muda o id. Testado.",
     {
       "m": "POST",
       "p": {
-        "id": "",
         "oname": "Trabalho",
         "proto": "l2tp",
         "server": "vpn.example.com",
@@ -1298,7 +1297,7 @@
   ],
   "xqnetwork/add_redirect": [
     "c",
-    "Adiciona regra de porta (force=1 substitui a regra da mesma porta externa). Só vale depois de redirect_apply.",
+    "Adiciona regra de porta (POST name, proto, sport, ip, dport). Neste firmware não há edição: force é ignorado (code 1608) — apague e crie de novo. Só vale depois de redirect_apply. Testado.",
     {
       "m": "POST",
       "p": {
@@ -1345,7 +1344,7 @@
   ],
   "xqnetwork/set_dmz": [
     "c",
-    "Liga a DMZ para um IP.",
+    "Liga a DMZ para um IP (POST ip). Recusado (code 1610) enquanto houver regra de encaminhamento de portas. Testado.",
     {
       "m": "POST",
       "p": {
@@ -1694,8 +1693,8 @@
     "Aceleração de NAT por hardware: status 1 ligada / 0 desligada (0 nos dois roteadores em 10/11)."
   ],
   "misystem/hwnat_switch": [
-    "i",
-    "Liga/desliga a aceleração de NAT por hardware (on 0/1); REINICIA o roteador."
+    "c",
+    "Liga/desliga a NAT por hardware (on 0/1) e REINICIA; neste modelo o status continua 0 depois (testado 10/11)."
   ],
   "misystem/lsusb": [
     "i",
@@ -2310,8 +2309,8 @@
     "Função do firmware 1.0.394 (controlador sysRecovery; não testada)."
   ],
   "xqsystem/smart_shutdown": [
-    "i",
-    "Desliga e religa o roteador depois de delay1/delay2 (unidade não confirmada)."
+    "c",
+    "Desligaria e religaria o roteador após delay1/delay2 MINUTOS (XQFunction: sleep 60·delay1; uhbn 2 delay2). Sem efeito neste modelo (testado 10/11)."
   ],
   "xqsystem/noflushd": [
     "i",
