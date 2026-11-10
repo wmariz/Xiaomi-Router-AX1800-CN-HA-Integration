@@ -208,9 +208,34 @@ functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md))
 | Work-mode switch | Blocked on a Mesh main router. |
 | Static IPv6 | The ISP provides no static prefix. |
 | IP-conflict fix | No conflict on the test network. |
+| Zigbee-aware channel: apply and the periodic automatic switch | Search tested (HA and the same algorithm in JS); applying was left to the user. |
 | Functions marked **⚠ INFERRED** in [`FUNCTIONS.md`](FUNCTIONS.md) | 250+ functions found only in the decompiled firmware. |
 
 ### Present in the firmware but not working on this model
 `xqsystem/wifi_log` (returns no data), `misystem/get_mesh_metric` (code 127: the `whcal` tool is missing),
 `misystem/get_mesh_device_info` and `xqsystem/app_limit` (error 500), `xqsystem/start_dropbear` (SSH; script absent), `xqsystem/smart_shutdown` (no effect), `misystem/hwnat_switch` (status stays 0).
 `xqnetdetect/sys_status` returns status 2 ("no WAN link") even with the internet working.
+
+## 13. Zigbee-aware 2.4 GHz channel search (panel + integration)
+Xiaomi's optimization (`channel_scan_*`) returns a single suggestion and ignores Zigbee, which shares the 2.4 GHz band.
+On the test network it suggested channel 7, right on top of Zigbee channel 20. The firmware has no way to restrict
+the channels used by "automatic" (`avaliable_channels` is a fixed list 1–13 × 20/40 MHz) and no user-defined scheduler,
+so this is done by the panel/integration:
+- **Scan:** `xqnetwork/wifi_list` (~12–15 s; per network: ssid, bssid, band, channel, signal %, rssi — no width).
+  In automatic mode each Mesh node picks its own 2.4 GHz channel (main on 11 and node on 1 at the same time).
+- **Score per channel 1–11:** Σ neighbour `signal` × overlap, overlap = 1 − |Δchannel|/4 (20 MHz channels overlap
+  up to 3 channels apart); own networks (main/node/guest SSIDs) are ignored; normalized to 0–100 (100 = worst).
+- **Zigbee:** a 20 MHz Wi-Fi channel is blocked when its centre is less than 12 MHz from the Zigbee channel centre
+  (Wi-Fi ±10 + Zigbee ±1 + 1 MHz guard). Zigbee 20 → Wi-Fi 7–10 blocked. In HA the Zigbee channel is read from the
+  running ZHA (`get_zha_data(...).application_controller.state.network_info.channel`) or, as a fallback, from the latest
+  backup in `zigbee.db` (`network_backups_vNN.backup_json → $.network_info.channel`). Width is always set to 20 MHz.
+- **"Worth it":** the current channel overlaps Zigbee (main or node), the band isn't fixed at 20 MHz, the channel is
+  outside 1–11, or the suggestion has ≥ 30 % less interference.
+- **Apply:** unified Wi-Fi → `set_all_wifi`; already fixed at 20 MHz → `misystem/set_channel` on the main router and on
+  the node (~5 s, Wi-Fi stays up); otherwise a full `set_wifi` save (Wi-Fi restarts ~30 s; copied to the node).
+- **Where:** manual search + apply in every panel (computed in the browser on PC/Android; by the integration in HA).
+  Periodic search (HA only, integration options or the panel): off / 1 / 3 / 7 / 15 / 30 days, at a chosen hour,
+  optionally only when worth it — it applies **without confirmation**, fires `miwifi_ax_canal_trocado` and creates a
+  persistent notification. Sensor **Last channel search** (`sensor.*_ultima_busca_de_canal`) holds the full result.
+  The Python (`custom_components/miwifi_ax/canal.py`) and JavaScript (`desktop/painel.html`) versions of the algorithm
+  are kept identical (checked on the same scan, 2026-11-10).

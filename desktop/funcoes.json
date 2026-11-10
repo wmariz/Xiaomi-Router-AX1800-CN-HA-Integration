@@ -968,7 +968,7 @@
   ],
   "xqnetwork/wifi_list": [
     "c",
-    "Procura redes Wi-Fi próximas (para o modo repetidor sem fio): ssid, band, channel, signal, encryption, enctype, bandwidth.",
+    "Procura redes vizinhas (~12–15 s): ssid, bssid, band 2g/5g, channel, signal %, rssi, encryption, enctype (sem largura). Usada no modo repetidor sem fio e na busca de canal evitando Zigbee.",
     {
       "m": "GET",
       "p": {}

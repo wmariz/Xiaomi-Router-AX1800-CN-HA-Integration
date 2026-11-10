@@ -133,7 +133,7 @@
   "xqnetwork/wan_info": "Internet: type (PPPoE/DHCP/static), IP, gateway, DNS, MTU, connected time, IPv6 and MAC in use.",
   "xqnetwork/wan_link": "WAN cable connected (link 1/0).",
   "xqnetwork/wifi_detail_all": "Full Wi-Fi settings per band (name, password, security, channel, width, power, hidden, Wi-Fi 6, MU-MIMO, roaming) and unified Wi-Fi.",
-  "xqnetwork/wifi_list": "Scans nearby Wi-Fi networks (for wireless repeater mode): ssid, band, channel, signal, encryption, enctype, bandwidth.",
+  "xqnetwork/wifi_list": "Scans neighbouring networks (~12–15 s): ssid, bssid, band 2g/5g, channel, signal %, rssi, encryption, enctype (no width). Used by wireless-repeater mode and by the Zigbee-aware channel search.",
   "xqnetwork/wifi_macfilter_info": "Wi-Fi MAC filter: on/off, mode (blocklist/allowlist) and list.",
   "xqnetwork/wifiap_signal": "Signal quality to the upstream router (node/repeater).",
   "xqsmarthome/request_miio": "Bridge to Mi Home (miIO) devices.",

@@ -310,7 +310,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/wifi_detail_all` | ✓ Full Wi-Fi settings per band (name, password, security, channel, width, power, hidden, Wi-Fi 6, MU-MIMO, roaming) and unified Wi-Fi. |  |
 | `xqnetwork/wifi_diag_detail_all` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getDiagAllWifiInfo; untested). |  |
 | `xqnetwork/wifi_down` | **⚠ INFERRED** — Turns a band's radio off (wifiIndex 1/2) without changing the config. |  |
-| `xqnetwork/wifi_list` | ✓ Scans nearby Wi-Fi networks (for wireless repeater mode): ssid, band, channel, signal, encryption, enctype, bandwidth. | `GET {}` |
+| `xqnetwork/wifi_list` | ✓ Scans neighbouring networks (~12–15 s): ssid, bssid, band 2g/5g, channel, signal %, rssi, encryption, enctype (no width). Used by wireless-repeater mode and by the Zigbee-aware channel search. | `GET {}` |
 | `xqnetwork/wifi_macfilter_info` | ✓ Wi-Fi MAC filter: on/off, mode (blocklist/allowlist) and list. |  |
 | `xqnetwork/wifi_status` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getWifiStatus; untested). |  |
 | `xqnetwork/wifi_txpwr_channel` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getWifiChTx; untested). |  |

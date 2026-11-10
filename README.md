@@ -29,6 +29,7 @@ There is a single interface (styled after the original, exposing **all** functio
 - **Binary sensors:** internet, ISP cable, repeater in Mesh, firmware update, Wi-Fi 2.4/5 GHz, unified Wi-Fi, anti-intrusion, firewalls, WPS.
 - **Switches:** LED (main and repeater), QoS, guest network, MU-MIMO, Wi-Fi 5 compatibility mode, quick connect, AIoT scan, priority for many devices, MAC filter.
 - **Buttons:** restart, refresh data.
+- **Zigbee-aware channel search:** sensor *Last channel search* and, in the main router options, a periodic scan (off / 1–30 days, hour, only if worth it) that keeps 2.4 GHz at 20 MHz on the least crowded channel that doesn't overlap the Zigbee channel (read from ZHA). See [`docs/FINDINGS.md`](docs/FINDINGS.md#13-zigbee-aware-24-ghz-channel-search-panel--integration).
 - **Tracking:** chosen devices (online/offline, IP, connection, speed).
 - **Service** `miwifi_ax.definir_internet` (`mac`, `liberar`): blocks/allows a device's internet access.
 
