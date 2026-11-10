@@ -192,12 +192,12 @@ functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md))
 | Parental control on a real device | Works: during the schedule the device **loses web access** (HTTP blocked; ICMP ping still passes) — the schedule is the period WITHOUT internet. |
 | WAN down/up (`wan_down`) | The router **reconnects by itself in ~9 s**; `wan_down` is effectively "force a PPPoE redial". |
 | Scheduled off/on (`smart_shutdown`, delays in minutes per XQFunction) | **No effect on this model** (tested on the repeater: never shut down, uptime kept counting) — the hibernation tool `uhbn` is probably absent. |
+| Backup → upload → **restore** (all 4 items) → reboot | Works (2026-11-10). A detailed before/after comparison of 27 config groups (Wi-Fi incl. password hashes, guest, LAN/DHCP, 15 reservations, PPPoE, NAT6, MAC filter, QoS, security, DDNS, UPnP, port forwards, LED, OTA, Mesh topology…) showed **no differences**. `c_restore` answers `{ip}`; the router is back in ~1 min. |
 | Hardware NAT (`hwnat_switch on=1`) | Accepted and the router **restarts**, but `hwnat_status` stays 0 afterwards. The RM1800 is Qualcomm-based; Xiaomi's `hwnat` switch appears not to apply. |
 
 ### Not yet tested
 | Feature | Why |
 |---|---|
-| Backup **restore** (`c_restore`) | Restarts the router; upload is tested. |
 | Unified Wi-Fi on/off | Rewrites both networks' names and passwords. |
 | Guest network *Save* with name/password | Would write the Wi-Fi password. |
 | Adding a Mesh node | No spare node. |
