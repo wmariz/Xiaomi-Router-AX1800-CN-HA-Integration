@@ -1570,8 +1570,8 @@
     "Função do firmware 1.0.394 (controlador setConfigLog; não testada)."
   ],
   "misystem/check_ip_conflict": [
-    "i",
-    "Verifica conflito de IP na hora. (controlador checkIpConflict; não testada)."
+    "c",
+    "Verifica conflito de IP com o roteador acima: ip_conflict \"0\" = nenhum."
   ],
   "misystem/get_config_result": [
     "i",
@@ -1690,12 +1690,12 @@
     "Função do firmware 1.0.394 (controlador getEcosUpgradeStatus; não testada)."
   ],
   "misystem/hwnat_status": [
-    "i",
-    "Estado da aceleração de NAT por hardware. (controlador hwnatStatus; não testada)."
+    "c",
+    "Aceleração de NAT por hardware: status 1 ligada / 0 desligada (0 nos dois roteadores em 10/11)."
   ],
   "misystem/hwnat_switch": [
     "i",
-    "Liga/desliga a aceleração de NAT por hardware. (controlador hwnatSwitch; não testada)."
+    "Liga/desliga a aceleração de NAT por hardware (on 0/1); REINICIA o roteador."
   ],
   "misystem/lsusb": [
     "i",
@@ -1766,8 +1766,8 @@
     "Função do firmware 1.0.394 (controlador setMeshInfo; não testada)."
   ],
   "misystem/get_mesh_device_info": [
-    "i",
-    "Informações dos nós Mesh. (controlador getMeshDevInfo; não testada)."
+    "c",
+    "Informações dos nós Mesh: NÃO funciona neste modelo (erro 500)."
   ],
   "misystem/set_mesh_device": [
     "i",
@@ -1790,8 +1790,8 @@
     "Função do firmware 1.0.394 (controlador getWanMac; não testada)."
   ],
   "misystem/get_mesh_metric": [
-    "i",
-    "Qualidade da ligação Mesh entre os nós. (controlador getMeshMetric; não testada)."
+    "c",
+    "Métrica da Mesh: NÃO funciona neste modelo (code 127 — falta o comando whcal)."
   ],
   "misystem/get_wifi_pwd": [
     "i",
@@ -1870,12 +1870,12 @@
     "Função do firmware 1.0.394 (controlador getSysInfo; não testada)."
   ],
   "xqnetdetect/ping_test": [
-    "i",
-    "Ping feito pelo próprio roteador. (controlador pingTest; não testada)."
+    "c",
+    "Ping feito pelo roteador (url) → result 1 = alcança."
   ],
   "xqnetdetect/sys_status": [
-    "i",
-    "Estado do sistema. (controlador systemStatus; não testada)."
+    "c",
+    "Verificação rápida: status 0 ok, 1 CPU/memória > 90 % ou temperatura > 70 °C, 2 sem ligação WAN (dá 2 neste modelo mesmo com internet)."
   ],
   "xqnetdetect/netspeed": [
     "i",
@@ -1899,35 +1899,35 @@
   ],
   "xqnetwork/wifi_up": [
     "i",
-    "Liga um rádio Wi-Fi sem mudar a configuração. (controlador turnOnWifi; não testada)."
+    "Liga o rádio de uma banda (wifiIndex 1/2) sem mudar a configuração."
   ],
   "xqnetwork/wifi_down": [
     "i",
-    "Desliga um rádio Wi-Fi sem mudar a configuração. (controlador shutDownWifi; não testada)."
+    "Desliga o rádio de uma banda (wifiIndex 1/2) sem mudar a configuração."
   ],
   "xqnetwork/wan_down": [
     "i",
-    "Derruba a conexão de internet. (controlador wanDown; não testada)."
+    "Derruba a WAN (ifdown wan)."
   ],
   "xqnetwork/wan_up": [
     "i",
-    "Sobe a conexão de internet. (controlador wanUp; não testada)."
+    "Sobe a WAN (ifup wan)."
   ],
   "xqnetwork/check_wan_link": [
     "i",
     "Função do firmware 1.0.394 (controlador getAutoWanLink; não testada)."
   ],
   "xqnetwork/wan_statistics": [
-    "i",
-    "Histórico de tráfego da internet. (controlador getWanStatistics; não testada)."
+    "c",
+    "Tráfego acumulado da internet: download, upload (bytes), velocidades atuais e picos."
   ],
   "xqnetwork/devices_statistics": [
-    "i",
-    "Histórico de tráfego dos aparelhos. (controlador getDevsStatistics; não testada)."
+    "c",
+    "Tráfego acumulado de todos os aparelhos: statistics[{mac, devname, download, upload (bytes), max…speed, online (s)}]."
   ],
   "xqnetwork/device_statistics": [
-    "i",
-    "Histórico de tráfego de um aparelho. (controlador getDevStatistics; não testada)."
+    "c",
+    "Tráfego acumulado de um aparelho (mac)."
   ],
   "xqnetwork/set_wan_new": [
     "i",
@@ -2159,7 +2159,7 @@
   ],
   "xqsystem/set_device_nickname": [
     "i",
-    "Renomeia um aparelho na lista do roteador. (controlador setDeviceNickName; não testada)."
+    "Renomeia um aparelho (mac, name; owner e device opcionais)."
   ],
   "xqsystem/internet_connect": [
     "i",
@@ -2194,8 +2194,8 @@
     "Função do firmware 1.0.394 (controlador setPassportBound; não testada)."
   ],
   "xqsystem/get_sys_avg_load": [
-    "i",
-    "Carga média do sistema. (controlador getSysAvgLoad; não testada)."
+    "c",
+    "Carga do sistema: neste modelo só devolve processCount (núcleos)."
   ],
   "xqsystem/get_ip": [
     "i",
@@ -2282,8 +2282,8 @@
     "Função do firmware 1.0.394 (controlador cancelUpgrade; não testada)."
   ],
   "xqsystem/app_limit": [
-    "i",
-    "Limite por aplicativo. (controlador appLimit; não testada)."
+    "c",
+    "Limites dos apps Xunlei/Kuaipan: NÃO funciona neste modelo (erro 500)."
   ],
   "xqsystem/xunlei_api": [
     "i",
@@ -2295,15 +2295,15 @@
   ],
   "xqsystem/set_app_limit": [
     "i",
-    "Define limite por aplicativo. (controlador setAppLimit; não testada)."
+    "Define limites dos apps Xunlei/Kuaipan (xlmaxdownload, xlmaxupload, kpmaxdownload, kpmaxupload) — sem efeito útil fora da China."
   ],
   "xqsystem/detection_ts": [
     "i",
     "Função do firmware 1.0.394 (controlador getDetectionTimestamp; não testada)."
   ],
   "xqsystem/wifi_log": [
-    "i",
-    "Registro do Wi-Fi (conexões e desconexões). (controlador getWifiLog; não testada)."
+    "c",
+    "Log do Wi-Fi: neste modelo devolve só {code: 0}, sem dados."
   ],
   "xqsystem/sys_recovery": [
     "i",
@@ -2311,7 +2311,7 @@
   ],
   "xqsystem/smart_shutdown": [
     "i",
-    "Desligamento inteligente/agendado. (controlador smartShutdown; não testada)."
+    "Desliga e religa o roteador depois de delay1/delay2 (unidade não confirmada)."
   ],
   "xqsystem/noflushd": [
     "i",

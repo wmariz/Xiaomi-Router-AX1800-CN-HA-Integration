@@ -56,7 +56,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/c_upload` | ✓ Uploads a backup (multipart, file in the image field). Only reads the file: returns des.keys {key: description} to choose in c_restore. |  |
 | `misystem/channel_scan_result` | ✓ Optimization result: 2G{cchannel current, cscore, schannel suggested, sscore (interference: lower is better), ranking, code 0 = ready}. | `GET {}` |
 | `misystem/channel_scan_start` | ✓ Starts the 2.4 GHz channel analysis (the app's Wi-Fi optimization); result in channel_scan_result after ~10 s. | `GET {}` |
-| `misystem/check_ip_conflict` | **⚠ INFERRED** — Checks for an IP conflict on demand. (controller checkIpConflict; untested). |  |
+| `misystem/check_ip_conflict` | ✓ Checks for an IP conflict with the upstream router: ip_conflict "0" = none. |  |
 | `misystem/check_status` | ✓ DISK check state — unused on the AX1800. |  |
 | `misystem/conf_upload_enable` | **⚠ INFERRED** — Firmware 1.0.394 function (controller confUploadEnable; untested). |  |
 | `misystem/debug` | **⚠ INFERRED** — Firmware 1.0.394 function (controller debug; untested). |  |
@@ -83,8 +83,8 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/get_dev_bsd` | ✓ Device band in unified Wi-Fi (mac) → bsd, mode. |  |
 | `misystem/get_iotdev_status` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getIotDevStatus; untested). |  |
 | `misystem/get_iotdev_status_hidessid` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getIotDevStatusHidessid; untested). |  |
-| `misystem/get_mesh_device_info` | **⚠ INFERRED** — Mesh node information. (controller getMeshDevInfo; untested). |  |
-| `misystem/get_mesh_metric` | **⚠ INFERRED** — Mesh link quality between nodes. (controller getMeshMetric; untested). |  |
+| `misystem/get_mesh_device_info` | ✓ Mesh node info: does NOT work on this model (error 500). |  |
+| `misystem/get_mesh_metric` | ✓ Mesh metric: does NOT work on this model (code 127 — the whcal command is missing). |  |
 | `misystem/get_netwan_mode` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getNetWanMode; untested). |  |
 | `misystem/get_portscan_result` | ✓ Result: tcp_port and udp_port (space-separated). | `GET {"ip": "192.168.0.50", "mac": "AA:BB:CC:DD:EE:FF"}` |
 | `misystem/get_unconfig_iotdev_hidessid` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getunConfigIotDevHidessid; untested). |  |
@@ -96,8 +96,8 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/get_wifi_ret` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getWifiRet; untested). |  |
 | `misystem/http_status` | ✓ Status of the router's HTTP interception (e.g. warning pages). |  |
 | `misystem/http_switch` | **⚠ INFERRED** — Turns HTTP interception on/off. |  |
-| `misystem/hwnat_status` | **⚠ INFERRED** — Hardware NAT acceleration state. (controller hwnatStatus; untested). |  |
-| `misystem/hwnat_switch` | **⚠ INFERRED** — Turns hardware NAT acceleration on/off. (controller hwnatSwitch; untested). |  |
+| `misystem/hwnat_status` | ✓ Hardware NAT acceleration: status 1 on / 0 off (0 on both routers on 10/11). |  |
+| `misystem/hwnat_switch` | **⚠ INFERRED** — Turns hardware NAT acceleration on/off (on 0/1); RESTARTS the router. |  |
 | `misystem/io_data` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getIOData; untested). |  |
 | `misystem/iperf` | **⚠ INFERRED** — iperf server to measure local network speed. |  |
 | `misystem/led` | ✓ LED status; with on=0/1 turns the device lights off/on. | `GET {"on": 1}` |
@@ -205,9 +205,9 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetdetect/netspeed` | **⚠ INFERRED** — Firmware 1.0.394 function (controller netspeed; untested). |  |
 | `xqnetdetect/nettb` | ✓ Quick device → router → internet test: error 0 = ok. | `GET {}` |
 | `xqnetdetect/netupspeed` | ✓ Measures internet upload speed. |  |
-| `xqnetdetect/ping_test` | **⚠ INFERRED** — Ping from the router itself. (controller pingTest; untested). |  |
+| `xqnetdetect/ping_test` | ✓ Ping from the router (url) → result 1 = reachable. |  |
 | `xqnetdetect/sys_info` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getSysInfo; untested). |  |
-| `xqnetdetect/sys_status` | **⚠ INFERRED** — System state. (controller systemStatus; untested). |  |
+| `xqnetdetect/sys_status` | ✓ Quick check: status 0 ok, 1 CPU/memory > 90 % or temperature > 70 °C, 2 no WAN link (returns 2 on this model even with internet). |  |
 | `xqnetwork/add_mesh_node` | ✓ Adds a node to the Mesh. locate = room name in Chinese (客厅, 主卧, 次卧, 书房, 厨房, 办公室, 地下室, 卫生间, 阁楼, 阳台, 餐厅). | `POST {"mac": "AA:BB:CC:DD:EE:FF", "locate": "客厅"}` |
 | `xqnetwork/add_range_redirect` | ✓ Adds a port range rule. Takes effect after redirect_apply. | `POST {"name": "Jogo", "proto": 3, "fport": 3000, "tport": 3010, "ip": "192.168.0.50"}` |
 | `xqnetwork/add_redirect` | ✓ Adds a port rule (force=1 replaces the rule for the same external port). Takes effect after redirect_apply. | `POST {"name": "Servidor", "proto": 1, "sport": 8443, "ip": "192.168.0.50", "dport": 443}` |
@@ -225,8 +225,8 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/ddns_switch` | ✓ Turns the router's DDNS service on/off. | `GET {"on": 0}` |
 | `xqnetwork/del_server` | ✓ Removes a DDNS service. | `GET {"id": 1}` |
 | `xqnetwork/delete_redirect` | ✓ Removes a port or range rule (port = external port or the range's start port). | `POST {"port": 8443, "proto": 1}` |
-| `xqnetwork/device_statistics` | **⚠ INFERRED** — Traffic history of one device. (controller getDevStatistics; untested). |  |
-| `xqnetwork/devices_statistics` | **⚠ INFERRED** — Traffic history of the devices. (controller getDevsStatistics; untested). |  |
+| `xqnetwork/device_statistics` | ✓ Accumulated traffic of one device (mac). |  |
+| `xqnetwork/devices_statistics` | ✓ Accumulated traffic of all devices: statistics[{mac, devname, download, upload (bytes), max…speed, online (s)}]. |  |
 | `xqnetwork/diag_disk_test` | **⚠ INFERRED** — Firmware 1.0.394 function (controller diagDiskTest; untested). |  |
 | `xqnetwork/diag_get_log` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getDiagLog; untested). |  |
 | `xqnetwork/diag_get_paras` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getDiagParas; untested). |  |
@@ -299,22 +299,22 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqnetwork/set_wifi_weak` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setWifiWeakInfo; untested). |  |
 | `xqnetwork/set_wifi_without_restart` | ✓ Changes only the given fields without restarting Wi-Fi. wifiIndex=3 + on=1/0 turns the guest network on/off; wifiIndex=1/2 + hidden=1/0 hides/shows the SSID (not mirrored to the Mesh node). | `GET {"wifiIndex": 3, "on": 1}` |
 | `xqnetwork/unbindall` | **⚠ INFERRED** — Firmware 1.0.394 function (controller unbindAll; untested). |  |
-| `xqnetwork/wan_down` | **⚠ INFERRED** — Brings the internet connection down. (controller wanDown; untested). |  |
+| `xqnetwork/wan_down` | **⚠ INFERRED** — Brings the WAN down (ifdown wan). |  |
 | `xqnetwork/wan_info` | ✓ Internet: type (PPPoE/DHCP/static), IP, gateway, DNS, MTU, connected time, IPv6 and MAC in use. |  |
 | `xqnetwork/wan_link` | ✓ WAN cable connected (link 1/0). |  |
 | `xqnetwork/wan_speed` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getWanSpeed; untested). |  |
-| `xqnetwork/wan_statistics` | **⚠ INFERRED** — Internet traffic history. (controller getWanStatistics; untested). |  |
-| `xqnetwork/wan_up` | **⚠ INFERRED** — Brings the internet connection up. (controller wanUp; untested). |  |
+| `xqnetwork/wan_statistics` | ✓ Accumulated internet traffic: download, upload (bytes), current and peak speeds. |  |
+| `xqnetwork/wan_up` | **⚠ INFERRED** — Brings the WAN up (ifup wan). |  |
 | `xqnetwork/wifi_connect_devices` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getWifiConDev; untested). |  |
 | `xqnetwork/wifi_detail` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getWifiInfo; untested). |  |
 | `xqnetwork/wifi_detail_all` | ✓ Full Wi-Fi settings per band (name, password, security, channel, width, power, hidden, Wi-Fi 6, MU-MIMO, roaming) and unified Wi-Fi. |  |
 | `xqnetwork/wifi_diag_detail_all` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getDiagAllWifiInfo; untested). |  |
-| `xqnetwork/wifi_down` | **⚠ INFERRED** — Turns a Wi-Fi radio off without changing the config. (controller shutDownWifi; untested). |  |
+| `xqnetwork/wifi_down` | **⚠ INFERRED** — Turns a band's radio off (wifiIndex 1/2) without changing the config. |  |
 | `xqnetwork/wifi_list` | ✓ Scans nearby Wi-Fi networks (for wireless repeater mode): ssid, band, channel, signal, encryption, enctype, bandwidth. | `GET {}` |
 | `xqnetwork/wifi_macfilter_info` | ✓ Wi-Fi MAC filter: on/off, mode (blocklist/allowlist) and list. |  |
 | `xqnetwork/wifi_status` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getWifiStatus; untested). |  |
 | `xqnetwork/wifi_txpwr_channel` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getWifiChTx; untested). |  |
-| `xqnetwork/wifi_up` | **⚠ INFERRED** — Turns a Wi-Fi radio on without changing the config. (controller turnOnWifi; untested). |  |
+| `xqnetwork/wifi_up` | **⚠ INFERRED** — Turns a band's radio on (wifiIndex 1/2) without changing the config. |  |
 | `xqnetwork/wifiap_restart` | **⚠ INFERRED** — Firmware 1.0.394 function (controller serviceRestart; untested). |  |
 | `xqnetwork/wifiap_signal` | ✓ Signal quality to the upstream router (node/repeater). |  |
 | `xqpassport/binded` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getBindInfo; untested). |  |
@@ -332,7 +332,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsmarthome/request_mitv` | **⚠ INFERRED** — Firmware 1.0.394 function (controller requestMitv; untested). |  |
 | `xqsmarthome/request_smartcontroller` | ✓ Scenes/schedules engine (the app's scheduled reboot). Parameter format not discovered. |  |
 | `xqsmarthome/request_yeelink` | **⚠ INFERRED** — Bridge to Yeelight lamps. |  |
-| `xqsystem/app_limit` | **⚠ INFERRED** — Per-app limit. (controller appLimit; untested). |  |
+| `xqsystem/app_limit` | ✓ Xunlei/Kuaipan app limits: does NOT work on this model (error 500). |  |
 | `xqsystem/app_limit_switch` | **⚠ INFERRED** — Firmware 1.0.394 function (controller appLimitSwitch; untested). |  |
 | `xqsystem/are_things_mounted` | **⚠ INFERRED** — Firmware 1.0.394 function (controller areThingsMounted; untested). |  |
 | `xqsystem/backup_cancel` | **⚠ INFERRED** — Firmware 1.0.394 function (controller backupCancel; untested). |  |
@@ -370,7 +370,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsystem/get_ip` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getIp; untested). |  |
 | `xqsystem/get_languages` | ✓ Original UI languages (Simplified Chinese, Traditional HK/TW). |  |
 | `xqsystem/get_main_language` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getMainLang; untested). |  |
-| `xqsystem/get_sys_avg_load` | **⚠ INFERRED** — System load average. (controller getSysAvgLoad; untested). |  |
+| `xqsystem/get_sys_avg_load` | ✓ System load: on this model it only returns processCount (cores). |  |
 | `xqsystem/information` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getAllInfo; untested). |  |
 | `xqsystem/init_info` | ✓ Public router information (model, version, region); answers without login. |  |
 | `xqsystem/internet_connect` | **⚠ INFERRED** — Firmware 1.0.394 function (controller isInternetConnect; untested). |  |
@@ -406,9 +406,9 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsystem/router_init` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setRouter; untested). |  |
 | `xqsystem/router_name` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getRouterName; untested). |  |
 | `xqsystem/sdev` | **⚠ INFERRED** — Firmware 1.0.394 function (controller specialDevCount; untested). |  |
-| `xqsystem/set_app_limit` | **⚠ INFERRED** — Sets a per-app limit. (controller setAppLimit; untested). |  |
+| `xqsystem/set_app_limit` | **⚠ INFERRED** — Sets Xunlei/Kuaipan app limits (xlmaxdownload, xlmaxupload, kpmaxdownload, kpmaxupload) — no useful effect outside China. |  |
 | `xqsystem/set_country_code` | ✓ Changes the Wi-Fi region (channels and power). | `POST {"country": "CN"}` |
-| `xqsystem/set_device_nickname` | **⚠ INFERRED** — Renames a device in the router's list. (controller setDeviceNickName; untested). |  |
+| `xqsystem/set_device_nickname` | **⚠ INFERRED** — Renames a device (mac, name; owner and device optional). |  |
 | `xqsystem/set_inited` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setInited; untested). |  |
 | `xqsystem/set_language` | ✓ Changes the original UI language. | `POST {"language": "zh_cn"}` |
 | `xqsystem/set_mac_filter` | ✓ Blocks (wan=0) or allows (wan=1) a device's internet access. | `POST {"mac": "AA:BB:CC:DD:EE:FF", "wan": 0}` |
@@ -424,7 +424,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsystem/set_vpnauto` | ✓ Connect the VPN when the router starts (auto 1/0). | `GET {"auto": 1}` |
 | `xqsystem/shutdown` | ✓ Powers the router off. | `GET {}` |
 | `xqsystem/sign_order` | **⚠ INFERRED** — Firmware 1.0.394 function (controller signOrder; untested). |  |
-| `xqsystem/smart_shutdown` | **⚠ INFERRED** — Smart/scheduled shutdown. (controller smartShutdown; untested). |  |
+| `xqsystem/smart_shutdown` | **⚠ INFERRED** — Turns the router off and back on after delay1/delay2 (unit not confirmed). |  |
 | `xqsystem/start_dropbear` | **⚠ INFERRED** — Starts the router's SSH server (dropbear). (controller startDropbear; untested). |  |
 | `xqsystem/start_nginx` | **⚠ INFERRED** — Firmware 1.0.394 function (controller startNginx; untested). |  |
 | `xqsystem/status` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getStatusInfo; untested). |  |
@@ -448,7 +448,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsystem/vpn_status` | ✓ VPN state: 0 connected, 1 connecting, 2 failed, 3 disconnected, 4 not enabled; uptime; errcode/errmsg. | `GET {}` |
 | `xqsystem/vpn_switch` | ✓ Connects (conn 1) or disconnects (conn 0) the VPN. | `GET {"conn": 1, "id": "1"}` |
 | `xqsystem/web_url` | **⚠ INFERRED** — Firmware 1.0.394 function (controller redirectUrl; untested). |  |
-| `xqsystem/wifi_log` | **⚠ INFERRED** — Wi-Fi log (connections and disconnections). (controller getWifiLog; untested). |  |
+| `xqsystem/wifi_log` | ✓ Wi-Fi log: on this model it returns only {code: 0}, no data. |  |
 | `xqsystem/wps` | **⚠ INFERRED** — Opens WPS pairing (2 min). | `GET {}` |
 | `xqsystem/wps_cancel` | **⚠ INFERRED** — Cancels WPS pairing. | `GET {}` |
 | `xqsystem/wps_status` | ✓ WPS state: 0 idle, 1 waiting, 2 connected (device{mac, company}), 3–7 failed/expired. | `GET {}` |

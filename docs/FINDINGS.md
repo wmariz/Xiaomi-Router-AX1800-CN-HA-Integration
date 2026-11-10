@@ -191,7 +191,16 @@ controllers, but **have not been exercised end-to-end on a real router yet** (as
 | DDNS, port forwarding, DMZ, VPN, UPnP **changes** | Advanced pages | Pages render and read correctly; no rule/service/VPN was created or changed. |
 | Firmware auto-update settings | System | Read only. |
 | IP-conflict fix | Information → notices | No conflict notice on the test network. |
+| Hardware NAT on/off | System | Status reads 0 (off) on both routers; switching restarts the router. |
+| Scheduled off/on (`smart_shutdown`) | System | Delay units (`delay1`, `delay2`) not confirmed; the house loses the network in between. |
+| Radios on/off (`wifi_up` / `wifi_down`) and WAN down/up | Wi-Fi / Internet | Would drop devices or the internet. |
+| Rename a device (`set_device_nickname`) | Network & devices | Not run. |
 | Work-mode/firmware functions marked **⚠ INFERRED** in [`FUNCTIONS.md`](FUNCTIONS.md) | All functions | 250+ functions found only in the decompiled firmware; descriptions come from their names. |
+
+### Present in the firmware but not working on this model
+`xqsystem/wifi_log` (returns no data), `misystem/get_mesh_metric` (code 127: the `whcal` tool is missing),
+`misystem/get_mesh_device_info` and `xqsystem/app_limit` (error 500), `xqsystem/start_dropbear` (SSH; script absent).
+`xqnetdetect/sys_status` returns status 2 ("no WAN link") even with the internet working.
 
 Tested on the device (2026-11-09): guest network on/off, hidden SSID, NAT6, quick Wi-Fi power (`set_wifi_txpwr`),
 Wi-Fi channel optimization (analysis and apply), network diagnostics (`nettb`, `net_diagnose`), connection-type detection,
