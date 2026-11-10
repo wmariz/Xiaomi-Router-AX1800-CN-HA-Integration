@@ -198,6 +198,7 @@ functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md))
 | Guest network *Save* with name/password (panel) | Works — tested by the user on 2026-11-10. |
 | Unified Wi-Fi on/off (`set_all_wifi bsd`) | Works — tested by the user on 2026-11-10. When on, both bands take the 2.4 GHz name, password **and hidden flag**; the panel then shows a single Wi-Fi form (shared name/hidden/security/password + per-band channel, width and power), like the original page. |
 | Wi-Fi changes and the Mesh node | A full save (`set_wifi` / `set_all_wifi`) on the main router **is copied to the repeater** (names, hidden flag, channel, width — checked 2026-11-10). `set_wifi_without_restart` is **not** copied, and it also **ignores `ssid`** (only `hidden`/`on`/power-type fields change). |
+| Zigbee-aware channel search → apply (user, 2026-11-10) | Works: suggested channel 1 applied with a full save; both routers ended on channel 1 at 20 MHz (config and on air). |
 | Hardware NAT (`hwnat_switch on=1`) | Accepted and the router **restarts**, but `hwnat_status` stays 0 afterwards. The RM1800 is Qualcomm-based; Xiaomi's `hwnat` switch appears not to apply. |
 
 ### Not yet tested
@@ -208,7 +209,7 @@ functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md))
 | Work-mode switch | Blocked on a Mesh main router. |
 | Static IPv6 | The ISP provides no static prefix. |
 | IP-conflict fix | No conflict on the test network. |
-| Zigbee-aware channel: apply and the periodic automatic switch | Search tested (HA and the same algorithm in JS); applying was left to the user. |
+| Zigbee-aware channel: periodic automatic switch | The search and the manual apply are tested; the first automatic run is scheduled. |
 | Functions marked **⚠ INFERRED** in [`FUNCTIONS.md`](FUNCTIONS.md) | 250+ functions found only in the decompiled firmware. |
 
 ### Present in the firmware but not working on this model
