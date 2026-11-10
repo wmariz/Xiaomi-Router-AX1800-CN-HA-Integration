@@ -793,5 +793,13 @@
   "Derruba a conexão da porta WAN sem mudar a configuração. Neste roteador ela volta sozinha em cerca de 10 s (testado): serve para forçar uma nova discagem PPPoE. O IP público pode mudar.": "Drops the WAN connection without changing the configuration. On this router it comes back by itself in about 10 s (tested): use it to force a new PPPoE dial. The public IP may change.",
   "A casa fica uns 10 s sem internet enquanto o roteador disca de novo.": "The house is offline for about 10 s while the router redials.",
   "Faz o chip de rede encaminhar o tráfego da internet sem passar pelo processador. ⚠ Mudar REINICIA o roteador. Testado em 10/11: o roteador reinicia, mas continua informando \"desligada\" — neste modelo (chip Qualcomm) a opção parece não ter efeito.": "Makes the network chip forward internet traffic without going through the processor. ⚠ Changing it RESTARTS the router. Tested on 10/11: the router restarts but keeps reporting \"off\" — on this model (Qualcomm chip) the option seems to have no effect.",
-  "Função do firmware que desligaria o roteador depois de um tempo e o religaria depois de outro (minutos). Testado em 10/11 no repetidor: não teve efeito neste modelo (ele não desligou).": "Firmware function that would turn the router off after a while and back on after another delay (minutes). Tested on 10/11 on the repeater: no effect on this model (it didn't turn off)."
+  "Função do firmware que desligaria o roteador depois de um tempo e o religaria depois de outro (minutos). Testado em 10/11 no repetidor: não teve efeito neste modelo (ele não desligou).": "Firmware function that would turn the router off after a while and back on after another delay (minutes). Tested on 10/11 on the repeater: no effect on this model (it didn't turn off).",
+  "Wi-Fi (unificado)": "Wi-Fi (unified)",
+  "o mesmo nas duas bandas": "the same on both bands",
+  "Opções do 2,4 GHz": "2.4 GHz options",
+  "Opções do 5 GHz": "5 GHz options",
+  "Com o Wi-Fi unificado, as duas bandas usam o mesmo nome e senha e o roteador escolhe a banda de cada aparelho. Na rede Mesh não é possível desligar o Wi-Fi. Salvar reinicia o Wi-Fi (quedas de ~30 s).": "With unified Wi-Fi, both bands share the same name and password and the router picks each device's band. The Wi-Fi can't be turned off in a Mesh network. Saving restarts the Wi-Fi (~30 s drops).",
+  "A senha precisa de 8 a 63 caracteres.": "The password needs 8 to 63 characters.",
+  "Salvar Wi-Fi (unificado)": "Save Wi-Fi (unified)",
+  "O Wi-Fi reinicia (quedas de ~30 s).": "The Wi-Fi restarts (~30 s drops)."
 }
