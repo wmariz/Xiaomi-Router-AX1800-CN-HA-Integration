@@ -193,6 +193,8 @@ functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md))
 | WAN down/up (`wan_down`) | The router **reconnects by itself in ~9 s**; `wan_down` is effectively "force a PPPoE redial". |
 | Scheduled off/on (`smart_shutdown`, delays in minutes per XQFunction) | **No effect on this model** (tested on the repeater: never shut down, uptime kept counting) — the hibernation tool `uhbn` is probably absent. |
 | Backup → upload → **restore** (all 4 items) → reboot | Works (2026-11-10). A detailed before/after comparison of 27 config groups (Wi-Fi incl. password hashes, guest, LAN/DHCP, 15 reservations, PPPoE, NAT6, MAC filter, QoS, security, DDNS, UPnP, port forwards, LED, OTA, Mesh topology…) showed **no differences**. `c_restore` answers `{ip}`; the router is back in ~1 min. |
+| Remove / reboot a Mesh node (`misystem/set_mesh_device`, `mesh_mac` + `op` 1 delete / 2 reboot) | **No effect** (answers code 0; the `whc_ual` tool it calls appears to be missing, like `whcal`). Tried with both node MACs. |
+| Factory reset of the **wired** Mesh node (`xqsystem/reset format=0` on the node) → re-join | The node comes back as a plain router (`Xiaomi_XXXX_XXXX`, `inited 1`, `bound 0`) and `scan_mesh_node` on the main router stays **empty**. After a **power cycle**, the node **re-joined the Mesh by itself over the cable** (wired auto-onboarding) — `add_mesh_node` was not needed. It came back with the Wi-Fi config (incl. hidden SSID) and LED as before, but with the default name/location, time-zone `index 0` (clock 11 h off) and plug-in auto-update on. Fix: `set_router_name` on the node, `set_ota` on the node and re-save the time zone **on the main router** (it propagates and corrects the node's clock). The HA integration recovered on its own (same IP via the DHCP reservation; the Mesh copies the admin password). ⚠ Devices cabled through the node lose the home network while it is reset. |
 | Hardware NAT (`hwnat_switch on=1`) | Accepted and the router **restarts**, but `hwnat_status` stays 0 afterwards. The RM1800 is Qualcomm-based; Xiaomi's `hwnat` switch appears not to apply. |
 
 ### Not yet tested
@@ -200,7 +202,7 @@ functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md))
 |---|---|
 | Unified Wi-Fi on/off | Rewrites both networks' names and passwords. |
 | Guest network *Save* with name/password | Would write the Wi-Fi password. |
-| Adding a Mesh node | No spare node. |
+| Adding a Mesh node over Wi-Fi (`scan_mesh_node` → `add_mesh_node`) | No spare node; a factory-reset **wired** node re-joins by itself after a power cycle (see above). |
 | Per-device band | Only with unified Wi-Fi on; `mode` 1/2 inferred. |
 | Work-mode switch | Blocked on a Mesh main router. |
 | Static IPv6 | The ISP provides no static prefix. |

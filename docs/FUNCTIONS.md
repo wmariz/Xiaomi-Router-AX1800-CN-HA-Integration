@@ -159,7 +159,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/set_config_iotdev_hidessid` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setConfigIotDevHidessid; untested). |  |
 | `misystem/set_dev_bsd` | **⚠ INFERRED** — Pins the device band (mac, mode); restarts the Wi-Fi. |  |
 | `misystem/set_log` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setConfigLog; untested). |  |
-| `misystem/set_mesh_device` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setMeshDev; untested). |  |
+| `misystem/set_mesh_device` | ✓ Removes (op 1) or reboots (op 2) a Mesh node (mesh_mac). No effect on this model (tested 10/11; whc_ual is missing). |  |
 | `misystem/set_mesh_normal` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setMeshInfo; untested). |  |
 | `misystem/set_ota` | **⚠ INFERRED** — Sets automatic update (auto, time, plugin). | `GET {"auto": 1, "time": 4, "plugin": 0}` |
 | `misystem/set_router_lanap` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setLanApMode; untested). |  |
@@ -401,7 +401,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsystem/reboot` | ✓ Restarts the router. | `GET {"client": "web"}` |
 | `xqsystem/remove_passport_info` | **⚠ INFERRED** — Firmware 1.0.394 function (controller removePassportBindInfo; untested). |  |
 | `xqsystem/renew_token` | **⚠ INFERRED** — Renews the session token. |  |
-| `xqsystem/reset` | ✓ Factory reset (format). | `GET {"format": 0}` |
+| `xqsystem/reset` | ✓ Factory reset (format 0/1). On a wired Mesh node: it comes back as a plain router and, after a power cycle, re-joins the Mesh by itself (tested 10/11). | `GET {"format": 0}` |
 | `xqsystem/router_bind_ok` | ✓ Confirms binding the router to the Xiaomi account (used by the app via the cloud). |  |
 | `xqsystem/router_init` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setRouter; untested). |  |
 | `xqsystem/router_name` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getRouterName; untested). |  |

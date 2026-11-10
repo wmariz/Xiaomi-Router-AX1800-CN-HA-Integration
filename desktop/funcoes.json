@@ -1068,7 +1068,7 @@
   ],
   "xqsystem/reset": [
     "c",
-    "Restaura o padrão de fábrica (format).",
+    "Restaura o padrão de fábrica (format 0/1). Num nó Mesh por cabo: ele volta como roteador comum e, depois de desligado e religado, entra de novo na Mesh sozinho (testado 10/11).",
     {
       "m": "GET",
       "p": {
@@ -1769,8 +1769,8 @@
     "Informações dos nós Mesh: NÃO funciona neste modelo (erro 500)."
   ],
   "misystem/set_mesh_device": [
-    "i",
-    "Função do firmware 1.0.394 (controlador setMeshDev; não testada)."
+    "c",
+    "Remove (op 1) ou reinicia (op 2) um nó Mesh (mesh_mac). Sem efeito neste modelo (testado 10/11; falta o whc_ual)."
   ],
   "misystem/set_band_app": [
     "i",
