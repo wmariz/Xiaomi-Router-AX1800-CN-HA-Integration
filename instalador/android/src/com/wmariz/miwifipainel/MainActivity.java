@@ -19,8 +19,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle estado) {
         super.onCreate(estado);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setStatusBarColor(Color.parseColor("#ff6900"));
+        // same dark gray as the panel background (and the Home Assistant panel)
+        getWindow().setStatusBarColor(Color.parseColor("#111111"));
+        getWindow().setNavigationBarColor(Color.parseColor("#111111"));
+        getWindow().getDecorView().setBackgroundColor(Color.parseColor("#111111"));
         web = new WebView(this);
+        web.setBackgroundColor(Color.parseColor("#111111"));  // no white flash while the page loads
         setContentView(web);
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);

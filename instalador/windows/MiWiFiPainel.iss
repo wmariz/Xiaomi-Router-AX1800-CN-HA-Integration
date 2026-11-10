@@ -2,7 +2,7 @@
 ; Build:  ISCC.exe MiWiFiPainel.iss   (after creating dist\MiWiFiPainel.exe with PyInstaller — see build.ps1)
 
 #define Nome "MiWiFi Painel"
-#define Versao "1.1.0"
+#define Versao "1.1.1"
 #define Exe "MiWiFiPainel.exe"
 
 [Setup]
