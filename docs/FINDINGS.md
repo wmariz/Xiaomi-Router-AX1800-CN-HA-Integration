@@ -319,5 +319,6 @@ as the source of the traffic numbers.
   without problems. TX power changes (`set_wifi_txpwr`) are mirrored to the node too.
 - **Wi-Fi MAC filter is not mirrored by the Mesh (2026-11-11):** `xqnetwork/edit_device` on the main router does not reach
   the node (the node had an empty list while the main had 9 entries). The panel now repeats every add/remove made on the
-  main router on the node, and has a "Copy the list to the repeater" button that makes both lists equal.
+  main router on every node (any number of repeaters), and has a "Copy the list to the repeater" button that makes all
+  lists equal. The Zigbee-aware channel apply and its "worth it" check also cover every node.
 

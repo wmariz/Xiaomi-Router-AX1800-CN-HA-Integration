@@ -103,8 +103,9 @@ def zigbee_canal(hass: HomeAssistant) -> int | None:
     return None
 
 
-def _no(hass: HomeAssistant):
-    return next((c for c in hass.data.get(DOMAIN, {}).values() if getattr(c, "role", None) == ROLE_NODE), None)
+def _nos(hass: HomeAssistant) -> list:
+    """Every Mesh node configured in the integration (there may be more than one repeater)."""
+    return [c for c in hass.data.get(DOMAIN, {}).values() if getattr(c, "role", None) == ROLE_NODE]
 
 
 async def buscar(hass: HomeAssistant, coord, zigbee: int | None) -> dict[str, Any]:
@@ -121,20 +122,22 @@ async def buscar(hass: HomeAssistant, coord, zigbee: int | None) -> dict[str, An
     lista = notas(viz, zigbee, proprios)
     sug = escolher(lista)
     atual = int(((w24.get("channelInfo") or {}).get("channel")) or 0)
-    no = _no(hass)
-    atual_no = None
-    if no:
+    atuais_nos = []
+    for no in _nos(hass):
         try:
             wn = ((await no.api.call("xqnetwork/wifi_detail_all")).get("info") or [{}])[0]
-            atual_no = int(((wn.get("channelInfo") or {}).get("channel")) or 0) or None
+            c_no = int(((wn.get("channelInfo") or {}).get("channel")) or 0)
+            if c_no:
+                atuais_nos.append(c_no)
         except Exception:  # noqa: BLE001
-            atual_no = None
+            pass
+    atual_no = atuais_nos[0] if atuais_nos else None
     nota = {x["canal"]: x["nota"] for x in lista}
     fixo20 = str(w24.get("channel")) != "0" and str(w24.get("bandwidth")) == "20"
     motivos = []
     if atual and bloqueado(atual, zigbee):
         motivos.append("principal_no_zigbee")
-    if atual_no and bloqueado(atual_no, zigbee):
+    if any(bloqueado(c, zigbee) for c in atuais_nos):
         motivos.append("repetidor_no_zigbee")
     if not fixo20:
         motivos.append("nao_fixo_20mhz")
@@ -178,14 +181,14 @@ async def aplicar(hass: HomeAssistant, coord, canal: int) -> dict[str, Any]:
         # already fixed at 20 MHz: fast switch (~5 s, Wi-Fi stays up); not mirrored → apply on the node too
         c5 = (b5.get("channelInfo") or {}).get("channel") or b5.get("channel")
         r = await api.call("misystem/set_channel", {"channel1": canal, "channel2": c5})
-        no = _no(hass)
-        if no and r.get("code") == 0:
-            try:
-                wn = (await no.api.call("xqnetwork/wifi_detail_all")).get("info") or [{}, {}]
-                c5n = ((wn[1] if len(wn) > 1 else {}).get("channelInfo") or {}).get("channel") or c5
-                await no.api.call("misystem/set_channel", {"channel1": canal, "channel2": c5n})
-            except Exception as err:  # noqa: BLE001
-                _LOGGER.warning("Channel change on the Mesh node failed: %s", err)
+        if r.get("code") == 0:
+            for no in _nos(hass):
+                try:
+                    wn = (await no.api.call("xqnetwork/wifi_detail_all")).get("info") or [{}, {}]
+                    c5n = ((wn[1] if len(wn) > 1 else {}).get("channelInfo") or {}).get("channel") or c5
+                    await no.api.call("misystem/set_channel", {"channel1": canal, "channel2": c5n})
+                except Exception as err:  # noqa: BLE001
+                    _LOGGER.warning("Channel change on Mesh node %s failed: %s", no.api.host, err)
         metodo = "set_channel"
     else:
         # full save (restarts the Wi-Fi ~30 s; the Mesh copies it to the node)
