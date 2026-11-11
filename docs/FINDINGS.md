@@ -317,4 +317,7 @@ as the source of the traffic numbers.
 - **Field note (2026-11-11):** an ESP32-C3 running **ESPresense** made the main router reboot within 1–2 min of joining
   the 2.4 GHz Wi-Fi, 3 times out of 3, with Wi-Fi 6 on or off; the same board with ESPHome (Bluetooth proxy) runs
   without problems. TX power changes (`set_wifi_txpwr`) are mirrored to the node too.
+- **Wi-Fi MAC filter is not mirrored by the Mesh (2026-11-11):** `xqnetwork/edit_device` on the main router does not reach
+  the node (the node had an empty list while the main had 9 entries). The panel now repeats every add/remove made on the
+  main router on the node, and has a "Copy the list to the repeater" button that makes both lists equal.
 

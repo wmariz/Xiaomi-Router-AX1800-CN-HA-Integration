@@ -849,5 +849,11 @@
   "Salvo.": "Saved.",
   "Wi-Fi 6 (802.11ax)": "Wi-Fi 6 (802.11ax)",
   "desligue só nesta banda se algum aparelho travar com Wi-Fi 6": "turn off on this band only if a device misbehaves with Wi-Fi 6",
-  "Para aparelhos antigos que não encontram ou não conectam no Wi-Fi 6. Liga o modo Wi-Fi 5 e desativa recursos do Wi-Fi 6 (OFDMA, BSS Coloring) nas duas bandas. Para só uma banda, use a opção Wi-Fi 6 no formulário dela (com o Wi-Fi unificado desligado).": "For older devices that can't find or join Wi-Fi 6. Turns on Wi-Fi 5 mode and disables Wi-Fi 6 features (OFDMA, BSS Coloring) on both bands. For a single band, use the Wi-Fi 6 option in that band's form (with unified Wi-Fi off)."
+  "Para aparelhos antigos que não encontram ou não conectam no Wi-Fi 6. Liga o modo Wi-Fi 5 e desativa recursos do Wi-Fi 6 (OFDMA, BSS Coloring) nas duas bandas. Para só uma banda, use a opção Wi-Fi 6 no formulário dela (com o Wi-Fi unificado desligado).": "For older devices that can't find or join Wi-Fi 6. Turns on Wi-Fi 5 mode and disables Wi-Fi 6 features (OFDMA, BSS Coloring) on both bands. For a single band, use the Wi-Fi 6 option in that band's form (with unified Wi-Fi off).",
+  "Repetidor não conectado.": "Repeater not connected.",
+  "O repetidor já tem a mesma lista.": "The repeater already has the same list.",
+  "Copiar a lista para o repetidor": "Copy the list to the repeater",
+  "Repetidor atualizado": "Repeater updated",
+  "também no repetidor": "also on the repeater",
+  "Atenção: aparelhos Apple trocam o MAC (endereço privado) — o bloqueio pode não segurar. Trocar a senha da rede é mais eficaz. A Mesh não copia esta lista para o repetidor: no roteador principal, cada inclusão ou remoção é repetida no repetidor automaticamente (e o botão abaixo iguala as listas).": "Note: Apple devices change their MAC (private address) — blocking may not hold. Changing the network password is more effective. The Mesh does not copy this list to the repeater: on the main router, every addition or removal is repeated on the repeater automatically (and the button below makes the lists equal)."
 }
