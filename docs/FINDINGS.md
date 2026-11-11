@@ -295,7 +295,7 @@ as the source of the traffic numbers.
   `webinitrdr set on|off`, `pdnsd set on|off`.
 - **`miniupnpd`** — stock MiniUPnPd 2.1 (branded "MiWiFi Router"), NAT-PMP/PCP, reads `/proc/net/nf_conntrack`.
 
-## 14. System-log package (`misystem/sys_log`) and unexpected restarts
+## 16. System-log package (`misystem/sys_log`) and unexpected restarts
 - `misystem/sys_log` takes longer than the usual 12–15 s (now treated as a slow call, 60 s) and returns
   `path: "<router-ip>/backup/log/<date>.tar.gz"`, downloadable over plain HTTP from the router (no login).
 - Contents: `/data/usr/log/messages` + `messages.0` (persistent, survive a restart), `wifi_analysis.log`, `/tmp` state
@@ -308,5 +308,6 @@ as the source of the traffic numbers.
   `xqnetdetect/detect` returns 500).
 - After a restart the clock starts at the last hourly save and is corrected by NTP a minute later
   ("System time change detected"), so boot-time log lines carry a time up to 1 h early.
+- `xqsystem/get_sys_avg_load` runs `sysapi system_info get cpuload` (see §15) but on this model returns only `processCount`, so there is no CPU source at all in the API.
 - Integration service `miwifi_ax.salvar_log` fetches and keeps the newest 20 packages per router in `/config/miwifi_ax_logs`.
 
