@@ -84,7 +84,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/get_iotdev_status` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getIotDevStatus; untested). |  |
 | `misystem/get_iotdev_status_hidessid` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getIotDevStatusHidessid; untested). |  |
 | `misystem/get_mesh_device_info` | ✓ Mesh node info: does NOT work on this model (error 500). |  |
-| `misystem/get_mesh_metric` | ✓ Mesh metric: does NOT work on this model (code 127 — the whcal command is missing). |  |
+| `misystem/get_mesh_metric` | ✓ Mesh metric: does NOT work on this model (code 127 — the whcal command is not in firmware 1.0.399; Mesh uses Qualcomm repacd/lbd). |  |
 | `misystem/get_netwan_mode` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getNetWanMode; untested). |  |
 | `misystem/get_portscan_result` | ✓ Result: tcp_port and udp_port (space-separated). | `GET {"ip": "192.168.0.50", "mac": "AA:BB:CC:DD:EE:FF"}` |
 | `misystem/get_unconfig_iotdev_hidessid` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getunConfigIotDevHidessid; untested). |  |
@@ -96,8 +96,8 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/get_wifi_ret` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getWifiRet; untested). |  |
 | `misystem/http_status` | ✓ Status of the router's HTTP interception (e.g. warning pages). |  |
 | `misystem/http_switch` | **⚠ INFERRED** — Turns HTTP interception on/off. |  |
-| `misystem/hwnat_status` | ✓ Hardware NAT acceleration: status 1 on / 0 off (0 on both routers on 10/11). |  |
-| `misystem/hwnat_switch` | ✓ Turns hardware NAT on/off (on 0/1) and RESTARTS; on this model the status stays 0 afterwards (tested 10/11). |  |
+| `misystem/hwnat_status` | ✓ Hardware NAT acceleration: status 1 on / 0 off (0 on both routers on 2026-11-10). The real offload is Qualcomm NSS/ECM via /proc/xqfp, enabled when QoS is off (1.0.399 teardown). |  |
+| `misystem/hwnat_switch` | ✓ Turns hardware NAT on/off (on 0/1) and REBOOTS; on this model the status stays 0 afterwards (tested 2026-11-10). There is no init.d/hwnat: NSS/ECM offload is owned by QoS via /proc/xqfp/open_fastpath_v3 (1.0.399 teardown). |  |
 | `misystem/io_data` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getIOData; untested). |  |
 | `misystem/iperf` | **⚠ INFERRED** — iperf server to measure local network speed. |  |
 | `misystem/led` | ✓ LED status; with on=0/1 turns the device lights off/on. | `GET {"on": 1}` |
@@ -159,7 +159,7 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `misystem/set_config_iotdev_hidessid` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setConfigIotDevHidessid; untested). |  |
 | `misystem/set_dev_bsd` | **⚠ INFERRED** — Pins the device band (mac, mode); restarts the Wi-Fi. |  |
 | `misystem/set_log` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setConfigLog; untested). |  |
-| `misystem/set_mesh_device` | ✓ Removes (op 1) or reboots (op 2) a Mesh node (mesh_mac). No effect on this model (tested 10/11; whc_ual is missing). |  |
+| `misystem/set_mesh_device` | ✓ Removes (op 1) or restarts (op 2) a Mesh node (mesh_mac). No effect on this model (tested 2026-11-10; whcal/whc_ual absent in firmware 1.0.399). |  |
 | `misystem/set_mesh_normal` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setMeshInfo; untested). |  |
 | `misystem/set_ota` | **⚠ INFERRED** — Sets automatic update (auto, time, plugin). | `GET {"auto": 1, "time": 4, "plugin": 0}` |
 | `misystem/set_router_lanap` | **⚠ INFERRED** — Firmware 1.0.394 function (controller setLanApMode; untested). |  |
@@ -424,8 +424,8 @@ Generated from `desktop/funcoes.json` + `desktop/funcoes_en.json` by `tools/buil
 | `xqsystem/set_vpnauto` | ✓ Connect the VPN when the router starts (auto 1/0). | `GET {"auto": 1}` |
 | `xqsystem/shutdown` | ✓ Powers the router off. | `GET {}` |
 | `xqsystem/sign_order` | **⚠ INFERRED** — Firmware 1.0.394 function (controller signOrder; untested). |  |
-| `xqsystem/smart_shutdown` | ✓ Would turn the router off and on after delay1/delay2 MINUTES (XQFunction: sleep 60·delay1; uhbn 2 delay2). No effect on this model (tested 10/11). |  |
-| `xqsystem/start_dropbear` | **⚠ INFERRED** — Starts the router's SSH server (dropbear). (controller startDropbear; untested). |  |
+| `xqsystem/smart_shutdown` | ✓ Would power the router off and back on after delay1/delay2 MINUTES (XQFunction: sleep 60×delay1; uhbn 2 delay2). No effect on this model (tested 2026-11-10; the uhbn binary is not in firmware 1.0.399). |  |
+| `xqsystem/start_dropbear` | ✓ Would start the SSH server (dropbear). Blocked by design: in the 1.0.399 teardown, init.d/dropbear returns early unless the version channel is NOT 'release' and nvram ssh_en=1 — ours is 'release', so there is no working SSH endpoint. |  |
 | `xqsystem/start_nginx` | **⚠ INFERRED** — Firmware 1.0.394 function (controller startNginx; untested). |  |
 | `xqsystem/status` | **⚠ INFERRED** — Firmware 1.0.394 function (controller getStatusInfo; untested). |  |
 | `xqsystem/stop_dropbear` | **⚠ INFERRED** — Stops the router's SSH server. (controller stopDropbear; untested). |  |

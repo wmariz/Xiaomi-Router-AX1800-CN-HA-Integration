@@ -1690,11 +1690,11 @@
   ],
   "misystem/hwnat_status": [
     "c",
-    "Aceleração de NAT por hardware: status 1 ligada / 0 desligada (0 nos dois roteadores em 10/11)."
+    "Aceleração de NAT por hardware: status 1 ligada / 0 desligada (0 nos dois roteadores em 10/11). O offload real é o NSS/ECM da Qualcomm via /proc/xqfp, ativado quando o QoS está desligado (teardown 1.0.399)."
   ],
   "misystem/hwnat_switch": [
     "c",
-    "Liga/desliga a NAT por hardware (on 0/1) e REINICIA; neste modelo o status continua 0 depois (testado 10/11)."
+    "Liga/desliga a NAT por hardware (on 0/1) e REINICIA; neste modelo o status continua 0 (testado 10/11). Não existe init.d/hwnat: o offload NSS/ECM é controlado pelo QoS via /proc/xqfp/open_fastpath_v3 (teardown 1.0.399)."
   ],
   "misystem/lsusb": [
     "i",
@@ -1770,7 +1770,7 @@
   ],
   "misystem/set_mesh_device": [
     "c",
-    "Remove (op 1) ou reinicia (op 2) um nó Mesh (mesh_mac). Sem efeito neste modelo (testado 10/11; falta o whc_ual)."
+    "Remove (op 1) ou reinicia (op 2) um nó Mesh (mesh_mac). Sem efeito neste modelo (testado 10/11; whcal/whc_ual ausentes no firmware 1.0.399)."
   ],
   "misystem/set_band_app": [
     "i",
@@ -1790,7 +1790,7 @@
   ],
   "misystem/get_mesh_metric": [
     "c",
-    "Métrica da Mesh: NÃO funciona neste modelo (code 127 — falta o comando whcal)."
+    "Métrica da Mesh: NÃO funciona neste modelo (code 127 — o comando whcal não está no firmware 1.0.399; a Mesh usa repacd/lbd da Qualcomm)."
   ],
   "misystem/get_wifi_pwd": [
     "i",
@@ -2253,8 +2253,8 @@
     "Função do firmware 1.0.394 (controlador areThingsMounted; não testada)."
   ],
   "xqsystem/start_dropbear": [
-    "i",
-    "Liga o servidor SSH (dropbear) do roteador. (controlador startDropbear; não testada)."
+    "c",
+    "Ligaria o servidor SSH (dropbear). Bloqueado por projeto: no teardown do firmware 1.0.399, o init.d/dropbear sai sem iniciar a menos que o canal NÃO seja 'release' e nvram ssh_en=1 — como o nosso é 'release', não há endpoint de SSH que funcione."
   ],
   "xqsystem/stop_dropbear": [
     "i",
@@ -2310,7 +2310,7 @@
   ],
   "xqsystem/smart_shutdown": [
     "c",
-    "Desligaria e religaria o roteador após delay1/delay2 MINUTOS (XQFunction: sleep 60·delay1; uhbn 2 delay2). Sem efeito neste modelo (testado 10/11)."
+    "Desligaria e religaria o roteador após delay1/delay2 MINUTOS (XQFunction: sleep 60×delay1; uhbn 2 delay2). Sem efeito neste modelo (testado 10/11; o binário uhbn não está no firmware 1.0.399)."
   ],
   "xqsystem/noflushd": [
     "i",
