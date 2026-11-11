@@ -271,3 +271,26 @@ why some functions have no effect on this model and to see the layer below the L
   for USB storage/hotplug, the plugin system, MAC-filter lookups and a local DB. `APIMapping::redirectRequest` parses
   a JSON body, reads a **numeric command id**, and dispatches through a `std::map<int, handler>` — so `xqdatacenter`
   names map to numeric ids inside the daemon. Nothing here changes the Wi-Fi/network API the integration uses.
+
+## 15. The layer below the API — native daemons (decompiled 2026-11-10)
+
+Decompiled the daemons the LuCI API delegates to (REA + Ghidra 12.1.4). None of this changes the integration/panel;
+it documents what runs below the endpoints. Most useful: `NETMODE` as the reliable mesh-role signal, and `trafficd`
+as the source of the traffic numbers.
+
+- **`trafficd`** — the real traffic/stats engine. Event-driven; keeps per-MAC and per-IP AVL trees, computes WAN
+  rx/tx rate (`trafficd_get_wan_rx_rate`/`_tx_rate`), handles device assoc/IP events over the internal `ubus`/`tbus`
+  bus, reads `/proc/net/arp` and `/tmp/dhcp.leases`. This backs the per-device traffic the API reports.
+- **`datacenter`** — an **Apache Thrift RPC service** (`DataCenterHandler::request`/`notify`, `TNonblockingServer`).
+  The Lua `api/xqdatacenter.*` is a Thrift client calling `request(json)`; inside, a numeric command id is dispatched
+  through `std::map<int, handler>` (handlers are anonymous, so no id→name table). Scope: USB disk, plugins, MAC-filter,
+  local DB/backup, i18n — not network.
+- **Mesh (RM1800)** — since `whcal` is absent, the working path is: `mesh_cmd` + `/lib/mimesh/*.sh` (**mimesh**),
+  with the node role read from `uci get xiaoqiang.common.NETMODE` (`whc_cap` = main, `whc_re` = node,
+  `lanapmode`+`CAP_MODE=ap`, else router); `cab_meshd`/`meshd` for CAP/RE init and backhaul MAC lists
+  (`/tmp/bh_maclist_2g|5g`); `xq_info_sync_mqtt` for **CAP↔RE sync over a local MQTT broker** (not the cloud:
+  topics `CAP/#`, `RE/ALL`); and Qualcomm `repacd`/`lbd` for SON steering.
+- **`sysapi`** (shell dispatcher the API calls): `macfilter <set|get|update|del|commit>` (MAC + lan/wan/admin/pridisk),
+  `traffic_ctl set <key=on|off>`, `system_info get <cpuload|memory|disk>`, `dnsaccelerate set appleacc=on|off`,
+  `webinitrdr set on|off`, `pdnsd set on|off`.
+- **`miniupnpd`** — stock MiniUPnPd 2.1 (branded "MiWiFi Router"), NAT-PMP/PCP, reads `/proc/net/nf_conntrack`.
