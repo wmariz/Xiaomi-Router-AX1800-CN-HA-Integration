@@ -846,5 +846,8 @@
   "O repetidor acompanha.": "The repeater follows.",
   "Aplicando…": "Applying…",
   "Procurando redes vizinhas (~15 s)…": "Scanning neighbouring networks (~15 s)…",
-  "Salvo.": "Saved."
+  "Salvo.": "Saved.",
+  "Wi-Fi 6 (802.11ax)": "Wi-Fi 6 (802.11ax)",
+  "desligue só nesta banda se algum aparelho travar com Wi-Fi 6": "turn off on this band only if a device misbehaves with Wi-Fi 6",
+  "Para aparelhos antigos que não encontram ou não conectam no Wi-Fi 6. Liga o modo Wi-Fi 5 e desativa recursos do Wi-Fi 6 (OFDMA, BSS Coloring) nas duas bandas. Para só uma banda, use a opção Wi-Fi 6 no formulário dela (com o Wi-Fi unificado desligado).": "For older devices that can't find or join Wi-Fi 6. Turns on Wi-Fi 5 mode and disables Wi-Fi 6 features (OFDMA, BSS Coloring) on both bands. For a single band, use the Wi-Fi 6 option in that band's form (with unified Wi-Fi off)."
 }
