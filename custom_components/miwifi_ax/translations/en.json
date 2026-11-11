@@ -276,6 +276,16 @@
           "description": "On = allow; off = block"
         }
       }
+    },
+    "salvar_log": {
+      "name": "Save router log",
+      "description": "Downloads the router's system-log package (the same one the official interface generates) to /config/miwifi_ax_logs (newest 20 per router). Use it soon after an unexpected restart: the router's log only covers the last ~1.5 h. The package contains the Wi-Fi passwords, so keep it private.",
+      "fields": {
+        "device_id": {
+          "name": "Routers",
+          "description": "Routers to fetch from (empty = all)."
+        }
+      }
     }
   },
   "device": {

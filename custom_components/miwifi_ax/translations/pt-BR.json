@@ -276,6 +276,16 @@
           "description": "Ligado = liberar; desligado = bloquear"
         }
       }
+    },
+    "salvar_log": {
+      "name": "Salvar log do roteador",
+      "description": "Baixa o pacote de log do sistema do roteador (o mesmo que a interface oficial gera) para /config/miwifi_ax_logs (os 20 mais recentes por roteador). Use logo depois de um reinício inesperado: o log do roteador só cobre ~1,5 h. O pacote contém as senhas do Wi-Fi, mantenha-o privado.",
+      "fields": {
+        "device_id": {
+          "name": "Roteadores",
+          "description": "Roteadores de onde baixar (vazio = todos)."
+        }
+      }
     }
   },
   "device": {

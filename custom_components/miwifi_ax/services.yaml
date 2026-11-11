@@ -10,3 +10,11 @@ definir_internet:
       default: true
       selector:
         boolean:
+salvar_log:
+  fields:
+    device_id:
+      required: false
+      selector:
+        device:
+          integration: miwifi_ax
+          multiple: true

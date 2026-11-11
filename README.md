@@ -32,6 +32,7 @@ There is a single interface (styled after the original, exposing **all** functio
 - **Zigbee-aware channel search:** sensor *Last channel search* and, in the main router options, a periodic scan (off / 1–30 days, hour, only if worth it) that keeps 2.4 GHz at 20 MHz on the least crowded channel that doesn't overlap the Zigbee channel (read from ZHA). See [`docs/FINDINGS.md`](docs/FINDINGS.md#13-zigbee-aware-24-ghz-channel-search-panel--integration).
 - **Tracking:** chosen devices (online/offline, IP, connection, speed).
 - **Service** `miwifi_ax.definir_internet` (`mac`, `liberar`): blocks/allows a device's internet access.
+- **Service** `miwifi_ax.salvar_log` (`device_id`, optional): saves each router's system-log package to `/config/miwifi_ax_logs` (newest 20 per router). The router's own log only covers the last ~1.5 h, so call it soon after an unexpected restart (e.g. from an automation when the *Uptime* sensor comes back below 1 h). The package contains the Wi-Fi passwords (base64) — keep it private.
 
 By default only *Internet* (main router) and *Restart* (each router) are **enabled**; everything else comes **disabled** — enable only what you use. The integration only queries what some enabled entity needs (less traffic and fewer database writes). The firmware check, which contacts Xiaomi's servers, runs at most every 6 h.
 
