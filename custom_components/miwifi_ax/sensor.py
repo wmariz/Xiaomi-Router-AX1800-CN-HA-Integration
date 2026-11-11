@@ -26,7 +26,6 @@ class Desc(SensorEntityDescription):
 
 SENSORES: tuple[Desc, ...] = (
     Desc(key="ligado_ha", device_class=SensorDeviceClass.DURATION, native_unit_of_measurement=UnitOfTime.SECONDS, suggested_unit_of_measurement=UnitOfTime.HOURS),
-    Desc(key="cpu", native_unit_of_measurement=PERCENTAGE, state_class=M),
     Desc(key="memoria", native_unit_of_measurement=PERCENTAGE, state_class=M),
     Desc(key="clientes_24", state_class=M),
     Desc(key="clientes_5", state_class=M),

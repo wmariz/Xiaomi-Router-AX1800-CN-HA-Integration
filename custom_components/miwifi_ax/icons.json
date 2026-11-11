@@ -4,9 +4,6 @@
       "ligado_ha": {
         "default": "mdi:timer-outline"
       },
-      "cpu": {
-        "default": "mdi:cpu-64-bit"
-      },
       "memoria": {
         "default": "mdi:memory"
       },

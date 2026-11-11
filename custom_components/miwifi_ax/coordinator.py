@@ -142,7 +142,6 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             self._nome = await a.safe("misystem/router_name")
         d.update({
             "ligado_ha": int(_f(st.get("upTime"))),
-            "cpu": round(_f((st.get("cpu") or {}).get("load")) * 100, 1),
             "memoria": round(_f((st.get("mem") or {}).get("usage")) * 100, 1),
             "firmware": self.hw.get("version"),
             "nome": self._nome.get("name"),
@@ -175,7 +174,8 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if self.role == ROLE_NODE:
             if quer("signal"):
                 sig = await a.safe("xqnetwork/wifiap_signal")
-                if "signal" in sig:
+                # wired backhaul: band/ssid empty and signal 0 -> no reading, so the sensor isn't created
+                if sig.get("band") or sig.get("ssid") or sig.get("signal"):
                     d["sinal_ate_principal"] = sig.get("signal")
             return d
 

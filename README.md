@@ -25,7 +25,7 @@ There is a single interface (styled after the original, exposing **all** functio
 5. In **Configure** (on the main router): choose which devices to track (presence) and the panel address used by the *Visit* button.
 
 ### Entities
-- **Sensors:** uptime, CPU, memory, clients per band, channels, width, power, firmware, router time and clock offset, devices online/known, devices per connection (wired / 2.4 GHz / 5 GHz / guest — list in the attributes), IP reservations (list in the attributes), MAC filter, blocked intrusions, public IP, IPv6, gateway, DNS, internet connected for, download/upload now, peaks and totals.
+- **Sensors:** uptime, memory, repeater signal to the main router (wireless backhaul only), clients per band, channels, width, power, firmware, router time and clock offset, devices online/known, devices per connection (wired / 2.4 GHz / 5 GHz / guest — list in the attributes), IP reservations (list in the attributes), MAC filter, blocked intrusions, public IP, IPv6, gateway, DNS, internet connected for, download/upload now, peaks and totals.
 - **Binary sensors:** internet, ISP cable, repeater in Mesh, firmware update, Wi-Fi 2.4/5 GHz, unified Wi-Fi, anti-intrusion, firewalls, WPS.
 - **Switches:** LED (main and repeater), QoS, guest network, MU-MIMO, Wi-Fi 5 compatibility mode, quick connect, AIoT scan, priority for many devices, MAC filter.
 - **Buttons:** restart, refresh data.
