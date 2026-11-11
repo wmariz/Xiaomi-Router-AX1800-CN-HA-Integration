@@ -240,3 +240,34 @@ so this is done by the panel/integration:
   persistent notification. Sensor **Last channel search** (`sensor.*_ultima_busca_de_canal`) holds the full result.
   The Python (`custom_components/miwifi_ax/canal.py`) and JavaScript (`desktop/painel.html`) versions of the algorithm
   are kept identical (checked on the same scan, 2026-11-10).
+
+## 14. Firmware teardown (ROM 1.0.399, 2026-11-10)
+
+Extracted the stock image `miwifi_rm1800_firmware_..._1.0.399.bin` (HDR1 → UBI → SquashFS, standard xz) to confirm
+why some functions have no effect on this model and to see the layer below the LuCI API.
+
+- **SoC / platform:** Qualcomm IPQ (ARM 32-bit LE; `qca-hostapd`, `qca-nss-drv`, `qca-ssdk`, `ecm.ko`), Linux 4.4,
+  U-Boot 1.0.1, `CHANNEL=release`. Not MediaTek.
+- **The LuCI API controllers (`/usr/lib/lua/luci/controller/api/*.lua`) are obfuscated Lua bytecode** (`\x1bFate/Z\x1b`),
+  not plain Lua — hence they must be decompiled. Namespaces match §11: `xqnetwork, xqsystem, misystem, xqdatacenter,
+  xqnetdetect, xqpassport, xqsmarthome, xqtunnel, miats, misns, cportal`.
+- **SSH is blocked by design on release firmware.** `/etc/init.d/dropbear` `start_service()` returns early unless
+  `nvram get ssh_en = 1` **and** the version channel is not `release`. The binary, config (port 22, root auth) and
+  boot symlink are all present, but the guard means dropbear never starts here. There is no working SSH endpoint;
+  enabling it needs the channel changed (flash/exploit), not an API call.
+- **Telnet:** `S50telnet` is enabled and `/etc/init.d/telnet`'s safety guard is commented out, so `telnetd` (busybox)
+  does listen on port 23 — but login still needs a root password in `/etc/shadow`, unless `/proc/xiaoqiang/ft_mode`
+  (factory-test mode) is set, which gives a passwordless shell. Not an open door on a retail unit.
+- **hwnat has no init script** (`/etc/init.d/hwnat` is referenced by `miqos` but not shipped). Offload is Qualcomm
+  NSS/ECM via `/proc/xqfp/open_fastpath_v3`, owned by QoS: enabling QoS writes `0` (offload off), disabling writes `1`.
+  So a `hwnat` toggle can't hold state against QoS — matches "reboots, status stays 0".
+- **Mesh `whcal` is not installed** (mesh here is Qualcomm SON: `repacd`, `lbd`, `meshd`, `cab_meshd`), so
+  whcal-based metric/device calls have nothing to call.
+- **Embedded web UI is only the first-boot setup wizard** (~31 endpoints); the full console (all functions in §11) is
+  loaded remotely, not from the device. Setup calls go through `l(url, params)` (GET) / `f(url, params)` (POST).
+  The unified Wi-Fi save `set_all_wifi` uses `ssid1/pwd1/encryption1/channel1/bandwidth1` (2.4 GHz) + the same with
+  suffix `2` (5 GHz) + `bsd` (band steering, 0|1) + `hidden`; encryption values `WPA2PSK` / `mixed-psk`.
+- **`datacenter` daemon** (decompiled with Ghidra 12.1.4): not the traffic engine (`trafficd` is), but the C++ daemon
+  for USB storage/hotplug, the plugin system, MAC-filter lookups and a local DB. `APIMapping::redirectRequest` parses
+  a JSON body, reads a **numeric command id**, and dispatches through a `std::map<int, handler>` — so `xqdatacenter`
+  names map to numeric ids inside the daemon. Nothing here changes the Wi-Fi/network API the integration uses.
