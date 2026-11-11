@@ -165,7 +165,7 @@ def chamar(nome, endpoint, metodo="GET", params=None, mostrar=False, arquivo=Non
     if arquivo:
         dados, tipo = multipart(params, arquivo)
     try:
-        lento = arquivo or endpoint.rsplit("/", 1)[-1] in {"scan_mesh_node", "wifi_list", "nettb", "c_upload", "check_wan_type", "add_mesh_node"}
+        lento = arquivo or endpoint.rsplit("/", 1)[-1] in {"scan_mesh_node", "wifi_list", "nettb", "c_upload", "check_wan_type", "add_mesh_node", "sys_log"}
         status, txt = _http(url, dados, 60 if lento else 15, tipo)
     except urllib.error.HTTPError as e:
         status, txt = e.code, e.read().decode("utf-8", "replace")

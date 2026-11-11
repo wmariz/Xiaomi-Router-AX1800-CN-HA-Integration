@@ -126,7 +126,7 @@ public class Servidor {
         if (dp >= 0) { host = hostPorta.substring(0, dp); porta = Integer.parseInt(hostPorta.substring(dp + 1)); }
         try (Socket s = new Socket()) {
             s.connect(new InetSocketAddress(host, porta), 8000);
-            s.setSoTimeout(url.matches(".*/(scan_mesh_node|wifi_list|nettb|c_upload|check_wan_type|add_mesh_node)(\\?.*)?$") || tipo.startsWith("multipart") ? 60000 : 15000);
+            s.setSoTimeout(url.matches(".*/(scan_mesh_node|wifi_list|nettb|c_upload|check_wan_type|add_mesh_node|sys_log)(\\?.*)?$") || tipo.startsWith("multipart") ? 60000 : 15000);
             StringBuilder req = new StringBuilder();
             req.append(dados != null ? "POST " : "GET ").append(caminho).append(" HTTP/1.0\r\n");
             req.append("Host: ").append(host).append("\r\n");

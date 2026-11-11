@@ -14,7 +14,7 @@ import aiohttp
 
 DEFAULT_KEY = "a2ffa5c9be07488bbb04a3a47d3c5f6a"
 # endpoints that take long to answer (scans, diagnosis, uploads)
-SLOW = {"scan_mesh_node", "wifi_list", "nettb", "c_upload", "check_wan_type", "add_mesh_node"}
+SLOW = {"scan_mesh_node", "wifi_list", "nettb", "c_upload", "check_wan_type", "add_mesh_node", "sys_log"}
 
 
 def _dechunk(b: bytes) -> bytes:
