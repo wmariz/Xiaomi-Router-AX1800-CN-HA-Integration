@@ -310,4 +310,11 @@ as the source of the traffic numbers.
   ("System time change detected"), so boot-time log lines carry a time up to 1 h early.
 - `xqsystem/get_sys_avg_load` runs `sysapi system_info get cpuload` (see §15) but on this model returns only `processCount`, so there is no CPU source at all in the API.
 - Integration service `miwifi_ax.salvar_log` fetches and keeps the newest 20 packages per router in `/config/miwifi_ax_logs`.
+- **Wi-Fi 6 per band (tested 2026-11-11):** `xqnetwork/set_wifi` accepts `ax` (0|1) per `wifiIndex`; saving the 2.4 GHz
+  form with `ax=0` left 5 GHz on Wi-Fi 6, and the full save was mirrored to the Mesh node. `xqnetwork/set_wifi_ax`
+  (the "Wi-Fi 5 compatibility" switch) changes both bands at once and is also mirrored. `set_wifi` needs the real
+  password (`pwd`): sending the masked value returns `code 1523` and nothing is changed.
+- **Field note (2026-11-11):** an ESP32-C3 running **ESPresense** made the main router reboot within 1–2 min of joining
+  the 2.4 GHz Wi-Fi, 3 times out of 3, with Wi-Fi 6 on or off; the same board with ESPHome (Bluetooth proxy) runs
+  without problems. TX power changes (`set_wifi_txpwr`) are mirrored to the node too.
 
