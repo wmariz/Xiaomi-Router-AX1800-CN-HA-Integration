@@ -198,7 +198,7 @@ functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md))
 | Guest network *Save* with name/password (panel) | Works — tested by the user on 2026-11-10. |
 | Unified Wi-Fi on/off (`set_all_wifi bsd`) | Works — tested by the user on 2026-11-10. When on, both bands take the 2.4 GHz name, password **and hidden flag**; the panel then shows a single Wi-Fi form (shared name/hidden/security/password + per-band channel, width and power), like the original page. |
 | Wi-Fi changes and the Mesh node | A full save (`set_wifi` / `set_all_wifi`) on the main router **is copied to the repeater** (names, hidden flag, channel, width — checked 2026-11-10). `set_wifi_without_restart` is **not** copied, and it also **ignores `ssid`** (only `hidden`/`on`/power-type fields change). |
-| Zigbee-aware channel search → apply (user, 2026-11-10) | Works: suggested channel 1 applied with a full save; both routers ended on channel 1 at 20 MHz (config and on air). |
+| Fixed 2.4 GHz channel change (`set_channel`, 20 MHz fixed) | Works in ~5 s without dropping the Wi-Fi; must be sent to the main router **and** to every node (2026-11-10/11). |
 | Hardware NAT (`hwnat_switch on=1`) | Accepted and the router **restarts**, but `hwnat_status` stays 0 afterwards. The RM1800 is Qualcomm-based; Xiaomi's `hwnat` switch appears not to apply. |
 
 ### Not yet tested
@@ -209,7 +209,6 @@ functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md))
 | Work-mode switch | Blocked on a Mesh main router. |
 | Static IPv6 | The ISP provides no static prefix. |
 | IP-conflict fix | No conflict on the test network. |
-| Zigbee-aware channel: periodic automatic switch | The search and the manual apply are tested; the first automatic run is scheduled. |
 | Functions marked **⚠ INFERRED** in [`FUNCTIONS.md`](FUNCTIONS.md) | 250+ functions found only in the decompiled firmware. |
 
 ### Present in the firmware but not working on this model
@@ -217,41 +216,46 @@ functions**; all of them are now in the catalog ([`FUNCTIONS.md`](FUNCTIONS.md))
 `misystem/get_mesh_device_info` and `xqsystem/app_limit` (error 500), `xqsystem/start_dropbear` (SSH; script absent), `xqsystem/smart_shutdown` (no effect), `misystem/hwnat_switch` (status stays 0).
 `xqnetdetect/sys_status` returns status 2 ("no WAN link") even with the internet working.
 
-## 13. Zigbee-aware 2.4 GHz channel search (panel + integration)
-Xiaomi's optimization (`channel_scan_*`) returns a single suggestion and ignores Zigbee, which shares the 2.4 GHz band.
-On the test network it suggested channel 7, right on top of Zigbee channel 20. The firmware has no way to restrict
-the channels used by "automatic" (`avaliable_channels` is a fixed list 1–13 × 20/40 MHz) and no user-defined scheduler,
-so this is done by the panel/integration:
-- **Scan:** `xqnetwork/wifi_list` (~12–15 s; per network: ssid, bssid, band, channel, signal %, rssi — no width).
-  In automatic mode each Mesh node picks its own 2.4 GHz channel (main on 11 and node on 1 at the same time).
-- **Score per channel 1–11:** Σ neighbour `signal` × overlap, overlap = 1 − |Δchannel|/4 (20 MHz channels overlap
-  up to 3 channels apart); own networks (main/node/guest SSIDs) are ignored; in-between channels (not 1/6/11) are
-  multiplied by 1.25; normalized to 0–100 (100 = worst). Ties go to 1/6/11, then the lower channel.
-- **Why 1/6/11 are favoured (equally):** partial overlap is worse than sharing a channel — CSMA can decode co-channel
-  frames (NAV, backoff) but only energy-detects a partially overlapping neighbour. A day of sampling (2026-11-11,
-  09/13/16/19/22 h, 142 neighbour BSSIDs) showed ~88 % of the neighbours seen ≥ 3 times on a fixed channel and
-  more than half of those on 1/6/11, so an in-between channel usually overlaps two groups. 1, 6 and 11 get the same
-  weight (with Zigbee on 25 no Wi-Fi channel 1–11 is blocked, so channel 1's distance from Zigbee is no longer a reason).
-- **Known bias — the scan over-counts the router's own channel.** `wifi_list` sees 3–4× more networks on the channel
-  the radio is operating on (full dwell) than on the others (brief off-channel probes): on channel 1 the scans showed
-  25–30 networks on 1 and 4–15 on 11; minutes after switching to 11 the same scan showed 31 on 11 and 7 on 1, while
-  only 1 of 43 BSSIDs seen in both scans had actually changed channel (our own node). So the current channel always
-  looks worse than it is and a single scan tends to suggest leaving it. The own Mesh node (same SSID, signal 100) is
-  in the raw list too and must be excluded by SSID.
-- **Zigbee:** a 20 MHz Wi-Fi channel is blocked when its centre is less than 12 MHz from the Zigbee channel centre
-  (Wi-Fi ±10 + Zigbee ±1 + 1 MHz guard). Zigbee 20 → Wi-Fi 7–10 blocked. In HA the Zigbee channel is read from the
-  running ZHA (`get_zha_data(...).application_controller.state.network_info.channel`) or, as a fallback, from the latest
-  backup in `zigbee.db` (`network_backups_vNN.backup_json → $.network_info.channel`). Width is always set to 20 MHz.
-- **"Worth it":** the current channel overlaps Zigbee (main or node), the band isn't fixed at 20 MHz, the channel is
-  outside 1–11, or the suggestion has ≥ 30 % less interference.
-- **Apply:** unified Wi-Fi → `set_all_wifi`; already fixed at 20 MHz → `misystem/set_channel` on the main router and on
-  the node (~5 s, Wi-Fi stays up); otherwise a full `set_wifi` save (Wi-Fi restarts ~30 s; copied to the node).
-- **Where:** manual search + apply in every panel (computed in the browser on PC/Android; by the integration in HA).
-  Periodic search (HA only, integration options or the panel): off / 1 / 3 / 7 / 15 / 30 days, at a chosen hour,
-  optionally only when worth it — it applies **without confirmation**, fires `miwifi_ax_canal_trocado` and creates a
-  persistent notification. Sensor **Last channel search** (`sensor.*_ultima_busca_de_canal`) holds the full result.
-  The Python (`custom_components/miwifi_ax/canal.py`) and JavaScript (`desktop/painel.html`) versions of the algorithm
-  are kept identical (checked on the same scan, 2026-11-10).
+## 13. 2.4 GHz Wi-Fi channel vs Zigbee
+Zigbee shares the 2.4 GHz band. A 20 MHz Wi-Fi channel `c` is centred on 2407 + 5c MHz (±10 MHz); a Zigbee channel
+`z` (11–26) on 2405 + 5(z − 11) MHz (±1 MHz). Xiaomi's optimization (`channel_scan_*`) ignores Zigbee (on the test
+network it suggested channel 7, right on top of Zigbee 20), and "automatic" can't be restricted (`avaliable_channels`
+is a fixed 1–13 × 20/40 MHz list).
+
+The panel only **explains** the choice — a table per Zigbee channel, computed from the distance between centres:
+**best** = 1/6/11 more than 20 MHz away, **also OK** = 1/6/11 12–20 MHz away (right next to Zigbee), **avoid** =
+any channel less than 12 MHz away. Always 1, 6 or 11 (an in-between channel partially overlaps two groups of
+neighbours: CSMA can only energy-detect them, which is worse than sharing a channel) and the 2.4 GHz width fixed
+at 20 MHz (40 MHz or automatic covers Zigbee again).
+
+| Zigbee | Best Wi-Fi | Also OK | Avoid |
+|---|---|---|---|
+| 11 | 6, 11 | — | 1 |
+| 12 | 6, 11 | — | 1–2 |
+| 13 | 6, 11 | — | 1–3 |
+| 14 | 11 | 6 | 1–4 |
+| 15 | 11 | 1, 6 | 2–5 |
+| 16 | 11 | 1 | 3–6 |
+| 17 | 1, 11 | — | 4–7 |
+| 18 | 1, 11 | — | 5–8 |
+| 19 | 1 | 11 | 6–9 |
+| 20 | 1 | 6, 11 | 7–10 |
+| 21 | 1 | 6 | 8–11 |
+| 22 | 1, 6 | — | 9–11 |
+| 23 | 1, 6 | — | 10–11 |
+| 24 | 1, 6 | — | 11 |
+| 25 | 1, 6 | 11 | — |
+| 26 | 1, 6 | 11 | — |
+
+**Why there is no automatic search any more (removed 2026-11-11).** Versions up to 1.1.1 scored every channel from
+the router's neighbour scan (`xqnetwork/wifi_list`) and could switch periodically. A day of sampling showed the scan
+is biased: it sees 3–4× more networks on the channel the radio is operating on (full dwell) than on the others
+(brief off-channel probes). On channel 1 the scans showed 25–30 networks on 1 and 4–15 on 11; minutes after
+switching to 11 the same scan showed 31 on 11 and 7 on 1, while only 1 of 43 BSSIDs seen in both scans had really
+changed channel (the own Mesh node, which also appears in the raw list with signal 100). A scan from a PC that isn't
+operating on any channel saw only 1–3 networks per channel. So the current channel always looked worst and the
+search kept suggesting a move. A fair comparison would need an independent scanner; the integration now just keeps
+the table above.
 
 ## 14. Firmware teardown (ROM 1.0.399, 2026-11-10)
 
@@ -332,5 +336,5 @@ as the source of the traffic numbers.
 - **Wi-Fi MAC filter is not mirrored by the Mesh (2026-11-11):** `xqnetwork/edit_device` on the main router does not reach
   the node (the node had an empty list while the main had 9 entries). The panel now repeats every add/remove made on the
   main router on every node (any number of repeaters), and has a "Copy the list to the repeater" button that makes all
-  lists equal. The Zigbee-aware channel apply and its "worth it" check also cover every node.
+  lists equal.
 

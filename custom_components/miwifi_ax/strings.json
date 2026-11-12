@@ -45,11 +45,7 @@
       "init": {
         "data": {
           "tracked_macs": "Devices to track (presence)",
-          "painel_url": "Panel address (Visit button)",
-          "canal_auto_dias": "Scan for the best channel periodically, avoiding Zigbee",
-          "canal_auto_hora": "Time of the periodic scan",
-          "canal_auto_compensa": "Only switch if worth it (30 % less interference, or the current channel overlaps Zigbee)",
-          "zigbee_canal": "Zigbee channel (0 = detect from ZHA)"
+          "painel_url": "Panel address (Visit button)"
         }
       }
     }
@@ -175,9 +171,6 @@
       },
       "redirecionamentos": {
         "name": "Port forwards"
-      },
-      "ultima_busca_canal": {
-        "name": "Last channel search"
       }
     },
     "binary_sensor": {
@@ -301,44 +294,5 @@
       "message": "No main router is configured"
     }
   },
-  "selector": {
-    "canal_auto_dias": {
-      "options": {
-        "0": "Off",
-        "1": "Every day",
-        "3": "Every 3 days",
-        "7": "Every 7 days",
-        "15": "Every 15 days",
-        "30": "Every 30 days"
-      }
-    },
-    "canal_auto_hora": {
-      "options": {
-        "0": "00:00",
-        "1": "01:00",
-        "2": "02:00",
-        "3": "03:00",
-        "4": "04:00",
-        "5": "05:00",
-        "6": "06:00",
-        "7": "07:00",
-        "8": "08:00",
-        "9": "09:00",
-        "10": "10:00",
-        "11": "11:00",
-        "12": "12:00",
-        "13": "13:00",
-        "14": "14:00",
-        "15": "15:00",
-        "16": "16:00",
-        "17": "17:00",
-        "18": "18:00",
-        "19": "19:00",
-        "20": "20:00",
-        "21": "21:00",
-        "22": "22:00",
-        "23": "23:00"
-      }
-    }
-  }
+  "selector": {}
 }

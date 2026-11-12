@@ -6,11 +6,6 @@ from dataclasses import dataclass
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription, SensorStateClass
 from homeassistant.const import PERCENTAGE, EntityCategory, UnitOfDataRate, UnitOfInformation, UnitOfTime
 
-from homeassistant.core import callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.util import dt as dt_util
-
-from .canal import SINAL_CANAL
 from .const import DOMAIN, ROLE_MAIN
 from .entity import MiWiFiEntity
 
@@ -71,8 +66,6 @@ SENSORES: tuple[Desc, ...] = (
 async def async_setup_entry(hass, entry, async_add_entities):
     c = hass.data[DOMAIN][entry.entry_id]
     ents = [Sensor(c, d) for d in SENSORES if (c.role == ROLE_MAIN or not d.so_principal) and d.key in c.data]
-    if c.role == ROLE_MAIN and getattr(c, "canal_auto", None):
-        ents.append(CanalSensor(c))
     async_add_entities(ents)
 
 
@@ -97,49 +90,3 @@ class Sensor(MiWiFiEntity, SensorEntity):
             return {"lista": d.get(at, [])}
         return {"aparelhos": (d.get("grupos") or {}).get(at, [])}
 
-
-class CanalSensor(MiWiFiEntity, SensorEntity):
-    """Last Zigbee-aware channel search (manual or periodic); details in the attributes."""
-
-    _attr_device_class = SensorDeviceClass.TIMESTAMP
-
-    def __init__(self, coord) -> None:
-        super().__init__(coord, "ultima_busca_canal")
-        self._attr_entity_registry_enabled_default = True
-
-    async def async_added_to_hass(self) -> None:
-        await super().async_added_to_hass()
-
-        @callback
-        def _atualizar(entry_id: str) -> None:
-            if entry_id == self.coordinator.entry_id:
-                self.async_write_ha_state()
-
-        self.async_on_remove(async_dispatcher_connect(self.hass, SINAL_CANAL, _atualizar))
-
-    @property
-    def native_value(self):
-        u = self.coordinator.canal_auto.ultimo or {}
-        return dt_util.parse_datetime(u["quando"]) if u.get("quando") else None
-
-    @property
-    def extra_state_attributes(self):
-        ca = self.coordinator.canal_auto
-        u = ca.ultimo or {}
-        return {
-            "zigbee": u.get("zigbee"),
-            "canal_atual": u.get("atual"),
-            "canal_repetidor": u.get("atual_repetidor"),
-            "canal_sugerido": u.get("sugerido"),
-            "interferencia_atual": u.get("nota_atual"),
-            "interferencia_sugerido": u.get("nota_sugerido"),
-            "compensa": u.get("compensa"),
-            "motivos": u.get("motivos"),
-            "aplicado": u.get("aplicado"),
-            "automatico": u.get("automatico"),
-            "ultima_automatica": u.get("quando_auto"),
-            "repetir_dias": ca.dias,
-            "hora": ca.hora,
-            "so_se_compensar": ca.compensa,
-            "canais": u.get("canais"),
-        }

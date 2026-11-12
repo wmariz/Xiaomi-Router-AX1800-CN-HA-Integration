@@ -107,7 +107,6 @@ class MiwifiAxPanel extends HTMLElement {{
       if (path === "/api/estado") return await h.callApi("GET", "miwifi_ax/estado");
       if (path === "/api/chamar") return await h.callApi("POST", "miwifi_ax/chamar", body);
       if (path.startsWith("/api/endpoints")) return await h.callApi("GET", "miwifi_ax/endpoints" + path.slice(14));
-      if (path === "/api/canal") return body ? await h.callApi("POST", "miwifi_ax/canal", body) : await h.callApi("GET", "miwifi_ax/canal");
       return {{ ok: false, erro: "Função disponível só no painel do PC." }};
     }} catch (e) {{
       return {{ ok: false, erro: (e && ((e.body && e.body.message) || e.message || e.error)) || String(e) }};

@@ -29,7 +29,7 @@ There is a single interface (styled after the original, exposing **all** functio
 - **Binary sensors:** internet, ISP cable, repeater in Mesh, firmware update, Wi-Fi 2.4/5 GHz, unified Wi-Fi, anti-intrusion, firewalls, WPS.
 - **Switches:** LED (main and repeater), QoS, guest network, MU-MIMO, Wi-Fi 5 compatibility mode, quick connect, AIoT scan, priority for many devices, MAC filter.
 - **Buttons:** restart, refresh data.
-- **Zigbee-aware channel search:** sensor *Last channel search* and, in the main router options, a periodic scan (off / 1–30 days, hour, only if worth it) that keeps 2.4 GHz at 20 MHz on the least crowded channel that doesn't overlap the Zigbee channel (read from ZHA). See [`docs/FINDINGS.md`](docs/FINDINGS.md#13-zigbee-aware-24-ghz-channel-search-panel--integration).
+- **2.4 GHz channel and Zigbee:** a table in the Wi-Fi page shows, for each Zigbee channel (11–26), the best Wi-Fi channel (1/6/11, 20 MHz) and the ones to avoid. See [`docs/FINDINGS.md`](docs/FINDINGS.md#13-24-ghz-wi-fi-channel-vs-zigbee).
 - **Tracking:** chosen devices (online/offline, IP, connection, speed).
 - **Service** `miwifi_ax.definir_internet` (`mac`, `liberar`): blocks/allows a device's internet access.
 - **Service** `miwifi_ax.salvar_log` (`device_id`, optional): saves each router's system-log package to `/config/miwifi_ax_logs` (newest 20 per router). The router's own log only covers the last ~1.5 h, so call it soon after an unexpected restart (e.g. from an automation when the *Uptime* sensor comes back below 1 h). The package contains the Wi-Fi passwords (base64) — keep it private.

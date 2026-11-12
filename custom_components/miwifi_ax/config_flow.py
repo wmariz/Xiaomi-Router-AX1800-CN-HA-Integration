@@ -15,7 +15,6 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from .api import MiWiFiApi, MiWiFiAuthError, MiWiFiConnError
 from .const import CONF_MESMA_SENHA, CONF_NOS_REMOVIDOS, CONF_PAINEL, CONF_TRACKED, DOMAIN, PAINEL_PADRAO
-from .const import CANAL_DIAS_OPCOES, CONF_CANAL_COMPENSA, CONF_CANAL_DIAS, CONF_CANAL_HORA, CONF_ZIGBEE_CANAL
 
 
 
@@ -203,9 +202,6 @@ class MiWiFiConfigFlow(ConfigFlow, domain=DOMAIN):
 class MiWiFiOptions(OptionsFlow):
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
-            for k in (CONF_CANAL_DIAS, CONF_CANAL_HORA):
-                if k in user_input:
-                    user_input[k] = int(user_input[k])
             return self.async_create_entry(data={**self.config_entry.options, **user_input})
         coord = self.hass.data[DOMAIN][self.config_entry.entry_id]
         devs = await coord.async_devices() if coord.role == "principal" else {}
@@ -220,13 +216,5 @@ class MiWiFiOptions(OptionsFlow):
                 selector.SelectSelectorConfig(options=opts, multiple=True, mode=selector.SelectSelectorMode.DROPDOWN)
             )
         campos[vol.Optional(CONF_PAINEL, default=self.config_entry.options.get(CONF_PAINEL, PAINEL_PADRAO))] = str
-        if coord.role == "principal":
-            o = self.config_entry.options
-            campos[vol.Optional(CONF_CANAL_DIAS, default=str(o.get(CONF_CANAL_DIAS, 0)))] = selector.SelectSelector(
-                selector.SelectSelectorConfig(options=[str(d) for d in CANAL_DIAS_OPCOES], translation_key=CONF_CANAL_DIAS, mode=selector.SelectSelectorMode.DROPDOWN))
-            campos[vol.Optional(CONF_CANAL_HORA, default=str(o.get(CONF_CANAL_HORA, 4)))] = selector.SelectSelector(
-                selector.SelectSelectorConfig(options=[str(h) for h in range(24)], translation_key=CONF_CANAL_HORA, mode=selector.SelectSelectorMode.DROPDOWN))
-            campos[vol.Optional(CONF_CANAL_COMPENSA, default=o.get(CONF_CANAL_COMPENSA, True))] = bool
-            campos[vol.Optional(CONF_ZIGBEE_CANAL, default=int(o.get(CONF_ZIGBEE_CANAL, 0) or 0))] = vol.All(vol.Coerce(int), vol.Any(0, vol.Range(min=11, max=26)))
         schema = vol.Schema(campos)
         return self.async_show_form(step_id="init", data_schema=schema)

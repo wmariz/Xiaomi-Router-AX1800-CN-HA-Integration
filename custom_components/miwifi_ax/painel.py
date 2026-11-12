@@ -17,7 +17,6 @@ from homeassistant.components.http import HomeAssistantView, StaticPathConfig
 from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
-from .const import CANAL_DIAS_OPCOES, CONF_CANAL_COMPENSA, CONF_CANAL_DIAS, CONF_CANAL_HORA, CONF_ZIGBEE_CANAL
 
 URL_BASE = "/miwifi_ax_static"
 PAINEL_PATH = "roteadores"
@@ -158,66 +157,6 @@ class PaginaView(_Base):
         return self.json({"ok": True, "html": html})
 
 
-class CanalView(_Base):
-    """Zigbee-aware channel search for the HA panel: options, last result, manual search and apply."""
-
-    url = "/api/miwifi_ax/canal"
-    name = "api:miwifi_ax:canal"
-
-    def _principal(self, request: web.Request):
-        return _coords(request.app["hass"]).get("principal")
-
-    async def get(self, request: web.Request) -> web.Response:
-        if not self._admin(request):
-            return self.json_message("Somente administradores", HTTPStatus.FORBIDDEN)
-        c = self._principal(request)
-        ca = getattr(c, "canal_auto", None) if c else None
-        if not ca:
-            return self.json({"ok": False, "erro": "sem roteador principal"})
-        hass = request.app["hass"]
-        from .canal import zigbee_canal  # noqa: PLC0415
-        det = await hass.async_add_executor_job(zigbee_canal, hass)
-        return self.json({"ok": True, "zigbee": await ca.zigbee(), "zigbee_detectado": det,
-                          "zigbee_manual": int(ca.entry.options.get(CONF_ZIGBEE_CANAL, 0) or 0),
-                          "dias": ca.dias, "hora": ca.hora, "compensa": ca.compensa, "ultimo": ca.ultimo})
-
-    async def post(self, request: web.Request) -> web.Response:
-        if not self._admin(request):
-            return self.json_message("Somente administradores", HTTPStatus.FORBIDDEN)
-        c = self._principal(request)
-        ca = getattr(c, "canal_auto", None) if c else None
-        if not ca:
-            return self.json({"ok": False, "erro": "sem roteador principal"})
-        hass = request.app["hass"]
-        b = await request.json()
-        acao = b.get("acao")
-        try:
-            if acao == "buscar":
-                return self.json({"ok": True, "resultado": await ca.executar(automatico=False)})
-            if acao == "aplicar":
-                from .canal import aplicar  # noqa: PLC0415
-                canal = int(b.get("canal"))
-                if not 1 <= canal <= 11:
-                    return self.json({"ok": False, "erro": "canal inválido"})
-                r = await aplicar(hass, c, canal)
-                await c.async_request_refresh()
-                return self.json({"ok": r.get("code") == 0, "json": r})
-            if acao == "salvar":
-                dias = int(b.get("dias", 0))
-                if dias not in CANAL_DIAS_OPCOES:
-                    return self.json({"ok": False, "erro": "dias inválido"})
-                z = int(b.get("zigbee", 0) or 0)
-                if z and not 11 <= z <= 26:
-                    return self.json({"ok": False, "erro": "canal Zigbee inválido"})
-                novas = {**ca.entry.options, CONF_CANAL_DIAS: dias, CONF_CANAL_HORA: int(b.get("hora", 4)) % 24,
-                         CONF_CANAL_COMPENSA: bool(b.get("compensa", True)), CONF_ZIGBEE_CANAL: z}
-                hass.config_entries.async_update_entry(ca.entry, options=novas)  # the update listener reloads the entry
-                return self.json({"ok": True})
-        except Exception as err:  # noqa: BLE001
-            return self.json({"ok": False, "erro": str(err)})
-        return self.json({"ok": False, "erro": "ação desconhecida"})
-
-
 class EndpointsView(_Base):
     url = "/api/miwifi_ax/endpoints"
     name = "api:miwifi_ax:endpoints"
@@ -252,7 +191,6 @@ async def async_registrar(hass: HomeAssistant) -> None:
     hass.http.register_view(ChamarView())
     hass.http.register_view(EndpointsView())
     hass.http.register_view(PaginaView())
-    hass.http.register_view(CanalView())
     pasta = Path(__file__).parent / "frontend"
     await hass.http.async_register_static_paths([StaticPathConfig(URL_BASE, str(pasta), False)])
     versao = int((pasta / "miwifi-panel.js").stat().st_mtime)

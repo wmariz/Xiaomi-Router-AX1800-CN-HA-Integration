@@ -14,11 +14,11 @@ from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, Supp
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv, device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_create_clientsession, async_get_clientsession
+from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util, slugify
 
 from .api import MiWiFiApi
-from .const import CONF_MESMA_SENHA, CONF_NOS_REMOVIDOS, CONF_PAINEL, DOMAIN, PAINEL_PADRAO, PLATFORMS, ROLE_MAIN
-from .canal import CanalAuto
+from .const import CONF_MESMA_SENHA, CONF_NOS_REMOVIDOS, CONF_PAINEL, DOMAIN, OPCOES_CANAL_ANTIGAS, PAINEL_PADRAO, PLATFORMS, ROLE_MAIN
 from .coordinator import MiWiFiCoordinator
 from .painel import async_registrar, async_remover
 
@@ -66,11 +66,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coord.painel_url = entry.options.get(CONF_PAINEL, PAINEL_PADRAO)
     await coord.async_config_entry_first_refresh()
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coord
-    if coord.role == ROLE_MAIN:
-        # periodic Zigbee-aware channel search (options); also used by the panel API and the sensor
-        coord.canal_auto = CanalAuto(hass, entry, coord)
-        await coord.canal_auto.async_start()
-        entry.async_on_unload(coord.canal_auto.async_stop)
+    # the Zigbee-aware channel search was removed (1.1.2): drop its stored state and options
+    await Store(hass, 1, f"{DOMAIN}_canal_{entry.entry_id}").async_remove()
+    if any(k in entry.options for k in OPCOES_CANAL_ANTIGAS):
+        hass.config_entries.async_update_entry(
+            entry, options={k: v for k, v in entry.options.items() if k not in OPCOES_CANAL_ANTIGAS})
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     await async_registrar(hass)
     entry.async_on_unload(entry.add_update_listener(_reload))
