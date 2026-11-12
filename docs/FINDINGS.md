@@ -230,8 +230,14 @@ so this is done by the panel/integration:
 - **Why 1/6/11 are favoured (equally):** partial overlap is worse than sharing a channel — CSMA can decode co-channel
   frames (NAV, backoff) but only energy-detects a partially overlapping neighbour. A day of sampling (2026-11-11,
   09/13/16/19/22 h, 142 neighbour BSSIDs) showed ~88 % of the neighbours seen ≥ 3 times on a fixed channel and
-  more than half of those on 1/6/11, so an in-between channel usually overlaps two groups. Channel 1 is *not* given
-  extra weight: it was the most crowded channel all day (factory default of many routers).
+  more than half of those on 1/6/11, so an in-between channel usually overlaps two groups. 1, 6 and 11 get the same
+  weight (with Zigbee on 25 no Wi-Fi channel 1–11 is blocked, so channel 1's distance from Zigbee is no longer a reason).
+- **Known bias — the scan over-counts the router's own channel.** `wifi_list` sees 3–4× more networks on the channel
+  the radio is operating on (full dwell) than on the others (brief off-channel probes): on channel 1 the scans showed
+  25–30 networks on 1 and 4–15 on 11; minutes after switching to 11 the same scan showed 31 on 11 and 7 on 1, while
+  only 1 of 43 BSSIDs seen in both scans had actually changed channel (our own node). So the current channel always
+  looks worse than it is and a single scan tends to suggest leaving it. The own Mesh node (same SSID, signal 100) is
+  in the raw list too and must be excluded by SSID.
 - **Zigbee:** a 20 MHz Wi-Fi channel is blocked when its centre is less than 12 MHz from the Zigbee channel centre
   (Wi-Fi ±10 + Zigbee ±1 + 1 MHz guard). Zigbee 20 → Wi-Fi 7–10 blocked. In HA the Zigbee channel is read from the
   running ZHA (`get_zha_data(...).application_controller.state.network_info.channel`) or, as a fallback, from the latest
