@@ -1,6 +1,7 @@
 """Base entity: attaches everything to the router device."""
 from __future__ import annotations
 
+from homeassistant.helpers import area_registry as ar
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -15,6 +16,15 @@ def _url(coord: MiWiFiCoordinator) -> str:
         return f"http://{coord.api.host}"
     # identifies the router by IP (stable even with several repeaters)
     return f"{p}{'&' if '?' in p else '?'}rot={coord.api.host}"
+
+
+def _area(coord: MiWiFiCoordinator) -> str | None:
+    """Router 'location' (Xiaomi app: "Office", "Living room"…) as the suggested area, but only when an area with
+    that name already exists — otherwise HA would create a new, usually English-named area on its own."""
+    local = ((coord.data or {}).get("local") or "").strip()
+    if local and ar.async_get(coord.hass).async_get_area_by_name(local):
+        return local
+    return None
 
 
 # Enabled by default; everything else starts DISABLED (enable only what you use — the integration
@@ -43,5 +53,5 @@ class MiWiFiEntity(CoordinatorEntity[MiWiFiCoordinator]):
             sw_version=coord.hw.get("version"),
             serial_number=coord.hw.get("sn"),
             configuration_url=_url(coord),
-            suggested_area=(coord.data or {}).get("local"),
+            suggested_area=_area(coord),
         )
