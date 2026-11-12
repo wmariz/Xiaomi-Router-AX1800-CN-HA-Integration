@@ -257,6 +257,19 @@ operating on any channel saw only 1–3 networks per channel. So the current cha
 search kept suggesting a move. A fair comparison would need an independent scanner; the integration now just keeps
 the table above.
 
+**Xiaomi's own optimization is no way around it (probed live, 2026-11-12).** `misystem/channel_scan_result` returns
+only `2G: {cchannel, cscore, schannel, sscore, ranking}` — the current channel and one suggestion with their scores;
+`ranking` is a single number, not a per-channel table. Band/5 GHz parameters are ignored (always `2G`). It shows the
+same bias: operating on 11 it scored 11 as 75/68 and suggested 7 at 13/9 on two runs. The unbiased data (per-channel
+busy/airtime survey that the Qualcomm driver collects for ACS) isn't exposed by any API endpoint; it would need
+`cfg80211tool`/debugfs over SSH, which is blocked on release firmware (§14). The handler lives in the obfuscated
+`misystem.lua` (Fate/Z, strings not recoverable); `/usr/sbin/acsdbgtool` is only a debug tool that dumps driver
+channel events to a file.
+
+**Outcome on the test network:** Zigbee was moved 20 → 25 on 2026-11-11 based on the biased scan; the Control4
+dimmers (mains routers) degraded within hours on 25 (no frames to the coordinator, commands timing out) and recovered
+immediately back on 20. Final setup: Zigbee 20, Wi-Fi 2.4 GHz fixed on 1 at 20 MHz.
+
 ## 14. Firmware teardown (ROM 1.0.399, 2026-11-10)
 
 Extracted the stock image `miwifi_rm1800_firmware_..._1.0.399.bin` (HDR1 → UBI → SquashFS, standard xz) to confirm
