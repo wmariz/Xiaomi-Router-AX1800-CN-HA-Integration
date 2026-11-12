@@ -225,7 +225,13 @@ so this is done by the panel/integration:
 - **Scan:** `xqnetwork/wifi_list` (~12–15 s; per network: ssid, bssid, band, channel, signal %, rssi — no width).
   In automatic mode each Mesh node picks its own 2.4 GHz channel (main on 11 and node on 1 at the same time).
 - **Score per channel 1–11:** Σ neighbour `signal` × overlap, overlap = 1 − |Δchannel|/4 (20 MHz channels overlap
-  up to 3 channels apart); own networks (main/node/guest SSIDs) are ignored; normalized to 0–100 (100 = worst).
+  up to 3 channels apart); own networks (main/node/guest SSIDs) are ignored; in-between channels (not 1/6/11) are
+  multiplied by 1.25; normalized to 0–100 (100 = worst). Ties go to 1/6/11, then the lower channel.
+- **Why 1/6/11 are favoured (equally):** partial overlap is worse than sharing a channel — CSMA can decode co-channel
+  frames (NAV, backoff) but only energy-detects a partially overlapping neighbour. A day of sampling (2026-11-11,
+  09/13/16/19/22 h, 142 neighbour BSSIDs) showed ~88 % of the neighbours seen ≥ 3 times on a fixed channel and
+  more than half of those on 1/6/11, so an in-between channel usually overlaps two groups. Channel 1 is *not* given
+  extra weight: it was the most crowded channel all day (factory default of many routers).
 - **Zigbee:** a 20 MHz Wi-Fi channel is blocked when its centre is less than 12 MHz from the Zigbee channel centre
   (Wi-Fi ±10 + Zigbee ±1 + 1 MHz guard). Zigbee 20 → Wi-Fi 7–10 blocked. In HA the Zigbee channel is read from the
   running ZHA (`get_zha_data(...).application_controller.state.network_info.channel`) or, as a fallback, from the latest

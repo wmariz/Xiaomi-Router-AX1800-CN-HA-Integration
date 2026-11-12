@@ -190,7 +190,7 @@ const CZ={bloq:(c,z)=>!!z&&Math.abs((2407+5*c)-(2405+5*(z-11)))<12,
   MOT:{principal_no_zigbee:'o canal do roteador principal está em cima do Zigbee',repetidor_no_zigbee:'o canal do repetidor está em cima do Zigbee',
        nao_fixo_20mhz:'o 2,4 GHz não está fixo em 20 MHz (no automático ele pode ir para 40 MHz e cobrir o Zigbee)',canal_fora_1_11:'o canal atual está fora da faixa 1–11',
        ganho:'o canal sugerido tem pelo menos 30 % menos interferência'}};
-function czNotas(viz,z,prop){const raw={};for(let c=1;c<=11;c++){let t=0;for(const v of viz){if(v.band!=='2g'||prop.has(v.ssid||''))continue;const d=Math.abs(c-(+v.channel));if(d<4)t+=(+v.signal||0)*(1-d/4);}raw[c]=t;}
+function czNotas(viz,z,prop){const raw={};for(let c=1;c<=11;c++){let t=0;for(const v of viz){if(v.band!=='2g'||prop.has(v.ssid||''))continue;const d=Math.abs(c-(+v.channel));if(d<4)t+=(+v.signal||0)*(1-d/4);}raw[c]=[1,6,11].includes(c)?t:t*1.25;}
   const mx=Math.max(...Object.values(raw))||1;return Object.keys(raw).map(c=>({canal:+c,nota:Math.round(100*raw[c]/mx),bloqueado:CZ.bloq(+c,z)}));}
 function czEscolher(l){const pd=c=>[1,6,11].includes(c)?0:1;const f=l.filter(x=>!x.bloqueado);return f.length?f.sort((a,b)=>a.nota-b.nota||pd(a.canal)-pd(b.canal)||a.canal-b.canal)[0]:null;}
 // the Mesh does NOT copy the Wi-Fi MAC filter list to the node: repeat each change there (silently)

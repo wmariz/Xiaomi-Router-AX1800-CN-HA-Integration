@@ -37,6 +37,9 @@ EVENTO_TROCA = f"{DOMAIN}_canal_trocado"
 CANAIS = range(1, 12)          # 12/13 are not allowed in Brazil and some devices don't see them
 MARGEM_ZIGBEE_MHZ = 12          # 20 MHz Wi-Fi (±10) + Zigbee (±1) + 1 MHz guard
 GANHO_MINIMO = 0.30             # "only if worth it": the new channel must have 30 % less interference
+CANAIS_PADRAO = (1, 6, 11)      # the non-overlapping channels most neighbours sit on
+PESO_INTERMEDIARIO = 1.25       # in-between channels partially overlap two groups of neighbours: CSMA can only
+                                # energy-detect them (no frame decoding / NAV), which is worse than sharing a channel
 
 
 def freq_wifi(c: int) -> int:
@@ -52,7 +55,10 @@ def bloqueado(c: int, zigbee: int | None) -> bool:
 
 
 def notas(vizinhos: list[dict], zigbee: int | None, proprios: set[str]) -> list[dict]:
-    """Interference per channel, 0–100 (100 = worst channel of this scan)."""
+    """Interference per channel, 0–100 (100 = worst channel of this scan).
+
+    Channels 1/6/11 count their interference as is; the in-between ones get PESO_INTERMEDIARIO (×1.25).
+    1, 6 and 11 are weighted equally (decided 2026-11-11 after a day of sampling, Zigbee on 25)."""
     bruto = {}
     for c in CANAIS:
         s = 0.0
@@ -65,7 +71,7 @@ def notas(vizinhos: list[dict], zigbee: int | None, proprios: set[str]) -> list[
                 continue
             if d < 4:  # 20 MHz channels overlap up to 3 channels apart
                 s += float(v.get("signal") or 0) * (1 - d / 4)
-        bruto[c] = s
+        bruto[c] = s if c in CANAIS_PADRAO else s * PESO_INTERMEDIARIO
     mx = max(bruto.values()) or 1.0
     return [{"canal": c, "nota": round(100 * bruto[c] / mx), "bloqueado": bloqueado(c, zigbee)} for c in CANAIS]
 
@@ -75,7 +81,7 @@ def escolher(lista: list[dict]) -> dict | None:
     if not livres:
         return None
     # tie-break: prefer the standard non-overlapping channels 1/6/11, then the lower channel
-    return min(livres, key=lambda x: (x["nota"], 0 if x["canal"] in (1, 6, 11) else 1, x["canal"]))
+    return min(livres, key=lambda x: (x["nota"], 0 if x["canal"] in CANAIS_PADRAO else 1, x["canal"]))
 
 
 def zigbee_canal(hass: HomeAssistant) -> int | None:
