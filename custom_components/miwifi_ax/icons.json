@@ -64,6 +64,9 @@
       "qtd_visitante": {
         "default": "mdi:account-group"
       },
+      "qtd_mac_privado": {
+        "default": "mdi:cellphone-wireless"
+      },
       "qtd_reservas": {
         "default": "mdi:ip-network"
       },

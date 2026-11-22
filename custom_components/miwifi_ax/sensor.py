@@ -41,6 +41,7 @@ SENSORES: tuple[Desc, ...] = (
     Desc(key="qtd_24", state_class=M, so_principal=True, atributo="2,4 GHz"),
     Desc(key="qtd_5", state_class=M, so_principal=True, atributo="5 GHz"),
     Desc(key="qtd_visitante", state_class=M, so_principal=True, atributo="visitante"),
+    Desc(key="qtd_mac_privado", state_class=M, so_principal=True, atributo="mac_privado_lista"),
     Desc(key="qtd_reservas", so_principal=True, atributo="reservas"),
     Desc(key="upnp_mapeamentos", state_class=M, so_principal=True, atributo="upnp_lista"),
     Desc(key="redirecionamentos", so_principal=True, atributo="redirecionamentos_lista"),
@@ -86,7 +87,7 @@ class Sensor(MiWiFiEntity, SensorEntity):
         if not at:
             return None
         d = self.coordinator.data
-        if at in ("reservas", "filtro_mac_lista", "upnp_lista", "redirecionamentos_lista"):
+        if at in ("reservas", "filtro_mac_lista", "upnp_lista", "redirecionamentos_lista", "mac_privado_lista"):
             return {"lista": d.get(at, [])}
         return {"aparelhos": (d.get("grupos") or {}).get(at, [])}
 

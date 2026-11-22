@@ -38,7 +38,13 @@ GRUPO = {
     "firmware_atualizacao": "upd", "qtd_reservas": "macbind",
     "upnp": "upnp", "upnp_mapeamentos": "upnp", "redirecionamentos": "portfwd", "dmz": "dmz",
     "qtd_cabo": "devices", "qtd_24": "devices", "qtd_5": "devices", "qtd_visitante": "devices",
+    "qtd_mac_privado": "devices",
 }
+
+
+def _mac_privado(mac: str) -> bool:
+    """Locally administered MAC (2nd hex digit 2, 6, A or E) = randomized/private."""
+    return len(mac) > 1 and mac[1].upper() in "26AE"
 
 
 def _f(v, d=0.0):
@@ -272,6 +278,7 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if quer("devices"):
             grupos: dict[str, list[str]] = {"cabo": [], "2,4 GHz": [], "5 GHz": [], "visitante": []}
             devs: dict[str, dict[str, Any]] = {}
+            privados: list[dict[str, Any]] = []
             for x in (await a.safe("misystem/devicelist")).get("list") or []:
                 mac = (x.get("mac") or "").upper()
                 ip = ((x.get("ip") or [{}])[0]) or {}
@@ -290,10 +297,16 @@ class MiWiFiCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 }
                 if x.get("online") and not x.get("isap"):
                     grupos.setdefault(con, []).append(f"{devs[mac]['nome']} ({ip.get('ip', '')})")
+                    if _mac_privado(mac):
+                        privados.append({"nome": devs[mac]["nome"], "mac": mac, "ip": ip.get("ip"), "conexao": con})
             self.devices = devs
             d["grupos"] = grupos
             for k, n in (("cabo", "cabo"), ("24", "2,4 GHz"), ("5", "5 GHz"), ("visitante", "visitante")):
                 d[f"qtd_{k}"] = len(grupos.get(n, []))
+            # Phones/watches use a random ("private") MAC per network; fixed-MAC
+            # devices (notebooks, IoT) don't. Useful for presence of visitors.
+            d["mac_privado_lista"] = privados
+            d["qtd_mac_privado"] = len(privados)
         return d
 
     async def async_devices(self) -> dict[str, dict[str, Any]]:

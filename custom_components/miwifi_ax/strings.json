@@ -115,6 +115,9 @@
       "qtd_visitante": {
         "name": "Devices on guest network"
       },
+      "qtd_mac_privado": {
+        "name": "Devices with private MAC"
+      },
       "qtd_reservas": {
         "name": "IP reservations"
       },
